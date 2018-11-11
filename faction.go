@@ -15,6 +15,7 @@ func getFactionRGB(fn int) (uint8, uint8, uint8) {
 }
 
 type faction struct {
+	cx, cy int // cursor position
 	currentMetal, currentEnergy, metalIncome, energyIncome, maxMetal, maxEnergy int
 	factionNumber               int
 }

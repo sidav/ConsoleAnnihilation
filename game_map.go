@@ -14,6 +14,15 @@ func (g *gameMap) addUnit(u *unit) {
 	g.units = append(g.units, u)
 }
 
+func (g *gameMap) getUnitAtCoordinates(x, y int) *unit {
+	for _, u := range g.units {
+		if u.x == x && u.y == y {
+			return u
+		}
+	}
+	return nil
+}
+
 func (g *gameMap) init() {
 	g.units = make([]*unit, 0)
 	for i:=0; i < mapW; i++ {
