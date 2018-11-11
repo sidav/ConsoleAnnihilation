@@ -1,4 +1,4 @@
-package Some4xGame
+package SomeTBSGame
 
 type tile struct {
 	appearance ccell

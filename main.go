@@ -1,4 +1,4 @@
-package Some4xGame
+package SomeTBSGame
 
 import cw "GoSdlConsole/GoSdlConsole"
 

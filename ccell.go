@@ -1,6 +1,6 @@
-package Some4xGame
+package SomeTBSGame
 
 type ccell struct {
-	appearance rune
+	char    rune
 	r, g, b uint8
 }

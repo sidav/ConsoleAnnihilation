@@ -1,4 +1,4 @@
-package Some4xGame
+package SomeTBSGame
 
 const (
 	mapW = 20
@@ -10,4 +10,13 @@ type gameMap struct {
 	units []*unit
 }
 
+func (g *gameMap) init() {
+	g.units = make([]*unit, 0)
+	g.units = append(g.units, unit{3, 3})
+	for i:=0; i < mapW; i++ {
+		for j:=0; j < mapH; j++ {
+			g.tileMap[i][j] = &tile{appearance:ccell{char: '.', r: 64, g: 64, b: 64}}
+		}
+	}
 
+}
