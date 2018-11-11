@@ -22,10 +22,9 @@ func main() {
 	log = &LOG{}
 
 	for GAME_IS_RUNNING {
+		CURRENT_TURN += 1
 		for _, f := range a.factions {
 			renderFactionStats(f)
-			CURRENT_TURN += 1
-			log.appendMessagef("TURN %d", (CURRENT_TURN))
 			plr_control(f, a)
 		}
 	}

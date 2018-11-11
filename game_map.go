@@ -33,6 +33,9 @@ func (g *gameMap) init() {
 		}
 	}
 
-	g.factions = append(g.factions, createFaction("Zero Hegemony", 0))
+	g.factions = append(g.factions, createFaction("The Core Contingency", 0))
 	g.addUnit(createUnit("commander", 0, 0, g.factions[0]))
+
+	g.factions = append(g.factions, createFaction("The Arm Rebellion", 1))
+	g.addUnit(createUnit("commander", 7, 7, g.factions[1]))
 }
