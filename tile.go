@@ -1,6 +1,6 @@
 package main
 
 type tile struct {
-	appearance ccell
+	appearance *ccell
 	isNaval, isPassable bool
 }
