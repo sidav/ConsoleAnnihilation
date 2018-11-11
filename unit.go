@@ -1,4 +1,4 @@
-package SomeTBSGame
+package main
 
 type unit struct {
 	faction int
