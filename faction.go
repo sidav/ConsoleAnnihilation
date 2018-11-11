@@ -18,4 +18,9 @@ type faction struct {
 	cx, cy int // cursor position
 	currentMetal, currentEnergy, metalIncome, energyIncome, maxMetal, maxEnergy int
 	factionNumber               int
+	name string
+}
+
+func createFaction(name string, n int) *faction{ // temporary
+	return &faction{name: name, factionNumber:n, maxMetal:10, currentMetal:10, maxEnergy:10, currentEnergy:10}
 }

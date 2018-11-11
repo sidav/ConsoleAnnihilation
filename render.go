@@ -1,14 +1,25 @@
 package main
 
-import cw "GoSdlConsole/GoSdlConsole"
+import (
+	cw "GoSdlConsole/GoSdlConsole"
+	"fmt"
+)
 
 const (
-	VIEWPORT_W = 25
+	CONSOLE_W = 80
+	CONSOLE_H = 25
+	VIEWPORT_W = 40
 	VIEWPORT_H = 20
 )
 
 func r_setFgColorByCcell(c *ccell) {
 	cw.SetFgColorRGB(c.r, c.g, c.b)
+}
+
+func r_renderScreenForFaction(f *faction, g*gameMap) {
+	r_renderMapAroundCursor(g, f.cx, f.cy)
+	renderFactionStats(f)
+	cw.Flush_console()
 }
 
 func r_renderMapAroundCursor(g *gameMap, cx, cy int) {
@@ -18,7 +29,6 @@ func r_renderMapAroundCursor(g *gameMap, cx, cy int) {
 	renderMapInViewport(g, vx, vy)
 	renderUnitsInViewport(g, vx, vy)
 	renderLog(false)
-	cw.Flush_console()
 }
 
 func renderMapInViewport(g *gameMap, vx, vy int) {
@@ -36,7 +46,7 @@ func renderMapInViewport(g *gameMap, vx, vy int) {
 func renderUnitsInViewport(g *gameMap, vx, vy int) {
 	for _, u := range g.units {
 		tileApp := u.appearance
-		r, g, b := getFactionRGB(u.faction)
+		r, g, b := getFactionRGB(u.faction.factionNumber)
 		cw.SetFgColorRGB(r, g, b)
 		cw.PutChar(tileApp.char, u.x-vx, u.y-vy)
 	}
@@ -63,6 +73,39 @@ func renderMoveCursor() {
 	cw.PutChar('/', x-1, y+1)
 	cw.PutChar('\\', x+1, y+1)
 	cw.Flush_console()
+}
+
+func renderFactionStats(f *faction) {
+	statsx := VIEWPORT_W+1
+	
+	fr, fg, fb := getFactionRGB(f.factionNumber)
+	cw.SetFgColorRGB(fr, fg, fb) 
+	cw.PutString(fmt.Sprintf("%s: turn %d", f.name, CURRENT_TURN), statsx, 0)
+	
+	metal, maxmetal := f.currentMetal, f.maxMetal
+	cw.SetFgColor(cw.DARK_CYAN)
+	renderStatusbar("METAL", metal, maxmetal, statsx, 1, CONSOLE_W-VIEWPORT_W-3, cw.DARK_CYAN)
+	
+	energy, maxenergy := f.currentEnergy, f.maxEnergy
+	cw.SetFgColor(cw.DARK_YELLOW)
+	renderStatusbar("ENERGY", energy, maxenergy, statsx, 2, CONSOLE_W-VIEWPORT_W-3, cw.DARK_YELLOW)
+}
+
+func renderStatusbar(name string, curvalue, maxvalue, x, y, width, barColor int) {
+	barTitle := name
+	cw.PutString(barTitle, x, y)
+	barWidth := width - len(name)
+	filledCells := barWidth * curvalue / maxvalue
+	barStartX := x + len(barTitle) + 1
+	for i := 0; i < barWidth; i++ {
+		if i < filledCells {
+			cw.SetFgColor(barColor)
+			cw.PutChar('=', i+barStartX, y)
+		} else {
+			cw.SetFgColor(cw.DARK_BLUE)
+			cw.PutChar('-', i+barStartX, y)
+		}
+	}
 }
 
 func renderLog(flush bool) {

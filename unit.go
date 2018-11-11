@@ -1,7 +1,7 @@
 package main
 
 type unit struct {
-	faction int
+	faction *faction
 	x, y int
 	appearance ccell
 	name string 

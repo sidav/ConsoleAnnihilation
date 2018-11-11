@@ -9,6 +9,7 @@ func areCoordsValid(x, y int) bool {
 var (
 	GAME_IS_RUNNING = true
 	log *LOG
+	CURRENT_TURN = 0
 )
 
 func main() {
@@ -20,11 +21,13 @@ func main() {
 
 	log = &LOG{}
 
-	f := &faction{factionNumber: 0}
-
 	for GAME_IS_RUNNING {
-		// r_renderMapAroundCursor(a, 0, 0)
-		plr_control(f, a)
+		for _, f := range a.factions {
+			renderFactionStats(f)
+			CURRENT_TURN += 1
+			log.appendMessagef("TURN %d", (CURRENT_TURN))
+			plr_control(f, a)
+		}
 	}
 
 }

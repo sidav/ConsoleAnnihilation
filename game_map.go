@@ -7,6 +7,7 @@ const (
 
 type gameMap struct {
 	tileMap [mapW][mapH] *tile
+	factions []*faction
 	units []*unit
 }
 
@@ -25,11 +26,13 @@ func (g *gameMap) getUnitAtCoordinates(x, y int) *unit {
 
 func (g *gameMap) init() {
 	g.units = make([]*unit, 0)
+	g.factions = make([]*faction, 0)
 	for i:=0; i < mapW; i++ {
 		for j:=0; j < mapH; j++ {
 			g.tileMap[i][j] = &tile{appearance: &ccell{char: '.', r: 64, g: 128, b: 64}}
 		}
 	}
 
-	g.addUnit(createUnit("commander", 0, 0, 0))
+	g.factions = append(g.factions, createFaction("Zero Hegemony", 0))
+	g.addUnit(createUnit("commander", 0, 0, g.factions[0]))
 }

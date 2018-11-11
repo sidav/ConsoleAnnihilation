@@ -5,19 +5,21 @@ import cw "GoSdlConsole/GoSdlConsole"
 var PLR_LOOP = true
 
 func plr_control(f *faction, m *gameMap) {
+	PLR_LOOP = true
 	for PLR_LOOP {
 		plr_selectUnit(f, m)
 	}
 }
 
 func plr_selectUnit(f *faction, m *gameMap) {
-	r_renderMapAroundCursor(m, f.cx, f.cy)
+	r_renderScreenForFaction(f, m)
 	renderSelectCursor()
 	keyPressed := cw.ReadKey()
 	switch keyPressed {
+	case "SPACE":
+		PLR_LOOP = false
 	case "ENTER", "RETURN":
-		u := m.getUnitAtCoordinates(f.cx, f.cy)
-		plr_giveAnOrderToUnit(u, m)
+		plr_giveAnOrderToUnit(f, m)
 	case "ESCAPE":
 		GAME_IS_RUNNING = false
 		PLR_LOOP = false
@@ -26,19 +28,37 @@ func plr_selectUnit(f *faction, m *gameMap) {
 	}
 }
 
-func plr_giveAnOrderToUnit(u *unit, m *gameMap) {
+func plr_giveAnOrderToUnit(f *faction, m *gameMap) {
+	u := m.getUnitAtCoordinates(f.cx, f.cy)
 	if u == nil {
-		log.appendMessage("SELECTED NIL")
+		// log.appendMessage("SELECTED NIL")
+		return
 	} else {
 		log.appendMessage(u.name + " is awaiting orders.")
+	}
+
+	for {
+		r_renderScreenForFaction(f, m)
+		renderMoveCursor()
+		keyPressed := cw.ReadKey()
+		switch keyPressed {
+		case "ENTER", "RETURN":
+			return
+		case "ESCAPE":
+			return
+		default:
+			plr_moveCursor(f, keyPressed)
+		}
 	}
 }
 
 
 func plr_moveCursor(f *faction, keyPressed string) {
 	vx, vy := plr_keyToDirection(keyPressed)
-	f.cx += vx
-	f.cy += vy
+	if areCoordsValid(f.cx+vx, f.cy+vy) {
+		f.cx += vx
+		f.cy += vy
+	}
 }
 
 func plr_keyToDirection(keyPressed string) (int, int) {
