@@ -29,7 +29,7 @@ func (g *gameMap) init() {
 	g.factions = make([]*faction, 0)
 	for i:=0; i < mapW; i++ {
 		for j:=0; j < mapH; j++ {
-			g.tileMap[i][j] = &tile{appearance: &ccell{char: '.', r: 64, g: 128, b: 64}}
+			g.tileMap[i][j] = &tile{appearance: &ccell{char: '.', r: 64, g: 128, b: 64, color: 5}}
 		}
 	}
 

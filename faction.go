@@ -14,6 +14,20 @@ func getFactionRGB(fn int) (uint8, uint8, uint8) {
 	return 32, 32, 32
 }
 
+func getFactionColor(fn int) int {
+	switch fn {
+	case 0:
+		return 12
+	case 1:
+		return 9
+	case 2:
+		return 10
+	case 3:
+		return 11
+	}
+	return 7
+}
+
 type faction struct {
 	cx, cy int // cursor position
 	currentMetal, currentEnergy, metalIncome, energyIncome, maxMetal, maxEnergy int

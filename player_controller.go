@@ -1,6 +1,6 @@
 package main
 
-import cw "GoSdlConsole/GoSdlConsole"
+import cw "TCellConsoleWrapper/tcell_wrapper"
 
 var PLR_LOOP = true
 

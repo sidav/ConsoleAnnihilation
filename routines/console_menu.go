@@ -1,6 +1,6 @@
 package routines
 
-import cw "GoSdlConsole/GoSdlConsole"
+import cw "TCellConsoleWrapper/tcell_wrapper"
 
 const (
 	TITLE_COLOR = cw.DARK_BLUE

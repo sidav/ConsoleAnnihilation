@@ -1,7 +1,7 @@
 package main
 
 import (
-	cw "GoSdlConsole/GoSdlConsole"
+	cw "TCellConsoleWrapper/tcell_wrapper"
 	"fmt"
 )
 
@@ -13,7 +13,8 @@ const (
 )
 
 func r_setFgColorByCcell(c *ccell) {
-	cw.SetFgColorRGB(c.r, c.g, c.b)
+	cw.SetFgColor(c.color)
+	// cw.SetFgColorRGB(c.r, c.g, c.b)
 }
 
 func r_renderScreenForFaction(f *faction, g*gameMap) {
@@ -46,8 +47,9 @@ func renderMapInViewport(g *gameMap, vx, vy int) {
 func renderUnitsInViewport(g *gameMap, vx, vy int) {
 	for _, u := range g.units {
 		tileApp := u.appearance
-		r, g, b := getFactionRGB(u.faction.factionNumber)
-		cw.SetFgColorRGB(r, g, b)
+		// r, g, b := getFactionRGB(u.faction.factionNumber)
+		// cw.SetFgColorRGB(r, g, b)
+		cw.SetFgColor(getFactionColor(u.faction.factionNumber))
 		cw.PutChar(tileApp.char, u.x-vx, u.y-vy)
 	}
 
@@ -56,7 +58,8 @@ func renderUnitsInViewport(g *gameMap, vx, vy int) {
 func renderSelectCursor() {
 	x := VIEWPORT_W / 2
 	y := VIEWPORT_H / 2
-	cw.SetFgColorRGB(128, 128, 128)
+	// cw.SetFgColorRGB(128, 128, 128)
+	cw.SetFgColor(cw.WHITE)
 	cw.PutChar(16*13+10, x-1, y-1)
 	cw.PutChar(16*11+15, x+1, y-1)
 	cw.PutChar(16*12, x-1, y+1)
@@ -67,7 +70,8 @@ func renderSelectCursor() {
 func renderMoveCursor() {
 	x := VIEWPORT_W / 2
 	y := VIEWPORT_H / 2
-	cw.SetFgColorRGB(128, 255, 128)
+	// cw.SetFgColorRGB(128, 255, 128)
+	cw.SetFgColor(cw.GREEN)
 	cw.PutChar('\\', x-1, y-1)
 	cw.PutChar('/', x+1, y-1)
 	cw.PutChar('/', x-1, y+1)
@@ -78,8 +82,9 @@ func renderMoveCursor() {
 func renderFactionStats(f *faction) {
 	statsx := VIEWPORT_W+1
 	
-	fr, fg, fb := getFactionRGB(f.factionNumber)
-	cw.SetFgColorRGB(fr, fg, fb) 
+	// fr, fg, fb := getFactionRGB(f.factionNumber)
+	// cw.SetFgColorRGB(fr, fg, fb)
+	cw.SetFgColor(getFactionColor(f.factionNumber))
 	cw.PutString(fmt.Sprintf("%s: turn %d", f.name, CURRENT_TURN), statsx, 0)
 	
 	metal, maxmetal := f.currentMetal, f.maxMetal
