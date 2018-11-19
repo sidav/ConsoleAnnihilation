@@ -33,6 +33,10 @@ func plr_giveAnOrderToUnit(f *faction, m *gameMap) {
 	if u == nil {
 		// log.appendMessage("SELECTED NIL")
 		return
+	}
+	if u.faction.factionNumber != f.factionNumber {
+		log.appendMessage("Enemy unit can't be selected, Commander.")
+		return
 	} else {
 		log.appendMessage(u.name + " is awaiting orders.")
 	}

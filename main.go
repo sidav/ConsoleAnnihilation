@@ -19,11 +19,22 @@ func main() {
 	a := &gameMap{}
 	a.init()
 
+	//for i:=0; i<1024; i++ {
+	//	cw.PutChar(int32(i), i%80, i/80)
+	//}
+	//cw.Flush_console()
+	//for key:=""; key != "ESCAPE"; {
+	//	key = cw.ReadKey()
+	//}
+
 	log = &LOG{}
 
 	for GAME_IS_RUNNING {
 		CURRENT_TURN += 1
 		for _, f := range a.factions {
+			if !GAME_IS_RUNNING {
+				return 
+			}
 			renderFactionStats(f)
 			plr_control(f, a)
 		}
