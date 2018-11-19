@@ -35,7 +35,7 @@ func plr_giveDefaultOrderToUnit(f *faction, m *gameMap) {
 		return
 	}
 	if u.faction.factionNumber != f.factionNumber {
-		log.appendMessage("Enemy unit can't be selected, Commander.")
+		log.appendMessage("Enemy units can't be selected, Commander.")
 		return
 	} else {
 		log.appendMessage(u.name + " is awaiting orders.")
@@ -47,6 +47,7 @@ func plr_giveDefaultOrderToUnit(f *faction, m *gameMap) {
 		keyPressed := cw.ReadKey()
 		switch keyPressed {
 		case "ENTER", "RETURN":
+			issueDefaultOrder(u, m, f.cx, f.cy)
 			return
 		case "ESCAPE":
 			return
