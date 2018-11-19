@@ -16,10 +16,10 @@ func plr_selectUnit(f *faction, m *gameMap) {
 	renderSelectCursor()
 	keyPressed := cw.ReadKey()
 	switch keyPressed {
-	case "SPACE":
-		PLR_LOOP = false
+	case "SPACE", " ":
+		PLR_LOOP = false // end turn
 	case "ENTER", "RETURN":
-		plr_giveAnOrderToUnit(f, m)
+		plr_giveDefaultOrderToUnit(f, m)
 	case "ESCAPE":
 		GAME_IS_RUNNING = false
 		PLR_LOOP = false
@@ -28,7 +28,7 @@ func plr_selectUnit(f *faction, m *gameMap) {
 	}
 }
 
-func plr_giveAnOrderToUnit(f *faction, m *gameMap) {
+func plr_giveDefaultOrderToUnit(f *faction, m *gameMap) {
 	u := m.getUnitAtCoordinates(f.cx, f.cy)
 	if u == nil {
 		// log.appendMessage("SELECTED NIL")
