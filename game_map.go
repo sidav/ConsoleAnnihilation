@@ -2,7 +2,7 @@ package main
 
 const (
 	mapW = 20
-	mapH = 10
+	mapH = 11
 )
 
 type gameMap struct {
@@ -29,13 +29,13 @@ func (g *gameMap) init() {
 	g.factions = make([]*faction, 0)
 	for i:=0; i < mapW; i++ {
 		for j:=0; j < mapH; j++ {
-			g.tileMap[i][j] = &tile{appearance: &ccell{char: '.', r: 64, g: 128, b: 64, color: 5}}
+			g.tileMap[i][j] = &tile{appearance: &ccell{char: '.', r: 64, g: 128, b: 64, color: 2}}
 		}
 	}
 
 	g.factions = append(g.factions, createFaction("The Core Contingency", 0))
-	g.addUnit(createUnit("commander", 0, 0, g.factions[0]))
+	g.addUnit(createUnit("commander", 3, 5, g.factions[0]))
 
-	g.factions = append(g.factions, createFaction("The Arm Rebellion", 1))
-	g.addUnit(createUnit("commander", 7, 7, g.factions[1]))
+	//g.factions = append(g.factions, createFaction("The Arm Rebellion", 1))
+	//g.addUnit(createUnit("commander", MAP_WIDTH-3, 5, g.factions[1]))
 }

@@ -20,7 +20,7 @@ func r_setFgColorByCcell(c *ccell) {
 func r_renderScreenForFaction(f *faction, g*gameMap) {
 	r_renderMapAroundCursor(g, f.cx, f.cy)
 	renderFactionStats(f)
-	cw.Flush_console()
+	flushView()
 }
 
 func r_renderMapAroundCursor(g *gameMap, cx, cy int) {
@@ -69,7 +69,7 @@ func renderSelectCursor() {
 	//cw.PutChar(16*11+15, x+1, y-1)
 	//cw.PutChar(16*12, x-1, y+1)
 	//cw.PutChar(16*13+9, x+1, y+1)
-	cw.Flush_console()
+	flushView()
 }
 
 func renderMoveCursor() {
@@ -86,7 +86,7 @@ func renderMoveCursor() {
 	//cw.PutChar('/', x-1, y+1)
 	//cw.PutChar('\\', x+1, y+1)
 
-	cw.Flush_console()
+	flushView()
 }
 
 func renderFactionStats(f *faction) {
@@ -95,7 +95,7 @@ func renderFactionStats(f *faction) {
 	// fr, fg, fb := getFactionRGB(f.factionNumber)
 	// cw.SetFgColorRGB(fr, fg, fb)
 	cw.SetFgColor(getFactionColor(f.factionNumber))
-	cw.PutString(fmt.Sprintf("%s: turn %d", f.name, CURRENT_TURN), statsx, 0)
+	cw.PutString(fmt.Sprintf("%s: turn %d", f.name, CURRENT_TURN/10 + 1), statsx, 0)
 	
 	metal, maxmetal := f.currentMetal, f.maxMetal
 	cw.SetFgColor(cw.DARK_CYAN)
@@ -129,6 +129,10 @@ func renderLog(flush bool) {
 		cw.PutString(log.last_msgs[i].getText(), 0, VIEWPORT_H+i)
 	}
 	if flush {
-		cw.Flush_console()
+		flushView()
 	}
+}
+
+func flushView() {
+	cw.Flush_console()
 }
