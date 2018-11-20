@@ -16,8 +16,8 @@ func main() {
 	cw.Init_console()
 	defer cw.Close_console()
 
-	a := &gameMap{}
-	a.init()
+	gamemap := &gameMap{}
+	gamemap.init()
 
 	//for i:=0; i<1024; i++ {
 	//	cw.PutChar(int32(i), i%80, i/80)
@@ -30,13 +30,18 @@ func main() {
 	log = &LOG{}
 
 	for GAME_IS_RUNNING {
-		CURRENT_TURN += 1
-		for _, f := range a.factions {
+		for _, f := range gamemap.factions {
 			if !GAME_IS_RUNNING {
 				return 
 			}
 			renderFactionStats(f)
-			plr_control(f, a)
+			plr_control(f, gamemap)
+		}
+		for i:=0; i<10; i++ {
+			for _, u := range gamemap.units {
+				u.executeOrders(gamemap)
+			}
+			CURRENT_TURN += 1
 		}
 	}
 

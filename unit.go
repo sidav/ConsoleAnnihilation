@@ -8,6 +8,7 @@ type unit struct {
 	appearance ccell
 	name string
 	order *order
+	nextTurnToAct int
 }
 
 func (u *unit) getCoords() (int, int) {
