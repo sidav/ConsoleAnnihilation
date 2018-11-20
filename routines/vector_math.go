@@ -46,6 +46,9 @@ func (v *Vector) GetUnitVector() *Vector {
 }
 
 func (v *Vector) TransformIntoUnitVector() {
+	if v.X == v.Y && v.X == 0 {
+		return
+	}
 	length := math.Sqrt(v.X*v.X + v.Y*v.Y)
 	v.X /= length
 	v.Y /= length

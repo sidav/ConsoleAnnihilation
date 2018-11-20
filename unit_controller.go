@@ -1,5 +1,9 @@
 package main
 
+import (
+	"SomeTBSGame/routines"
+)
+
 func (u *unit) isTimeToAct() bool {
 	return u.nextTurnToAct <= CURRENT_TURN
 }
@@ -24,23 +28,25 @@ func (u *unit) executeOrders(m *gameMap) {
 
 func (u *unit) doMoveOrder(m *gameMap) { // TODO: rewrite
 	order := u.order
+
 	ox, oy := order.x, order.y
 	ux, uy := u.getCoords()
-	vx, vy := ox-ux, oy-uy
-	if vx != 0 {
-		vx = vx/abs(vx)
+
+	if ux == ox && uy == oy {
+		u.reportOrderCompletion("arrived")
+		u.order = nil
+		return
 	}
-	if vy != 0 {
-		vy = vy/abs(vy)
-	}
+
+	vector := routines.CreateVectorByStartAndEndInt(ux, uy, ox, oy)
+	vector.TransformIntoUnitVector()
+	vx, vy := vector.GetRoundedCoords()
+
 	u.x += vx
 	u.y += vy
 	u.nextTurnToAct += 10
 }
 
-func abs(x int) int {
-	if x < 0 {
-		return -x
-	}
-	return x
+func (u *unit) reportOrderCompletion(verb string) {
+	log.appendMessage(u.name + ": " + verb+".")
 }
