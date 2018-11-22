@@ -1,15 +1,18 @@
 package main
 
 import (
+	"SomeTBSGame/routines"
 	cw "TCellConsoleWrapper/tcell_wrapper"
 	"fmt"
 )
 
 const (
-	CONSOLE_W = 80
-	CONSOLE_H = 25
+	CONSOLE_W  = 80
+	CONSOLE_H  = 25
 	VIEWPORT_W = 40
 	VIEWPORT_H = 20
+	SIDEBAR_X  = VIEWPORT_W + 1
+	SIDEBAR_W  = CONSOLE_W - VIEWPORT_W - 1
 )
 
 func r_setFgColorByCcell(c *ccell) {
@@ -17,16 +20,17 @@ func r_setFgColorByCcell(c *ccell) {
 	// cw.SetFgColorRGB(c.r, c.g, c.b)
 }
 
-func r_renderScreenForFaction(f *faction, g*gameMap) {
+func r_renderScreenForFaction(f *faction, g *gameMap) {
 	r_renderMapAroundCursor(g, f.cursor.x, f.cursor.y)
 	renderFactionStats(f)
+	renderInfoOnCursor(f, g)
 	flushView()
 }
 
 func r_renderMapAroundCursor(g *gameMap, cx, cy int) {
 	cw.Clear_console()
-	vx := cx - VIEWPORT_W / 2
-	vy := cy - VIEWPORT_H / 2
+	vx := cx - VIEWPORT_W/2
+	vy := cy - VIEWPORT_H/2
 	renderMapInViewport(g, vx, vy)
 	renderBuildingsInViewport(g, vx, vy)
 	renderUnitsInViewport(g, vx, vy)
@@ -47,11 +51,13 @@ func renderMapInViewport(g *gameMap, vx, vy int) {
 
 func renderUnitsInViewport(g *gameMap, vx, vy int) {
 	for _, u := range g.units {
-		tileApp := u.appearance
-		// r, g, b := getFactionRGB(u.faction.factionNumber)
-		// cw.SetFgColorRGB(r, g, b)
-		cw.SetFgColor(getFactionColor(u.faction.factionNumber))
-		cw.PutChar(tileApp.char, u.x-vx, u.y-vy)
+		if areGlobalCoordsOnScreen(u.x, u.y, vx, vy) {
+			tileApp := u.appearance
+			// r, g, b := getFactionRGB(u.faction.factionNumber)
+			// cw.SetFgColorRGB(r, g, b)
+			cw.SetFgColor(getFactionColor(u.faction.factionNumber))
+			cw.PutChar(tileApp.char, u.x-vx, u.y-vy)
+		}
 	}
 
 }
@@ -60,19 +66,49 @@ func renderBuildingsInViewport(g *gameMap, vx, vy int) {
 	for _, b := range g.buildings {
 		app := b.appearance
 		bx, by := b.getCoords()
-		for x:=0; x<b.w; x++ {
-			for y:=0; y<b.h; y++ {
-				color := app.colors[x + b.w*y]
+		for x := 0; x < b.w; x++ {
+			for y := 0; y < b.h; y++ {
+				color := app.colors[x+b.w*y]
 				if color == -1 {
 					cw.SetFgColor(getFactionColor(b.faction.factionNumber))
 				} else {
 					cw.SetFgColor(color)
 				}
-				cw.PutChar(int32(app.chars[x + b.w*y]), bx+x-vx, by+y-vy)
+				if areGlobalCoordsOnScreen(bx+x, by+y, vx, vy) {
+					cw.PutChar(int32(app.chars[x+b.w*y]), bx+x-vx, by+y-vy)
+				}
 			}
 		}
 	}
 
+}
+
+func renderInfoOnCursor(f *faction, g *gameMap) {
+
+	if f.cursor.snappedBuilding != nil {
+		b := f.cursor.snappedBuilding
+		str := make([]string, 0)
+		if b.faction != f {
+			str = append(str, "(Enemy building)")
+		} else {
+			str = append(str, "Your building, Commander")
+		}
+		routines.DrawSidebarInfoMenu(b.name, getFactionColor(b.faction.factionNumber), SIDEBAR_X, 7, SIDEBAR_W, str)
+		return
+	}
+
+	cx, cy := f.cursor.getCoords()
+	u := g.getUnitAtCoordinates(cx, cy)
+	if u != nil {
+		str := make([]string, 0)
+		if u.faction != f {
+			str = append(str, "(Enemy unit)")
+		} else {
+			str = append(str, "Your loyal unit, Commander")
+		}
+		routines.DrawSidebarInfoMenu(u.name, getFactionColor(u.faction.factionNumber), SIDEBAR_X, 7, SIDEBAR_W, str)
+		return
+	}
 }
 
 func renderSelectCursor() {
@@ -110,17 +146,17 @@ func renderMoveCursor() {
 }
 
 func renderFactionStats(f *faction) {
-	statsx := VIEWPORT_W+1
-	
+	statsx := VIEWPORT_W + 1
+
 	// fr, fg, fb := getFactionRGB(f.factionNumber)
 	// cw.SetFgColorRGB(fr, fg, fb)
 	cw.SetFgColor(getFactionColor(f.factionNumber))
-	cw.PutString(fmt.Sprintf("%s: turn %d", f.name, CURRENT_TURN/10 + 1), statsx, 0)
-	
+	cw.PutString(fmt.Sprintf("%s: turn %d", f.name, CURRENT_TURN/10+1), statsx, 0)
+
 	metal, maxmetal := f.currentMetal, f.maxMetal
 	cw.SetFgColor(cw.DARK_CYAN)
 	renderStatusbar("METAL", metal, maxmetal, statsx, 1, CONSOLE_W-VIEWPORT_W-3, cw.DARK_CYAN)
-	
+
 	energy, maxenergy := f.currentEnergy, f.maxEnergy
 	cw.SetFgColor(cw.DARK_YELLOW)
 	renderStatusbar("ENERGY", energy, maxenergy, statsx, 2, CONSOLE_W-VIEWPORT_W-3, cw.DARK_YELLOW)
@@ -155,4 +191,8 @@ func renderLog(flush bool) {
 
 func flushView() {
 	cw.Flush_console()
+}
+
+func areGlobalCoordsOnScreen(gx, gy, vx, vy int) bool {
+	return areCoordsInRect(gx, gy, vx, vy, VIEWPORT_W, VIEWPORT_H)
 }
