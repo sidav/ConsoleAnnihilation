@@ -32,12 +32,6 @@ func (u *unit) doMoveOrder(m *gameMap) { // TODO: rewrite
 	ox, oy := order.x, order.y
 	ux, uy := u.getCoords()
 
-	if ux == ox && uy == oy {
-		u.reportOrderCompletion("arrived")
-		u.order = nil
-		return
-	}
-
 	vector := routines.CreateVectorByStartAndEndInt(ux, uy, ox, oy)
 	vector.TransformIntoUnitVector()
 	vx, vy := vector.GetRoundedCoords()
@@ -45,6 +39,12 @@ func (u *unit) doMoveOrder(m *gameMap) { // TODO: rewrite
 	u.x += vx
 	u.y += vy
 	u.nextTurnToAct = CURRENT_TURN + u.ticksForMoveOneCell
+
+	if u.x == ox && u.y == oy {
+		u.reportOrderCompletion("arrived")
+		u.order = nil
+		return
+	}
 }
 
 func (u *unit) reportOrderCompletion(verb string) {
