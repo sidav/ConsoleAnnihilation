@@ -43,6 +43,7 @@ func plr_giveDefaultOrderToUnit(f *faction, m *gameMap) {
 	}
 
 	for {
+		cx, cy := f.cursor.getCoords()
 		r_renderScreenForFaction(f, m)
 		renderMoveCursor()
 		keyPressed := cw.ReadKey()
