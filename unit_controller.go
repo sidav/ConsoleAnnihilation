@@ -44,7 +44,7 @@ func (u *unit) doMoveOrder(m *gameMap) { // TODO: rewrite
 
 	u.x += vx
 	u.y += vy
-	u.nextTurnToAct += 10
+	u.nextTurnToAct = CURRENT_TURN + u.ticksForMoveOneCell
 }
 
 func (u *unit) reportOrderCompletion(verb string) {

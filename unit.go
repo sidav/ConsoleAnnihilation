@@ -9,6 +9,7 @@ type unit struct {
 	name string
 	order *order
 	nextTurnToAct int
+	ticksForMoveOneCell int
 }
 
 func (u *unit) getCoords() (int, int) {

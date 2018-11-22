@@ -1,9 +1,20 @@
 package main
 
+// TODO: move unit stats to JSON
 func createUnit(name string, x, y int, f *faction) *unit {
+	var newUnit *unit
 	switch name {
 	case "commander":
-		return &unit{name: name, faction: f, x: x, y: y, appearance:ccell{char:'@'}}
+		newUnit =  &unit{name: "Commander", ticksForMoveOneCell: 10, appearance: ccell{char: '@'}}
+	case "weasel":
+		newUnit =  &unit{name: "Weasel", ticksForMoveOneCell: 6, appearance: ccell{char: 'w'}}
+	case "thecan":
+		newUnit =  &unit{name: "The Can", ticksForMoveOneCell: 17, appearance: ccell{char: 'c'}}
+	default:
+		newUnit =  &unit{name: "UNKNOWN UNIT", faction: f, x: x, y: y, appearance: ccell{char: '?'}}
 	}
-	return &unit{name: "UNKNOWN UNIT", faction: f, x: x, y: y, appearance:ccell{char:'?'}}
+	newUnit.x = x
+	newUnit.y = y
+	newUnit.faction = f
+	return newUnit
 }
