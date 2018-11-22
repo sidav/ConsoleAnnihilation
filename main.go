@@ -38,8 +38,10 @@ func main() {
 			if !GAME_IS_RUNNING {
 				return 
 			}
-			renderFactionStats(f)
-			plr_control(f, gamemap)
+			if f.playerControlled {
+				renderFactionStats(f)
+				plr_control(f, gamemap)
+			}
 		}
 		for i:=0; i<10; i++ {
 			for _, u := range gamemap.units {

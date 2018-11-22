@@ -29,12 +29,13 @@ func getFactionColor(fn int) int {
 }
 
 type faction struct {
-	cursor *cursor // cursor position
+	cursor                                                                      *cursor // cursor position
 	currentMetal, currentEnergy, metalIncome, energyIncome, maxMetal, maxEnergy int
-	factionNumber               int
-	name string
+	factionNumber                                                               int
+	name                                                                        string
+	playerControlled                                                            bool // used as a stub for now
 }
 
-func createFaction(name string, n int) *faction{ // temporary
-	return &faction{name: name, factionNumber:n, maxMetal:10, currentMetal:10, maxEnergy:10, currentEnergy:10, cursor: &cursor{}}
+func createFaction(name string, n int, playerControlled bool) *faction{ // temporary
+	return &faction{playerControlled: playerControlled, name: name, factionNumber:n, maxMetal:10, currentMetal:10, maxEnergy:10, currentEnergy:10, cursor: &cursor{}}
 }

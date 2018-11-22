@@ -10,6 +10,8 @@ func createUnit(name string, x, y int, f *faction) *unit {
 		newUnit =  &unit{name: "Weasel", ticksForMoveOneCell: 6, appearance: ccell{char: 'w'}}
 	case "thecan":
 		newUnit =  &unit{name: "The Can", ticksForMoveOneCell: 17, appearance: ccell{char: 'c'}}
+	case "ak":
+		newUnit =  &unit{name: "A.K.", ticksForMoveOneCell: 9, appearance: ccell{char: 'a'}}
 	default:
 		newUnit =  &unit{name: "UNKNOWN UNIT", faction: f, x: x, y: y, appearance: ccell{char: '?'}}
 	}
