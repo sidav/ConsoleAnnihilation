@@ -18,7 +18,7 @@ func r_setFgColorByCcell(c *ccell) {
 }
 
 func r_renderScreenForFaction(f *faction, g*gameMap) {
-	r_renderMapAroundCursor(g, f.cx, f.cy)
+	r_renderMapAroundCursor(g, f.cursor.x, f.cursor.y)
 	renderFactionStats(f)
 	flushView()
 }

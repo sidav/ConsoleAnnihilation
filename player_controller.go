@@ -7,11 +7,11 @@ var PLR_LOOP = true
 func plr_control(f *faction, m *gameMap) {
 	PLR_LOOP = true
 	for PLR_LOOP {
-		plr_selectUnit(f, m)
+		plr_selectEntity(f, m)
 	}
 }
 
-func plr_selectUnit(f *faction, m *gameMap) {
+func plr_selectEntity(f *faction, m *gameMap) {
 	r_renderScreenForFaction(f, m)
 	renderSelectCursor()
 	keyPressed := cw.ReadKey()
@@ -24,12 +24,13 @@ func plr_selectUnit(f *faction, m *gameMap) {
 		GAME_IS_RUNNING = false
 		PLR_LOOP = false
 	default:
-		plr_moveCursor(f, keyPressed)
+		plr_moveCursor(m, f, keyPressed)
 	}
 }
 
 func plr_giveDefaultOrderToUnit(f *faction, m *gameMap) {
-	u := m.getUnitAtCoordinates(f.cx, f.cy)
+	cx, cy := f.cursor.getCoords()
+	u := m.getUnitAtCoordinates(cx, cy)
 	if u == nil {
 		// log.appendMessage("SELECTED NIL")
 		return
@@ -47,24 +48,38 @@ func plr_giveDefaultOrderToUnit(f *faction, m *gameMap) {
 		keyPressed := cw.ReadKey()
 		switch keyPressed {
 		case "ENTER", "RETURN":
-			issueDefaultOrder(u, m, f.cx, f.cy)
+			issueDefaultOrder(u, m, cx, cy)
 			return
 		case "ESCAPE":
 			return
 		default:
-			plr_moveCursor(f, keyPressed)
+			plr_moveCursor(m, f, keyPressed)
 		}
 	}
 }
 
-
-func plr_moveCursor(f *faction, keyPressed string) {
+func plr_moveCursor(g *gameMap, f *faction, keyPressed string) {
 	vx, vy := plr_keyToDirection(keyPressed)
-	if areCoordsValid(f.cx+vx, f.cy+vy) {
-		f.cx += vx
-		f.cy += vy
+	cx, cy := f.cursor.getCoords()
+	if areCoordsValid(cx+vx, cy+vy) {
+		f.cursor.moveByVector(vx, vy)
+	}
+
+	snapB := f.cursor.snappedBuilding
+	if snapB != nil { // unsnap cursor
+		for snapB.isOccupyingCoords(f.cursor.x, f.cursor.y) {
+			f.cursor.moveByVector(vx, vy)
+		}
+		f.cursor.snappedBuilding = nil
+	}
+	b := g.getBuildingAtCoordinates(f.cursor.x, f.cursor.y)
+	if b != nil {
+		// snap cursor
+		f.cursor.x, f.cursor.y = b.getCenter()
+		f.cursor.snappedBuilding = b
 	}
 }
+
 
 func plr_keyToDirection(keyPressed string) (int, int) {
 	switch keyPressed {

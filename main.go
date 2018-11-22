@@ -6,6 +6,10 @@ func areCoordsValid(x, y int) bool {
 	return (x >= 0) && (x < mapW) && (y >= 0) && (y < mapH)
 }
 
+func areCoordsInRect(x, y, rx, ry, w, h int) bool {
+	return x >= rx && x < rx+w && y >= ry && y < ry+h
+}
+
 var (
 	GAME_IS_RUNNING = true
 	log *LOG

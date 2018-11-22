@@ -20,6 +20,15 @@ func (g *gameMap) addBuilding(b *building) {
 	g.buildings = append(g.buildings, b)
 }
 
+func (g *gameMap) getBuildingAtCoordinates(x, y int) *building {
+	for _, b := range g.buildings {
+		if b.isOccupyingCoords(x, y) {
+			return b
+		}
+	}
+	return nil
+}
+
 func (g *gameMap) getUnitAtCoordinates(x, y int) *unit {
 	for _, u := range g.units {
 		if u.x == x && u.y == y {
@@ -34,7 +43,7 @@ func (g *gameMap) init() {
 	g.factions = make([]*faction, 0)
 	for i:=0; i < mapW; i++ {
 		for j:=0; j < mapH; j++ {
-			g.tileMap[i][j] = &tile{appearance: &ccell{char: '.', r: 64, g: 128, b: 64, color: 2}}
+			g.tileMap[i][j] = &tile{appearance: &ccell{char: '.', r: 64, g: 128, b: 64, color: 3}}
 		}
 	}
 
