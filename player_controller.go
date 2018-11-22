@@ -68,7 +68,11 @@ func plr_moveCursor(g *gameMap, f *faction, keyPressed string) {
 	snapB := f.cursor.snappedBuilding
 	if snapB != nil { // unsnap cursor
 		for snapB.isOccupyingCoords(f.cursor.x, f.cursor.y) {
-			f.cursor.moveByVector(vx, vy)
+			if areCoordsValid(f.cursor.x+vx, f.cursor.y+vy) {
+				f.cursor.moveByVector(vx, vy)
+			} else {
+				break
+			}
 		}
 		f.cursor.snappedBuilding = nil
 	}
