@@ -9,10 +9,15 @@ type gameMap struct {
 	tileMap [mapW][mapH] *tile
 	factions []*faction
 	units []*unit
+	buildings []*building
 }
 
 func (g *gameMap) addUnit(u *unit) {
 	g.units = append(g.units, u)
+}
+
+func (g *gameMap) addBuilding(b *building) {
+	g.buildings = append(g.buildings, b)
 }
 
 func (g *gameMap) getUnitAtCoordinates(x, y int) *unit {
@@ -37,6 +42,8 @@ func (g *gameMap) init() {
 	g.addUnit(createUnit("commander", 3, 5, g.factions[0]))
 	g.addUnit(createUnit("weasel", 3, 6, g.factions[0]))
 	g.addUnit(createUnit("thecan", 3, 4, g.factions[0]))
+	g.addBuilding(createBuilding("kbotlab", 5, 1, g.factions[0]))
+	g.addBuilding(createBuilding("vehfactory", 5, 5, g.factions[0]))
 
 	//g.factions = append(g.factions, createFaction("The Arm Rebellion", 1))
 	//g.addUnit(createUnit("commander", MAP_WIDTH-3, 5, g.factions[1]))

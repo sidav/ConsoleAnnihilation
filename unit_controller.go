@@ -41,7 +41,7 @@ func (u *unit) doMoveOrder(m *gameMap) { // TODO: rewrite
 	u.nextTurnToAct = CURRENT_TURN + u.ticksForMoveOneCell
 
 	if u.x == ox && u.y == oy {
-		u.reportOrderCompletion("arrived")
+		u.reportOrderCompletion("Arrived")
 		u.order = nil
 		return
 	}

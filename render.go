@@ -28,6 +28,7 @@ func r_renderMapAroundCursor(g *gameMap, cx, cy int) {
 	vx := cx - VIEWPORT_W / 2
 	vy := cy - VIEWPORT_H / 2
 	renderMapInViewport(g, vx, vy)
+	renderBuildingsInViewport(g, vx, vy)
 	renderUnitsInViewport(g, vx, vy)
 	renderLog(false)
 }
@@ -51,6 +52,25 @@ func renderUnitsInViewport(g *gameMap, vx, vy int) {
 		// cw.SetFgColorRGB(r, g, b)
 		cw.SetFgColor(getFactionColor(u.faction.factionNumber))
 		cw.PutChar(tileApp.char, u.x-vx, u.y-vy)
+	}
+
+}
+
+func renderBuildingsInViewport(g *gameMap, vx, vy int) {
+	for _, b := range g.buildings {
+		app := b.appearance
+		bx, by := b.getCoords()
+		for x:=0; x<b.w; x++ {
+			for y:=0; y<b.h; y++ {
+				color := app.colors[x + b.w*y]
+				if color == -1 {
+					cw.SetFgColor(getFactionColor(b.faction.factionNumber))
+				} else {
+					cw.SetFgColor(color)
+				}
+				cw.PutChar(int32(app.chars[x + b.w*y]), bx+x-vx, by+y-vy)
+			}
+		}
 	}
 
 }
