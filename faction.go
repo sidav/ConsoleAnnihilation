@@ -15,9 +15,25 @@ func getFactionRGB(fn int) (uint8, uint8, uint8) {
 }
 
 func getFactionColor(fn int) int {
+	//BLACK        = 0
+	//DARK_RED     = 1
+	//DARK_GREEN   = 2
+	//DARK_YELLOW  = 3
+	//DARK_BLUE    = 4
+	//DARK_MAGENTA = 5
+	//DARK_CYAN    = 6
+	//BEIGE        = 7
+	//DARK_GRAY    = 8
+	//RED          = 9
+	//GREEN        = 10
+	//YELLOW       = 11
+	//BLUE         = 12
+	//MAGENTA      = 13
+	//CYAN         = 14
+	//WHITE        = 15
 	switch fn {
 	case 0:
-		return 12
+		return 14
 	case 1:
 		return 9
 	case 2:
@@ -30,12 +46,12 @@ func getFactionColor(fn int) int {
 
 type faction struct {
 	cursor                                                                      *cursor // cursor position
-	currentMetal, currentEnergy, metalIncome, energyIncome, maxMetal, maxEnergy int
+	economy *factionEconomy
 	factionNumber                                                               int
 	name                                                                        string
 	playerControlled                                                            bool // used as a stub for now
 }
 
 func createFaction(name string, n int, playerControlled bool) *faction{ // temporary
-	return &faction{playerControlled: playerControlled, name: name, factionNumber:n, maxMetal:10, currentMetal:10, maxEnergy:10, currentEnergy:10, cursor: &cursor{}}
+	return &faction{playerControlled: playerControlled, name: name, factionNumber:n, economy: &factionEconomy{maxMetal:10, currentMetal:10, maxEnergy:10, currentEnergy:10}, cursor: &cursor{}}
 }

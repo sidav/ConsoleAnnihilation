@@ -146,6 +146,7 @@ func renderMoveCursor() {
 }
 
 func renderFactionStats(f *faction) {
+	eco := f.economy
 	statsx := VIEWPORT_W + 1
 
 	// fr, fg, fb := getFactionRGB(f.factionNumber)
@@ -153,11 +154,11 @@ func renderFactionStats(f *faction) {
 	cw.SetFgColor(getFactionColor(f.factionNumber))
 	cw.PutString(fmt.Sprintf("%s: turn %d", f.name, CURRENT_TURN/10+1), statsx, 0)
 
-	metal, maxmetal := f.currentMetal, f.maxMetal
+	metal, maxmetal := eco.currentMetal, eco.maxMetal
 	cw.SetFgColor(cw.DARK_CYAN)
 	renderStatusbar("METAL", metal, maxmetal, statsx, 1, CONSOLE_W-VIEWPORT_W-3, cw.DARK_CYAN)
 
-	energy, maxenergy := f.currentEnergy, f.maxEnergy
+	energy, maxenergy := eco.currentEnergy, eco.maxEnergy
 	cw.SetFgColor(cw.DARK_YELLOW)
 	renderStatusbar("ENERGY", energy, maxenergy, statsx, 2, CONSOLE_W-VIEWPORT_W-3, cw.DARK_YELLOW)
 }
