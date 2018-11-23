@@ -53,5 +53,5 @@ type faction struct {
 }
 
 func createFaction(name string, n int, playerControlled bool) *faction{ // temporary
-	return &faction{playerControlled: playerControlled, name: name, factionNumber:n, economy: &factionEconomy{maxMetal:10, currentMetal:10, maxEnergy:10, currentEnergy:10}, cursor: &cursor{}}
+	return &faction{playerControlled: playerControlled, name: name, factionNumber:n, economy: &factionEconomy{maxMetal:10, currentMetal:99999, maxEnergy:10, currentEnergy:99999}, cursor: &cursor{}}
 }

@@ -38,6 +38,25 @@ func (g *gameMap) getUnitAtCoordinates(x, y int) *unit {
 	return nil
 }
 
+func (g *gameMap) recalculateFactionResources(f * faction) { // move somewhere? 
+	eco := f.economy
+	eco.resetFlow()
+	for _, u := range g.units {
+		if u.faction == f && u.res != nil {
+			eco.metalIncome += u.res.metalIncome
+			eco.energyIncome += u.res.energyIncome
+			eco.maxMetal += u.res.metalStorage
+			eco.maxEnergy += u.res.energyStorage
+		}
+	}
+	if eco.currentMetal > eco.maxMetal {
+		eco.currentMetal = eco.maxMetal
+	}
+	if eco.currentEnergy > eco.maxEnergy {
+		eco.currentEnergy = eco.maxEnergy
+	}
+}
+
 func (g *gameMap) init() {
 	g.units = make([]*unit, 0)
 	g.factions = make([]*faction, 0)
@@ -50,6 +69,7 @@ func (g *gameMap) init() {
 	g.factions = append(g.factions, createFaction("The Core Contingency", 0, true))
 	g.addUnit(createUnit("commander", 3, 5, g.factions[0]))
 	g.addUnit(createUnit("commander", 4, 5, g.factions[0]))
+	g.recalculateFactionResources(g.factions[0])
 	// g.addUnit(createUnit("weasel", 3, 6, g.factions[0]))
 	// g.addUnit(createUnit("thecan", 3, 4, g.factions[0]))
 	// g.addBuilding(createBuilding("corekbotlab", 5, 1, g.factions[0]))

@@ -68,7 +68,7 @@ func (u *unit) doBuildOrder(m *gameMap) {
 				m.addBuilding(tBld)
 			} else {
 				log.appendMessage(u.name + ": NANOLATHE COMPLETED BY ANOTHER UNIT")
-				u.order = nil 
+				u.order = nil
 			}
 		} else {
 			if tBld.currentConstructionStatus.currentConstructionAmount >= tBld.currentConstructionStatus.maxConstructionAmount {

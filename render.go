@@ -162,10 +162,18 @@ func renderFactionStats(f *faction) {
 	metal, maxmetal := eco.currentMetal, eco.maxMetal
 	cw.SetFgColor(cw.DARK_CYAN)
 	renderStatusbar("METAL", metal, maxmetal, statsx, 1, CONSOLE_W-VIEWPORT_W-3, cw.DARK_CYAN)
+	cw.SetFgColor(cw.DARK_CYAN)
+	metalDetails := fmt.Sprintf("%d/%d stored  %d (+%d / -%d) per turn",eco.currentMetal, eco.maxMetal,
+		eco.metalIncome - eco.metalSpending, eco.metalIncome, eco.metalSpending)
+	cw.PutString(metalDetails, statsx, 2)
 
 	energy, maxenergy := eco.currentEnergy, eco.maxEnergy
 	cw.SetFgColor(cw.DARK_YELLOW)
-	renderStatusbar("ENERGY", energy, maxenergy, statsx, 2, CONSOLE_W-VIEWPORT_W-3, cw.DARK_YELLOW)
+	renderStatusbar("ENERGY", energy, maxenergy, statsx, 4, CONSOLE_W-VIEWPORT_W-3, cw.DARK_YELLOW)
+	cw.SetFgColor(cw.DARK_YELLOW)
+	energyDetails := fmt.Sprintf("%d/%d stored  %d (+%d / -%d) per turn",eco.currentEnergy, eco.maxEnergy,
+		eco.energyIncome - eco.energySpending, eco.energyIncome, eco.energySpending)
+	cw.PutString(energyDetails, statsx, 5)
 }
 
 func renderStatusbar(name string, curvalue, maxvalue, x, y, width, barColor int) {

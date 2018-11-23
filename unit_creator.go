@@ -5,7 +5,7 @@ func createUnit(name string, x, y int, f *faction) *unit {
 	var newUnit *unit
 	switch name {
 	case "commander":
-		newUnit =  &unit{name: "Commander", ticksForMoveOneCell: 10, appearance: ccell{char: '@'}}
+		newUnit =  &unit{name: "Commander", ticksForMoveOneCell: 10, appearance: ccell{char: '@'}, res: &resourceInformation{1, 10, 10, 100}}
 	case "weasel":
 		newUnit =  &unit{name: "Weasel", ticksForMoveOneCell: 6, appearance: ccell{char: 'w'}}
 	case "thecan":
