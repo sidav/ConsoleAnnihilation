@@ -68,10 +68,15 @@ func renderBuildingsInViewport(g *gameMap, vx, vy int) {
 		bx, by := b.getCoords()
 		for x := 0; x < b.w; x++ {
 			for y := 0; y < b.h; y++ {
-				color := app.colors[x+b.w*y]
-				if color == -1 {
-					cw.SetFgColor(getFactionColor(b.faction.factionNumber))
-				} else {
+				if b.currentConstructionStatus == nil {
+					color := app.colors[x+b.w*y]
+					if color == -1 {
+						cw.SetFgColor(getFactionColor(b.faction.factionNumber))
+					} else {
+						cw.SetFgColor(color)
+					}
+				} else { // building is under construction
+					color := 2
 					cw.SetFgColor(color)
 				}
 				if areGlobalCoordsOnScreen(bx+x, by+y, vx, vy) {

@@ -18,9 +18,11 @@ func (u *unit) executeOrders(m *gameMap) {
 		return
 	}
 
-	switch order.order_type {
+	switch order.orderType {
 	case order_move:
 		u.doMoveOrder(m)
+	case order_build:
+		u.doBuildOrder(m)
 	}
 	// move
 
@@ -43,6 +45,28 @@ func (u *unit) doMoveOrder(m *gameMap) { // TODO: rewrite
 	if u.x == ox && u.y == oy {
 		u.reportOrderCompletion("Arrived")
 		u.order = nil
+		return
+	}
+}
+
+func (u *unit) doBuildOrder(m* gameMap) {
+	order := u.order
+	tBld := order.targetBuilding
+	ux, uy := u.getCoords()
+	ox, oy := tBld.getCenter()
+
+	building_w := tBld.w + 1
+	building_h := tBld.h + 1
+	sqdistance := (ox-ux)*(ox-ux) + (oy-uy)*(oy-uy)
+
+	if sqdistance <= building_w * building_w || sqdistance <= building_h * building_h {
+		log.appendMessage(u.name + " STARTS BUILDING")
+		tBld.currentConstructionStatus = &constructionInformation{0, 100}
+		m.addBuilding(tBld)
+		u.order = nil
+	} else {
+		u.doMoveOrder(m)
+		log.appendMessage(u.name + " MOVES TO BUILD")
 		return
 	}
 }

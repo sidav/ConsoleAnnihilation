@@ -7,11 +7,13 @@ const (
 	order_move ORDER_TYPE_ENUM = iota
 	order_attack ORDER_TYPE_ENUM = iota
 	order_attack_move ORDER_TYPE_ENUM = iota
+	order_build ORDER_TYPE_ENUM = iota // maybe merge build and repair?
 )
 
 type order struct {
-	order_type ORDER_TYPE_ENUM
-	x, y int
-	target unit
+	orderType      ORDER_TYPE_ENUM
+	x, y           int
+	targetUnit     *unit
+	targetBuilding *building
 }
 

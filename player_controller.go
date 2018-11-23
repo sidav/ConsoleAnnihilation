@@ -51,6 +51,9 @@ func plr_giveDefaultOrderToUnit(f *faction, m *gameMap) {
 		case "ENTER", "RETURN":
 			issueDefaultOrder(u, m, cx, cy)
 			return
+		case "b": // Temporary dohuya!
+			u.order = &order{orderType: order_build, x: cx, y: cy, targetBuilding: createBuilding("corekbotlab", cx, cy, f)}
+			return
 		case "ESCAPE":
 			return
 		default:
