@@ -49,7 +49,7 @@ func (u *unit) doMoveOrder(m *gameMap) { // TODO: rewrite
 	}
 }
 
-func (u *unit) doBuildOrder(m* gameMap) {
+func (u *unit) doBuildOrder(m *gameMap) {
 	order := u.order
 	tBld := order.targetBuilding
 	ux, uy := u.getCoords()
@@ -59,12 +59,29 @@ func (u *unit) doBuildOrder(m* gameMap) {
 	building_h := tBld.h + 1
 	sqdistance := (ox-ux)*(ox-ux) + (oy-uy)*(oy-uy)
 
-	if sqdistance <= building_w * building_w || sqdistance <= building_h * building_h {
-		log.appendMessage(u.name + " STARTS BUILDING")
-		tBld.currentConstructionStatus = &constructionInformation{0, 100}
-		m.addBuilding(tBld)
-		u.order = nil
-	} else {
+	if sqdistance <= building_w*building_w || sqdistance <= building_h*building_h { // is in building range
+		if tBld.currentConstructionStatus == nil {
+			if tBld.hasBeenPlaced == false {
+				log.appendMessage(u.name + " STARTS NANOLATHE")
+				tBld.currentConstructionStatus = &constructionInformation{0, 100}
+				tBld.hasBeenPlaced = true
+				m.addBuilding(tBld)
+			} else {
+				log.appendMessage(u.name + ": NANOLATHE COMPLETED BY ANOTHER UNIT")
+				u.order = nil 
+			}
+		} else {
+			if tBld.currentConstructionStatus.currentConstructionAmount >= tBld.currentConstructionStatus.maxConstructionAmount {
+				tBld.currentConstructionStatus = nil
+				u.order = nil
+				log.appendMessage(u.name + " NANOLATHE COMPLETE")
+			} else {
+				log.appendMessage(u.name + " CONTINUES NANOLATHING")
+				tBld.currentConstructionStatus.currentConstructionAmount += 1
+			}
+		}
+	} else { // out of range, move to the construction site
+		order.x, order.y = tBld.getCenter()
 		u.doMoveOrder(m)
 		log.appendMessage(u.name + " MOVES TO BUILD")
 		return
@@ -72,5 +89,5 @@ func (u *unit) doBuildOrder(m* gameMap) {
 }
 
 func (u *unit) reportOrderCompletion(verb string) {
-	log.appendMessage(u.name + ": " + verb+".")
+	log.appendMessage(u.name + ": " + verb + ".")
 }

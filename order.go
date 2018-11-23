@@ -15,5 +15,6 @@ type order struct {
 	x, y           int
 	targetUnit     *unit
 	targetBuilding *building
+	buildingHasBeenPlaced bool // for build orders
 }
 

@@ -1,12 +1,13 @@
 package main
 
 type building struct {
-	name string
-	x, y int // TOP LEFT CORNER!
-	w, h int
-	appearance *buildingAppearance
+	name                      string
+	x, y                      int // TOP LEFT CORNER!
+	w, h                      int
+	appearance                *buildingAppearance
 	currentConstructionStatus *constructionInformation
-	faction *faction
+	faction                   *faction
+	hasBeenPlaced             bool
 }
 
 func (b *building) getCoords() (int, int) {
