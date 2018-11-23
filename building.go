@@ -5,6 +5,7 @@ type building struct {
 	x, y int // TOP LEFT CORNER!
 	w, h int
 	appearance *buildingAppearance
+	currentConstructionStatus *constructionInformation
 	faction *faction
 }
 
