@@ -12,7 +12,8 @@ func createBuilding(name string, x, y int, f *faction) *building {
 			"/=\\" +
 			"=x=" +
 			"\\=/", colors: colors}
-		b = &building{name: "Tech 1 KBot Lab", w: 3, h: 3, appearance: app}
+		b = &building{name: "Tech 1 KBot Lab", w: 3, h: 3, appearance: app,
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 100, costM: 100, costE: 500}}
 	case "corekbotlab":
 		colors := []int{
 			7, 7, 7,
@@ -22,7 +23,8 @@ func createBuilding(name string, x, y int, f *faction) *building {
 			"\\=/" +
 			"=0=" +
 			"/=\\", colors: colors}
-		b = &building{name: "Tech 1 KBot Lab", w: 3, h: 3, appearance: app}
+		b = &building{name: "Tech 1 KBot Lab", w: 3, h: 3, appearance: app,
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 100, costM: 100, costE: 500}}
 	case "armvehfactory":
 		colors := []int{
 			7, 7, 7, 7,
@@ -32,7 +34,8 @@ func createBuilding(name string, x, y int, f *faction) *building {
 			"====" +
 			"|--|" +
 			"\\==/", colors: colors}
-		b = &building{name: "Tech 1 Vehicle Factory", w: 4, h: 3, appearance: app}
+		b = &building{name: "Tech 1 Vehicle Factory", w: 4, h: 3, appearance: app,
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 100, costM: 100, costE: 500}}
 	case "corevehfactory":
 		colors := []int{
 			7, 7, 7, 7,
@@ -42,7 +45,8 @@ func createBuilding(name string, x, y int, f *faction) *building {
 			"=--=" +
 			"|/\\|" +
 			"\\\\//", colors: colors}
-		b = &building{name: "Tech 1 Vehicle Factory", w: 4, h: 3, appearance: app}
+		b = &building{name: "Tech 1 Vehicle Factory", w: 4, h: 3, appearance: app,
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 100, costM: 100, costE: 500}}
 	default:
 		colors := []int{
 			-1, -1,
@@ -50,7 +54,8 @@ func createBuilding(name string, x, y int, f *faction) *building {
 		app := &buildingAppearance{chars: "" +
 			"??" +
 			"??", colors: colors}
-		b = &building{name: "UNKNOWN BUILDING", w: 2, h: 2, appearance: app}
+		b = &building{name: "UNKNOWN BUILDING", w: 2, h: 2, appearance: app,
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 100, costM: 100, costE: 500}}
 	}
 	b.x = x
 	b.y = y

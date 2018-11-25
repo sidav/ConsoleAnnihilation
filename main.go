@@ -36,7 +36,7 @@ func main() {
 	for GAME_IS_RUNNING {
 		for _, f := range gamemap.factions {
 			if !GAME_IS_RUNNING {
-				return 
+				return
 			}
 			if f.playerControlled {
 				renderFactionStats(f)
@@ -49,6 +49,11 @@ func main() {
 			}
 			CURRENT_TURN += 1
 		}
+
+		for _, f := range gamemap.factions {
+			f.recalculateFactionEconomy(gamemap)
+		}
+
 	}
 
 }

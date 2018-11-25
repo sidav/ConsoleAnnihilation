@@ -7,7 +7,8 @@ func createUnit(name string, x, y int, f *faction) *unit {
 	case "commander":
 		newUnit =  &unit{
 			name: "Commander", ticksForMoveOneCell: 10, appearance: ccell{char: '@'},
-			res: &resourceInformation{metalIncome:1, energyIncome: 10, metalStorage: 10, energyStorage: 100},
+			res: &pawnResourceInformation{metalIncome: 1, energyIncome: 10, metalStorage: 10, energyStorage: 100},
+			builderInfo: &pawnBuilderInformation{builderCoeff: 10},
 		}
 	case "weasel":
 		newUnit =  &unit{name: "Weasel", ticksForMoveOneCell: 6, appearance: ccell{char: 'w'}}

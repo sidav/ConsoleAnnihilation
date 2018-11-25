@@ -10,7 +10,8 @@ type unit struct {
 	order *order
 	nextTurnToAct int
 	ticksForMoveOneCell int
-	res *resourceInformation
+	res *pawnResourceInformation
+	builderInfo *pawnBuilderInformation
 }
 
 func (u *unit) getCoords() (int, int) {

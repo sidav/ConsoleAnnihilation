@@ -60,26 +60,17 @@ func (u *unit) doBuildOrder(m *gameMap) {
 	sqdistance := (ox-ux)*(ox-ux) + (oy-uy)*(oy-uy)
 
 	if sqdistance <= building_w*building_w || sqdistance <= building_h*building_h { // is in building range
-		if tBld.currentConstructionStatus == nil {
-			if tBld.hasBeenPlaced == false {
-				log.appendMessage(u.name + " STARTS NANOLATHE")
-				tBld.currentConstructionStatus = &constructionInformation{0, 100}
-				tBld.hasBeenPlaced = true
-				m.addBuilding(tBld)
-			} else {
-				log.appendMessage(u.name + ": NANOLATHE COMPLETED BY ANOTHER UNIT")
-				u.order = nil
-			}
-		} else {
-			if tBld.currentConstructionStatus.currentConstructionAmount >= tBld.currentConstructionStatus.maxConstructionAmount {
-				tBld.currentConstructionStatus = nil
-				u.order = nil
-				log.appendMessage(u.name + " NANOLATHE COMPLETE")
-			} else {
-				log.appendMessage(u.name + " CONTINUES NANOLATHING")
-				tBld.currentConstructionStatus.currentConstructionAmount += 1
-			}
+		if tBld.hasBeenPlaced == false {
+			log.appendMessage(u.name + " STARTS NANOLATHE")
+			tBld.hasBeenPlaced = true
+			m.addBuilding(tBld)
+		} else if tBld.currentConstructionStatus.isCompleted() {
+			log.appendMessage(u.name + ": NANOLATHE COMPLETED BY ANOTHER UNIT")
+			u.order = nil
 		}
+		// Set the building spendings lol
+		u.res.metalSpending = u.builderInfo.builderCoeff * tBld.currentConstructionStatus.costM / tBld.currentConstructionStatus.maxConstructionAmount
+		u.res.energySpending = u.builderInfo.builderCoeff * tBld.currentConstructionStatus.costE / tBld.currentConstructionStatus.maxConstructionAmount
 	} else { // out of range, move to the construction site
 		order.x, order.y = tBld.getCenter()
 		u.doMoveOrder(m)
