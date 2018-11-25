@@ -55,7 +55,7 @@ func renderUnitsInViewport(g *gameMap, vx, vy int) {
 			tileApp := u.appearance
 			// r, g, b := getFactionRGB(u.faction.factionNumber)
 			// cw.SetFgColorRGB(r, g, b)
-			cw.SetFgColor(getFactionColor(u.faction.factionNumber))
+			cw.SetFgColor(u.faction.getFactionColor())
 			cw.PutChar(tileApp.char, u.x-vx, u.y-vy)
 		}
 	}
@@ -71,7 +71,7 @@ func renderBuildingsInViewport(g *gameMap, vx, vy int) {
 				if b.currentConstructionStatus == nil {
 					color := app.colors[x+b.w*y]
 					if color == -1 {
-						cw.SetFgColor(getFactionColor(b.faction.factionNumber))
+						cw.SetFgColor(b.faction.getFactionColor())
 					} else {
 						cw.SetFgColor(color)
 					}
@@ -90,29 +90,47 @@ func renderBuildingsInViewport(g *gameMap, vx, vy int) {
 
 func renderInfoOnCursor(f *faction, g *gameMap) {
 
+	title := "nothing"
+	color := 2
+	details := make([]string, 0)
+	var res *pawnResourceInformation
+
 	if f.cursor.snappedBuilding != nil {
 		b := f.cursor.snappedBuilding
-		str := make([]string, 0)
+		color = b.faction.getFactionColor()
+		title = b.name
 		if b.faction != f {
-			str = append(str, "(Enemy building)")
+			details = append(details, "(Enemy building)")
 		} else {
-			str = append(str, "Your building, Commander")
+			details = append(details, "Your building, Commander")
+			if b.res != nil {
+				res = b.res
+			}
 		}
-		routines.DrawSidebarInfoMenu(b.name, getFactionColor(b.faction.factionNumber), SIDEBAR_X, 7, SIDEBAR_W, str)
-		return
+	} else {
+		cx, cy := f.cursor.getCoords()
+		u := g.getUnitAtCoordinates(cx, cy)
+		if u != nil { // there is unit under cursor
+			title = u.name
+			color = u.faction.getFactionColor()
+			if u.faction != f {
+				details = append(details, "(Enemy unit)")
+			} else {
+				details = append(details, "Your loyal unit, Commander")
+				if u.res != nil {
+					res = u.res
+				}
+			}
+		}
 	}
 
-	cx, cy := f.cursor.getCoords()
-	u := g.getUnitAtCoordinates(cx, cy)
-	if u != nil {
-		str := make([]string, 0)
-		if u.faction != f {
-			str = append(str, "(Enemy unit)")
-		} else {
-			str = append(str, "Your loyal unit, Commander")
+	if len(details) > 0 {
+		if res != nil {
+			economyInfo := fmt.Sprintf("METAL: (+%d / -%d) ENERGY: (+%d / -%d)",
+				res.metalIncome, res.metalSpending, res.energyIncome, res.energySpending+res.energyReqForConditionalMetalIncome)
+			details = append(details, economyInfo)
 		}
-		routines.DrawSidebarInfoMenu(u.name, getFactionColor(u.faction.factionNumber), SIDEBAR_X, 7, SIDEBAR_W, str)
-		return
+		routines.DrawSidebarInfoMenu(title, color, SIDEBAR_X, 7, SIDEBAR_W, details)
 	}
 }
 
@@ -156,7 +174,7 @@ func renderFactionStats(f *faction) {
 
 	// fr, fg, fb := getFactionRGB(f.factionNumber)
 	// cw.SetFgColorRGB(fr, fg, fb)
-	cw.SetFgColor(getFactionColor(f.factionNumber))
+	cw.SetFgColor(f.getFactionColor())
 	cw.PutString(fmt.Sprintf("%s: turn %d", f.name, CURRENT_TURN/10+1), statsx, 0)
 
 	metal, maxmetal := eco.currentMetal, eco.maxMetal

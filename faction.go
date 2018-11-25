@@ -14,7 +14,19 @@ func getFactionRGB(fn int) (uint8, uint8, uint8) {
 	return 32, 32, 32
 }
 
-func getFactionColor(fn int) int {
+type faction struct {
+	cursor                                                                      *cursor // cursor position
+	economy *factionEconomy
+	factionNumber                                                               int
+	name                                                                        string
+	playerControlled                                                            bool // used as a stub for now
+}
+
+func createFaction(name string, n int, playerControlled bool) *faction{ // temporary
+	return &faction{playerControlled: playerControlled, name: name, factionNumber:n, economy: &factionEconomy{currentMetal:99999, currentEnergy:99999}, cursor: &cursor{}}
+}
+
+func (f *faction) getFactionColor() int {
 	//BLACK        = 0
 	//DARK_RED     = 1
 	//DARK_GREEN   = 2
@@ -31,7 +43,7 @@ func getFactionColor(fn int) int {
 	//MAGENTA      = 13
 	//CYAN         = 14
 	//WHITE        = 15
-	switch fn {
+	switch f.factionNumber {
 	case 0:
 		return 14
 	case 1:
@@ -44,18 +56,8 @@ func getFactionColor(fn int) int {
 	return 7
 }
 
-type faction struct {
-	cursor                                                                      *cursor // cursor position
-	economy *factionEconomy
-	factionNumber                                                               int
-	name                                                                        string
-	playerControlled                                                            bool // used as a stub for now
-}
 
-func createFaction(name string, n int, playerControlled bool) *faction{ // temporary
-	return &faction{playerControlled: playerControlled, name: name, factionNumber:n, economy: &factionEconomy{currentMetal:99999, currentEnergy:99999}, cursor: &cursor{}}
-}
-
+/////////////////////////////////////////////////////////////////
 // My attempt to make Total Annihilation-like economy system.
 
 func (f *faction) recalculateFactionEconomy(g *gameMap) { // move somewhere?
