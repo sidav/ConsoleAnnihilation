@@ -82,7 +82,7 @@ func doAllNanolathes(m *gameMap) { // does the building itself
 			if tBld.hasBeenPlaced == false { // place the carcass
 				u.reportOrderCompletion("Starts nanolathe")
 				tBld.hasBeenPlaced = true
-				m.addBuilding(tBld)
+				m.addBuilding(tBld, false)
 			}
 
 			if u.faction.economy.nanolatheAllowed {
