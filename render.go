@@ -180,7 +180,12 @@ func renderStatusbar(name string, curvalue, maxvalue, x, y, width, barColor int)
 	barTitle := name
 	cw.PutString(barTitle, x, y)
 	barWidth := width - len(name)
-	filledCells := barWidth * curvalue / maxvalue
+	var filledCells int
+	if maxvalue > 0 {
+		filledCells = barWidth * curvalue / maxvalue
+	} else {
+		filledCells = 0
+	}
 	barStartX := x + len(barTitle) + 1
 	for i := 0; i < barWidth; i++ {
 		if i < filledCells {
