@@ -56,7 +56,7 @@ func createFaction(name string, n int, playerControlled bool) *faction{ // tempo
 	return &faction{playerControlled: playerControlled, name: name, factionNumber:n, economy: &factionEconomy{currentMetal:99999, currentEnergy:99999}, cursor: &cursor{}}
 }
 
-// My attempt to make Total Annihilation-like economy system.  
+// My attempt to make Total Annihilation-like economy system.
 
 func (f *faction) recalculateFactionEconomy(g *gameMap) { // move somewhere?
 	eco := f.economy

@@ -6,3 +6,8 @@ type pawnResourceInformation struct {
 	metalSpending, energySpending                          int // both are unconditional only
 
 }
+
+func (pre *pawnResourceInformation) resetSpendings() {
+	pre.metalSpending = 0
+	pre.energySpending = 0
+}

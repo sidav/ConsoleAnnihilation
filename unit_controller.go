@@ -13,6 +13,10 @@ func (u *unit) executeOrders(m *gameMap) {
 		return
 	}
 
+	if u.res != nil {
+		u.res.resetSpendings()
+	}
+
 	order := u.order
 	if order == nil {
 		return
@@ -49,7 +53,7 @@ func (u *unit) doMoveOrder(m *gameMap) { // TODO: rewrite
 	}
 }
 
-func (u *unit) doBuildOrder(m *gameMap) {
+func (u *unit) doBuildOrder(m *gameMap) { // only moves to location and/or sets the spendings. Building itself is in doAllNanolathes()
 	order := u.order
 	tBld := order.targetBuilding
 	ux, uy := u.getCoords()
@@ -60,15 +64,6 @@ func (u *unit) doBuildOrder(m *gameMap) {
 	sqdistance := (ox-ux)*(ox-ux) + (oy-uy)*(oy-uy)
 
 	if sqdistance <= building_w*building_w || sqdistance <= building_h*building_h { // is in building range
-		if tBld.hasBeenPlaced == false {
-			log.appendMessage(u.name + " STARTS NANOLATHE")
-			tBld.hasBeenPlaced = true
-			m.addBuilding(tBld)
-		} else if tBld.currentConstructionStatus.isCompleted() {
-			log.appendMessage(u.name + ": NANOLATHE COMPLETED BY ANOTHER UNIT")
-			u.order = nil
-		}
-		// Set the building spendings lol
 		u.res.metalSpending = u.builderInfo.builderCoeff * tBld.currentConstructionStatus.costM / tBld.currentConstructionStatus.maxConstructionAmount
 		u.res.energySpending = u.builderInfo.builderCoeff * tBld.currentConstructionStatus.costE / tBld.currentConstructionStatus.maxConstructionAmount
 	} else { // out of range, move to the construction site
@@ -76,6 +71,32 @@ func (u *unit) doBuildOrder(m *gameMap) {
 		u.doMoveOrder(m)
 		log.appendMessage(u.name + " MOVES TO BUILD")
 		return
+	}
+}
+
+func doAllNanolathes(m *gameMap) { // does the building itself
+	for _, u := range m.units {
+		if u.order != nil && u.order.orderType == order_build {
+			tBld := u.order.targetBuilding
+
+			if tBld.hasBeenPlaced == false { // place the carcass
+				u.reportOrderCompletion("Starts nanolathe")
+				tBld.hasBeenPlaced = true
+				m.addBuilding(tBld)
+			}
+
+			if u.faction.economy.nanolatheAllowed {
+				if tBld.currentConstructionStatus == nil {
+					u.reportOrderCompletion("Nanolathe interrupted")
+				}
+				tBld.currentConstructionStatus.currentConstructionAmount += u.builderInfo.builderCoeff
+				if tBld.currentConstructionStatus.isCompleted() {
+					tBld.currentConstructionStatus = nil
+					u.order = nil
+					u.reportOrderCompletion("Nanolathe completed")
+				}
+			}
+		}
 	}
 }
 

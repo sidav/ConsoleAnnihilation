@@ -53,7 +53,7 @@ func main() {
 		for _, f := range gamemap.factions {
 			f.recalculateFactionEconomy(gamemap)
 		}
-
+		doAllNanolathes(gamemap)
 	}
 
 }
