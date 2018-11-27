@@ -24,6 +24,7 @@ func r_renderScreenForFaction(f *faction, g *gameMap) {
 	r_renderMapAroundCursor(g, f.cursor.x, f.cursor.y)
 	renderFactionStats(f)
 	renderInfoOnCursor(f, g)
+	r_renderCursor(f)
 	flushView()
 }
 
@@ -132,40 +133,6 @@ func renderInfoOnCursor(f *faction, g *gameMap) {
 		}
 		routines.DrawSidebarInfoMenu(title, color, SIDEBAR_X, 7, SIDEBAR_W, details)
 	}
-}
-
-func renderSelectCursor() {
-	x := VIEWPORT_W / 2
-	y := VIEWPORT_H / 2
-	// cw.SetFgColorRGB(128, 128, 128)
-	cw.SetFgColor(cw.WHITE)
-
-	cw.PutChar('[', x-1, y)
-	cw.PutChar(']', x+1, y)
-
-	// outcommented for non-SDL console
-	//cw.PutChar(16*13+10, x-1, y-1)
-	//cw.PutChar(16*11+15, x+1, y-1)
-	//cw.PutChar(16*12, x-1, y+1)
-	//cw.PutChar(16*13+9, x+1, y+1)
-	flushView()
-}
-
-func renderMoveCursor() {
-	x := VIEWPORT_W / 2
-	y := VIEWPORT_H / 2
-	// cw.SetFgColorRGB(128, 255, 128)
-	cw.SetFgColor(cw.GREEN)
-
-	cw.PutChar('>', x-1, y)
-	cw.PutChar('<', x+1, y)
-
-	//cw.PutChar('\\', x-1, y-1)
-	//cw.PutChar('/', x+1, y-1)
-	//cw.PutChar('/', x-1, y+1)
-	//cw.PutChar('\\', x+1, y+1)
-
-	flushView()
 }
 
 func renderFactionStats(f *faction) {

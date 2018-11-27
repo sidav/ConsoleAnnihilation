@@ -12,8 +12,8 @@ func plr_control(f *faction, m *gameMap) {
 }
 
 func plr_selectEntity(f *faction, m *gameMap) {
+	f.cursor.currentCursorMode = CURSOR_SELECT
 	r_renderScreenForFaction(f, m)
-	renderSelectCursor()
 	keyPressed := cw.ReadKey()
 	switch keyPressed {
 	case "SPACE", " ":
@@ -44,8 +44,8 @@ func plr_giveDefaultOrderToUnit(f *faction, m *gameMap) {
 
 	for {
 		cx, cy := f.cursor.getCoords()
+		f.cursor.currentCursorMode = CURSOR_MOVE
 		r_renderScreenForFaction(f, m)
-		renderMoveCursor()
 		keyPressed := cw.ReadKey()
 		switch keyPressed {
 		case "ENTER", "RETURN":
