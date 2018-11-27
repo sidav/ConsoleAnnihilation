@@ -6,23 +6,29 @@ func r_renderCursor(f *faction) {
 	c := f.cursor
 	switch c.currentCursorMode {
 	case CURSOR_SELECT:
-		renderSelectCursor(c)
+		renderSelectCursor(f)
 	case CURSOR_MOVE:
 		renderMoveCursor(c)
 	}
 }
 
-func renderSelectCursor(c *cursor) {
+func renderSelectCursor(f *faction) {
+	c := f.cursor
 	x := VIEWPORT_W / 2
 	y := VIEWPORT_H / 2
 	snap := c.snappedBuilding
 	// cw.SetFgColorRGB(128, 128, 128)
-	cw.SetFgColor(cw.WHITE)
 
 	if snap == nil {
+		cw.SetFgColor(cw.WHITE)
 		cw.PutChar('[', x-1, y)
 		cw.PutChar(']', x+1, y)
 	} else {
+		if snap.faction == f {
+			cw.SetFgColor(cw.GREEN)
+		} else {
+			cw.SetFgColor(cw.RED)
+		}
 		w, h := snap.w, snap.h
 		offset := w % 2
 		for cy := 0; cy < h; cy++ {
