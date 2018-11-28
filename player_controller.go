@@ -6,6 +6,7 @@ var PLR_LOOP = true
 
 func plr_control(f *faction, m *gameMap) {
 	PLR_LOOP = true
+	snapCursorToPawn(f, m)
 	for PLR_LOOP {
 		plr_selectEntity(f, m)
 	}
@@ -80,14 +81,18 @@ func plr_moveCursor(g *gameMap, f *faction, keyPressed string) {
 		}
 		f.cursor.snappedPawn = nil
 	}
-	b := g.getBuildingAtCoordinates(f.cursor.x, f.cursor.y)
-	if b != nil {
-		// snap cursor
+	snapCursorToPawn(f, g)
+}
+
+func snapCursorToPawn(f *faction, g *gameMap) {
+	b := g.getPawnAtCoordinates(f.cursor.x, f.cursor.y)
+	if b == nil {
+		f.cursor.snappedPawn = nil 
+	} else {
 		f.cursor.x, f.cursor.y = b.getCenter()
 		f.cursor.snappedPawn = b
 	}
 }
-
 
 func plr_keyToDirection(keyPressed string) (int, int) {
 	switch keyPressed {
