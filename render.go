@@ -33,8 +33,7 @@ func r_renderMapAroundCursor(g *gameMap, cx, cy int) {
 	vx := cx - VIEWPORT_W/2
 	vy := cy - VIEWPORT_H/2
 	renderMapInViewport(g, vx, vy)
-	renderBuildingsInViewport(g, vx, vy)
-	renderUnitsInViewport(g, vx, vy)
+	renderPawnsInViewport(g, vx, vy)
 	renderLog(false)
 }
 
@@ -50,29 +49,37 @@ func renderMapInViewport(g *gameMap, vx, vy int) {
 	}
 }
 
-func renderUnitsInViewport(g *gameMap, vx, vy int) {
-	for _, u := range g.units {
-		if areGlobalCoordsOnScreen(u.x, u.y, vx, vy) {
-			tileApp := u.appearance
-			// r, g, b := getFactionRGB(u.faction.factionNumber)
-			// cw.SetFgColorRGB(r, g, b)
-			cw.SetFgColor(u.faction.getFactionColor())
-			cw.PutChar(tileApp.char, u.x-vx, u.y-vy)
+func renderPawnsInViewport(g *gameMap, vx, vy int) {
+	for _, p := range g.pawns {
+		if p.isBuilding() {
+			renderBuildingsInViewport(p, g, vx, vy)
+		} else {
+			renderUnitsInViewport(p, g, vx, vy)
 		}
 	}
-
 }
 
-func renderBuildingsInViewport(g *gameMap, vx, vy int) {
-	for _, b := range g.buildings {
+func renderUnitsInViewport(p *pawn, g *gameMap, vx, vy int) {
+	u := p.unitInfo
+	if areGlobalCoordsOnScreen(p.x, p.y, vx, vy) {
+		tileApp := u.appearance
+		// r, g, b := getFactionRGB(u.faction.factionNumber)
+		// cw.SetFgColorRGB(r, g, b)
+		cw.SetFgColor(p.faction.getFactionColor())
+		cw.PutChar(tileApp.char, p.x-vx, p.y-vy)
+	}
+}
+
+func renderBuildingsInViewport(p *pawn, g *gameMap, vx, vy int) {
+		b:= p.buildingInfo
 		app := b.appearance
-		bx, by := b.getCoords()
+		bx, by := p.getCoords()
 		for x := 0; x < b.w; x++ {
 			for y := 0; y < b.h; y++ {
-				if b.currentConstructionStatus == nil {
+				if p.currentConstructionStatus == nil {
 					color := app.colors[x+b.w*y]
 					if color == -1 {
-						cw.SetFgColor(b.faction.getFactionColor())
+						cw.SetFgColor(p.faction.getFactionColor())
 					} else {
 						cw.SetFgColor(color)
 					}
@@ -85,8 +92,6 @@ func renderBuildingsInViewport(g *gameMap, vx, vy int) {
 				}
 			}
 		}
-	}
-
 }
 
 func renderInfoOnCursor(f *faction, g *gameMap) {
@@ -96,8 +101,8 @@ func renderInfoOnCursor(f *faction, g *gameMap) {
 	details := make([]string, 0)
 	var res *pawnResourceInformation
 
-	if f.cursor.snappedBuilding != nil {
-		b := f.cursor.snappedBuilding
+	if f.cursor.snappedPawn != nil {
+		b := f.cursor.snappedPawn
 		color = b.faction.getFactionColor()
 		title = b.name
 		if b.faction != f {

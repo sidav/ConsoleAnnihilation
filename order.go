@@ -14,7 +14,7 @@ type order struct {
 	orderType      ORDER_TYPE_ENUM
 	x, y           int
 	targetUnit     *unit
-	targetBuilding *building
+	targetBuilding *pawn
 	buildingHasBeenPlaced bool // for build orders
 }
 

@@ -49,7 +49,7 @@ func plr_giveDefaultOrderToUnit(f *faction, m *gameMap) {
 		keyPressed := cw.ReadKey()
 		switch keyPressed {
 		case "ENTER", "RETURN":
-			issueDefaultOrder(u, m, cx, cy)
+			issueDefaultOrderToUnit(u, m, cx, cy)
 			return
 		case "b": // Temporary dohuya!
 			u.order = &order{orderType: order_build, x: cx, y: cy, targetBuilding: createBuilding("corekbotlab", cx, cy, f)}
@@ -69,7 +69,7 @@ func plr_moveCursor(g *gameMap, f *faction, keyPressed string) {
 		f.cursor.moveByVector(vx, vy)
 	}
 
-	snapB := f.cursor.snappedBuilding
+	snapB := f.cursor.snappedPawn
 	if snapB != nil { // unsnap cursor
 		for snapB.isOccupyingCoords(f.cursor.x, f.cursor.y) {
 			if areCoordsValid(f.cursor.x+vx, f.cursor.y+vy) {
@@ -78,13 +78,13 @@ func plr_moveCursor(g *gameMap, f *faction, keyPressed string) {
 				break
 			}
 		}
-		f.cursor.snappedBuilding = nil
+		f.cursor.snappedPawn = nil
 	}
 	b := g.getBuildingAtCoordinates(f.cursor.x, f.cursor.y)
 	if b != nil {
 		// snap cursor
 		f.cursor.x, f.cursor.y = b.getCenter()
-		f.cursor.snappedBuilding = b
+		f.cursor.snappedPawn = b
 	}
 }
 

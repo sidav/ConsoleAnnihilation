@@ -4,11 +4,11 @@ import (
 	"SomeTBSGame/routines"
 )
 
-func (u *unit) isTimeToAct() bool {
-	return u.nextTurnToAct <= CURRENT_TURN
+func (p *pawn) isTimeToAct() bool {
+	return p.nextTurnToAct <= CURRENT_TURN
 }
 
-func (u *unit) executeOrders(m *gameMap) {
+func (u *pawn) executeOrdersAsUnit(m *gameMap) {
 	if !u.isTimeToAct() {
 		return
 	}
@@ -32,7 +32,7 @@ func (u *unit) executeOrders(m *gameMap) {
 
 }
 
-func (u *unit) doMoveOrder(m *gameMap) { // TODO: rewrite
+func (u *pawn) doMoveOrder(m *gameMap) { // TODO: rewrite
 	order := u.order
 
 	ox, oy := order.x, order.y
@@ -44,7 +44,7 @@ func (u *unit) doMoveOrder(m *gameMap) { // TODO: rewrite
 
 	u.x += vx
 	u.y += vy
-	u.nextTurnToAct = CURRENT_TURN + u.ticksForMoveOneCell
+	u.nextTurnToAct = CURRENT_TURN + u.unitInfo.ticksForMoveOneCell
 
 	if u.x == ox && u.y == oy {
 		u.reportOrderCompletion("Arrived")
@@ -53,14 +53,14 @@ func (u *unit) doMoveOrder(m *gameMap) { // TODO: rewrite
 	}
 }
 
-func (u *unit) doBuildOrder(m *gameMap) { // only moves to location and/or sets the spendings. Building itself is in doAllNanolathes()
+func (u *pawn) doBuildOrder(m *gameMap) { // only moves to location and/or sets the spendings. Building itself is in doAllNanolathes()
 	order := u.order
 	tBld := order.targetBuilding
 	ux, uy := u.getCoords()
 	ox, oy := tBld.getCenter()
 
-	building_w := tBld.w + 1
-	building_h := tBld.h + 1
+	building_w := tBld.buildingInfo.w + 1
+	building_h := tBld.buildingInfo.h + 1
 	sqdistance := (ox-ux)*(ox-ux) + (oy-uy)*(oy-uy)
 
 	if sqdistance <= building_w*building_w || sqdistance <= building_h*building_h { // is in building range
@@ -75,13 +75,13 @@ func (u *unit) doBuildOrder(m *gameMap) { // only moves to location and/or sets 
 }
 
 func doAllNanolathes(m *gameMap) { // does the building itself
-	for _, u := range m.units {
+	for _, u := range m.pawns {
 		if u.order != nil && u.order.orderType == order_build {
 			tBld := u.order.targetBuilding
 
-			if tBld.hasBeenPlaced == false { // place the carcass
+			if tBld.buildingInfo.hasBeenPlaced == false { // place the carcass
 				u.reportOrderCompletion("Starts nanolathe")
-				tBld.hasBeenPlaced = true
+				tBld.buildingInfo.hasBeenPlaced = true
 				m.addBuilding(tBld, false)
 			}
 
@@ -100,6 +100,6 @@ func doAllNanolathes(m *gameMap) { // does the building itself
 	}
 }
 
-func (u *unit) reportOrderCompletion(verb string) {
+func (u *pawn) reportOrderCompletion(verb string) {
 	log.appendMessage(u.name + ": " + verb + ".")
 }

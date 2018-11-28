@@ -12,9 +12,9 @@ const (
 
 type cursor struct {
 	x, y              int
-	snappedBuilding   *building
+	snappedPawn       *pawn
 	currentCursorMode CURSOR_MODE_ENUM
-	w, h int // Used for certain modes only.
+	w, h              int // Used for certain modes only.
 }
 
 func (c *cursor) getCoords() (int, int) {

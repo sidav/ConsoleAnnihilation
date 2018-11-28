@@ -8,24 +8,24 @@ const (
 type gameMap struct {
 	tileMap [mapW][mapH] *tile
 	factions []*faction
-	units []*unit
-	buildings []*building
+	pawns []*pawn
+	// buildings []*building
 }
 
-func (g *gameMap) addUnit(u *unit) {
-	g.units = append(g.units, u)
+func (g *gameMap) addPawn(p *pawn) {
+	g.pawns = append(g.pawns, p)
 }
 
-func (g *gameMap) addBuilding(b *building, asAlreadyConstructed bool) {
+func (g *gameMap) addBuilding(b *pawn, asAlreadyConstructed bool) {
 	if asAlreadyConstructed {
 		b.currentConstructionStatus = nil
-		b.hasBeenPlaced = true
+		b.buildingInfo.hasBeenPlaced = true
 	}
-	g.buildings = append(g.buildings, b)
+	g.addPawn(b)
 }
 
-func (g *gameMap) getBuildingAtCoordinates(x, y int) *building {
-	for _, b := range g.buildings {
+func (g *gameMap) getPawnAtCoordinates(x, y int) *pawn {
+	for _, b := range g.pawns {
 		if b.isOccupyingCoords(x, y) {
 			return b
 		}
@@ -33,17 +33,26 @@ func (g *gameMap) getBuildingAtCoordinates(x, y int) *building {
 	return nil
 }
 
-func (g *gameMap) getUnitAtCoordinates(x, y int) *unit {
-	for _, u := range g.units {
-		if u.x == x && u.y == y {
-			return u
+func (g *gameMap) getUnitAtCoordinates(x, y int) *pawn {
+	for _, b := range g.pawns {
+		if b.isOccupyingCoords(x, y) {
+			return b
+		}
+	}
+	return nil
+}
+
+func (g *gameMap) getBuildingAtCoordinates(x, y int) *pawn {
+	for _, b := range g.pawns {
+		if b.isOccupyingCoords(x, y) {
+			return b
 		}
 	}
 	return nil
 }
 
 func (g *gameMap) init() {
-	g.units = make([]*unit, 0)
+	g.pawns = make([]*pawn, 0)
 	g.factions = make([]*faction, 0)
 	for i:=0; i < mapW; i++ {
 		for j:=0; j < mapH; j++ {
@@ -52,7 +61,7 @@ func (g *gameMap) init() {
 	}
 
 	g.factions = append(g.factions, createFaction("The Core Contingency", 0, true))
-	g.addUnit(createUnit("commander", 3, 5, g.factions[0]))
+	g.addPawn(createUnit("commander", 3, 5, g.factions[0]))
 	// g.addBuilding(createBuilding("metalmaker", 5, 1, g.factions[0]), true)
 	// g.addUnit(createUnit("weasel", 3, 6, g.factions[0]))
 	// g.addUnit(createUnit("thecan", 3, 4, g.factions[0]))
@@ -60,8 +69,8 @@ func (g *gameMap) init() {
 	g.addBuilding(createBuilding("corevehfactory", 5, 5, g.factions[0]), true)
 
 	g.factions = append(g.factions, createFaction("The Arm Rebellion", 1, false))
-	g.addUnit(createUnit("commander", mapW-10, 5, g.factions[1]))
-	g.addUnit(createUnit("ak", mapW-1, 4, g.factions[1]))
+	g.addPawn(createUnit("commander", mapW-10, 5, g.factions[1]))
+	g.addPawn(createUnit("ak", mapW-1, 4, g.factions[1]))
 	g.addBuilding(createBuilding("armkbotlab", mapW-5, 1, g.factions[1]), true )
 	g.addBuilding(createBuilding("armvehfactory", mapW-5, 5, g.factions[1]), true)
 }

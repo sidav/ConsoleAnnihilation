@@ -44,7 +44,7 @@ func main() {
 			}
 		}
 		for i:=0; i<10; i++ {
-			for _, u := range gamemap.units {
+			for _, u := range gamemap.pawns {
 				u.executeOrders(gamemap)
 			}
 			CURRENT_TURN += 1

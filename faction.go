@@ -66,7 +66,7 @@ func (f *faction) recalculateFactionEconomy(g *gameMap) { // move somewhere?
 	var metalConditionalInc, metalUnconditionalInc, energyInc int
 	var metalDec, energyConditionalDec, energyUnconditionalDec int
 
-	for _, u := range g.units { // TODO: only units? FUCK!
+	for _, u := range g.pawns { // TODO: only units? FUCK!
 		if u.faction == f && u.res != nil {
 			eco.maxMetal += u.res.metalStorage
 			eco.maxEnergy += u.res.energyStorage
@@ -82,24 +82,6 @@ func (f *faction) recalculateFactionEconomy(g *gameMap) { // move somewhere?
 			// Calculate unconditional spendings
 			metalDec += u.res.metalSpending // always unconditional
 			energyUnconditionalDec += u.res.energySpending
-		}
-	}
-	for _, building := range g.buildings { //
-		if building.faction == f && building.res != nil {
-			eco.maxMetal += building.res.metalStorage
-			eco.maxEnergy += building.res.energyStorage
-			energyInc += building.res.energyIncome // always unconditional
-
-			// calculate conditional metal income and mathing energy spendings
-			if building.res.energyReqForConditionalMetalIncome > 0 {
-				metalConditionalInc += building.res.metalIncome
-				energyConditionalDec += building.res.energyReqForConditionalMetalIncome
-			} else {
-				metalUnconditionalInc += building.res.metalIncome
-			}
-			// Calculate unconditional spendings
-			metalDec += building.res.metalSpending // always unconditional
-			energyUnconditionalDec += building.res.energySpending
 		}
 	}
 	// If spending is allowed with conditional, then spend/gain everything
