@@ -8,3 +8,7 @@ type constructionInformation struct { // for buildings which are under construct
 func (ci *constructionInformation) isCompleted() bool {
 	return ci.currentConstructionAmount >= ci.maxConstructionAmount
 }
+
+func (ci *constructionInformation) getCompletionPercent() int {
+	return ci.currentConstructionAmount * 100 / ci.maxConstructionAmount
+}

@@ -59,7 +59,8 @@ func (p *pawn) executeOrders(m *gameMap)	{
 
 func (p *pawn) getCurrentOrderDescription() string {
 	if p.currentConstructionStatus != nil {
-		return "UNDER CONSTRUCTION"
+		constr := p.currentConstructionStatus
+		return fmt.Sprintf("UNDER CONSTRUCTION: %d%%", constr.getCompletionPercent())
 	}
 	if p.order == nil {
 		return "STANDBY"

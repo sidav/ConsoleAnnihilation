@@ -100,32 +100,21 @@ func renderInfoOnCursor(f *faction, g *gameMap) {
 	color := 2
 	details := make([]string, 0)
 	var res *pawnResourceInformation
+	sp := f.cursor.snappedPawn
 
-	if f.cursor.snappedPawn != nil {
-		b := f.cursor.snappedPawn
-		color = b.faction.getFactionColor()
-		title = b.name
-		if b.faction != f {
-			details = append(details, "(Enemy building)")
-		} else {
-			details = append(details, "Your building, Commander")
-			if b.res != nil {
-				res = b.res
-			}
-		}
-	} else {
-		cx, cy := f.cursor.getCoords()
-		u := g.getUnitAtCoordinates(cx, cy)
-		if u != nil { // there is unit under cursor
-			title = u.name
-			color = u.faction.getFactionColor()
-			if u.faction != f {
-				details = append(details, "(Enemy unit)")
+	if sp != nil {
+		color = sp.faction.getFactionColor()
+		title = sp.name
+		if sp.faction != f {
+			if sp.isBuilding() {
+				details = append(details, "(Enemy building)")
 			} else {
-				details = append(details, "Your loyal unit, Commander")
-				if u.res != nil {
-					res = u.res
-				}
+				details = append(details, "(Enemy unit)")
+			}
+		} else {
+			details = append(details, sp.getCurrentOrderDescription())
+			if sp.res != nil {
+				res = sp.res
 			}
 		}
 	}
