@@ -79,7 +79,13 @@ func doAllNanolathes(m *gameMap) { // does the building itself
 		if u.order != nil && u.order.orderType == order_build {
 			tBld := u.order.targetBuilding
 
-			if tBld.buildingInfo.hasBeenPlaced == false { // place the carcass
+			ux, uy := u.getCoords()
+			ox, oy := tBld.getCenter()
+			building_w := tBld.buildingInfo.w + 1
+			building_h := tBld.buildingInfo.h + 1
+			sqdistance := (ox-ux)*(ox-ux) + (oy-uy)*(oy-uy)
+
+			if tBld.buildingInfo.hasBeenPlaced == false && (sqdistance <= building_w*building_w || sqdistance <= building_h*building_h) { // place the carcass
 				u.reportOrderCompletion("Starts nanolathe")
 				tBld.buildingInfo.hasBeenPlaced = true
 				m.addBuilding(tBld, false)
