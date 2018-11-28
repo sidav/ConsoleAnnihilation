@@ -29,9 +29,12 @@ func plr_selectEntity(f *faction, m *gameMap) {
 	}
 }
 
+func plr_selectOrder(f* faction, m *gameMap) {
+
+}
+
 func plr_giveDefaultOrderToUnit(f *faction, m *gameMap) {
-	cx, cy := f.cursor.getCoords()
-	u := m.getUnitAtCoordinates(cx, cy)
+	u := f.cursor.snappedPawn //m.getUnitAtCoordinates(cx, cy)
 	if u == nil {
 		// log.appendMessage("SELECTED NIL")
 		return
