@@ -9,7 +9,6 @@ type gameMap struct {
 	tileMap [mapW][mapH] *tile
 	factions []*faction
 	pawns []*pawn
-	// buildings []*building
 }
 
 func (g *gameMap) addPawn(p *pawn) {
@@ -65,8 +64,8 @@ func (g *gameMap) init() {
 	// g.addBuilding(createBuilding("metalmaker", 5, 1, g.factions[0]), true)
 	// g.addUnit(createUnit("weasel", 3, 6, g.factions[0]))
 	// g.addUnit(createUnit("thecan", 3, 4, g.factions[0]))
-	g.addBuilding(createBuilding("corekbotlab", 5, 1, g.factions[0]), true)
-	g.addBuilding(createBuilding("corevehfactory", 5, 5, g.factions[0]), true)
+	// g.addBuilding(createBuilding("corekbotlab", 5, 1, g.factions[0]), true)
+	// g.addBuilding(createBuilding("corevehfactory", 5, 5, g.factions[0]), true)
 
 	g.factions = append(g.factions, createFaction("The Arm Rebellion", 1, false))
 	g.addPawn(createUnit("commander", mapW-10, 5, g.factions[1]))

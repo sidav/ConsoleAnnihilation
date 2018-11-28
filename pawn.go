@@ -56,3 +56,22 @@ func (p *pawn) executeOrders(m *gameMap)	{
 		p.executeOrdersAsUnit(m)
 	}
 }
+
+func (p *pawn) getCurrentOrderDescription() string {
+	if p.currentConstructionStatus != nil {
+		return "UNDER CONSTRUCTION"
+	}
+	if p.order == nil {
+		return "STANDBY"
+	}
+	switch p.order.orderType {
+	case order_hold:
+		return "STANDBY"
+	case order_move:
+		return "MOVING"
+	case order_build:
+		return "NANOLATHING"
+	default:
+		return "DOING SOMETHING"
+	}
+}
