@@ -18,17 +18,18 @@ func renderSelectCursor(f *faction) {
 	y := VIEWPORT_H / 2
 	snap := c.snappedPawn
 	// cw.SetFgColorRGB(128, 128, 128)
+	if snap == nil {
+		cw.SetFgColor(cw.WHITE)
+	} else if snap.faction == f {
+		cw.SetFgColor(cw.GREEN)
+	} else {
+		cw.SetFgColor(cw.RED)
+	}
 
 	if snap == nil || snap.isUnit() {
-		cw.SetFgColor(cw.WHITE)
 		cw.PutChar('[', x-1, y)
 		cw.PutChar(']', x+1, y)
 	} else {
-		if snap.faction == f {
-			cw.SetFgColor(cw.GREEN)
-		} else {
-			cw.SetFgColor(cw.RED)
-		}
 		w, h := snap.buildingInfo.w, snap.buildingInfo.h
 		offset := w % 2
 		for cy := 0; cy < h; cy++ {
