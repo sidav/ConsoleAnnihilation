@@ -8,11 +8,11 @@ func plr_control(f *faction, m *gameMap) {
 	PLR_LOOP = true
 	snapCursorToPawn(f, m)
 	for PLR_LOOP {
-		plr_selectEntity(f, m)
+		plr_selectPawn(f, m)
 	}
 }
 
-func plr_selectEntity(f *faction, m *gameMap) {
+func plr_selectPawn(f *faction, m *gameMap) {
 	f.cursor.currentCursorMode = CURSOR_SELECT
 	r_renderScreenForFaction(f, m)
 	keyPressed := cw.ReadKey()
@@ -30,7 +30,7 @@ func plr_selectEntity(f *faction, m *gameMap) {
 }
 
 func plr_selectOrder(f* faction, m *gameMap) {
-
+	
 }
 
 func plr_giveDefaultOrderToUnit(f *faction, m *gameMap) {
