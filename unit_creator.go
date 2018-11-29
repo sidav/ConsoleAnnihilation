@@ -9,7 +9,7 @@ func createUnit(name string, x, y int, f *faction) *pawn {
 			unitInfo: &unit{
 			 ticksForMoveOneCell: 10, appearance: ccell{char: '@'}},
 			res:         &pawnResourceInformation{metalIncome: 1, energyIncome: 10, metalStorage: 100, energyStorage: 1000},
-			builderInfo: &pawnBuilderInformation{builderCoeff: 10},
+			builderInfo: &nanolatherInformation{builderCoeff: 10},
 		}
 	//case "weasel":
 	//	newUnit = &unit{name: "Weasel", ticksForMoveOneCell: 6, appearance: ccell{char: 'w'}}

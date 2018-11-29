@@ -11,7 +11,7 @@ type pawn struct {
 	x, y                      int
 	order                     *order
 	res                       *pawnResourceInformation
-	builderInfo               *pawnBuilderInformation
+	builderInfo               *nanolatherInformation
 	currentConstructionStatus *constructionInformation
 	nextTurnToAct             int
 }
