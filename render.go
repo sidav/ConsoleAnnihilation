@@ -129,7 +129,7 @@ func renderInfoOnCursor(f *faction, g *gameMap) {
 			}
 		} else {
 			details = append(details, sp.getCurrentOrderDescription())
-			if sp.res != nil {
+			if sp.res != nil && sp.currentConstructionStatus == nil {
 				res = sp.res
 			}
 		}
