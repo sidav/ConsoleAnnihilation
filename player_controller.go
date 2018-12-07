@@ -119,6 +119,9 @@ func plr_selectBuildingSite(p *pawn, b *pawn, m *gameMap) {
 
 func plr_moveCursor(g *gameMap, f *faction, keyPressed string) {
 	vx, vy := plr_keyToDirection(keyPressed)
+	if vx == 0 && vy == 0 {
+		return
+	}
 	cx, cy := f.cursor.getCoords()
 	if areCoordsValid(cx+vx, cy+vy) {
 		f.cursor.moveByVector(vx, vy)
