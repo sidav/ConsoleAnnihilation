@@ -25,7 +25,20 @@ func r_renderScreenForFaction(f *faction, g *gameMap) {
 	renderFactionStats(f)
 	renderInfoOnCursor(f, g)
 	r_renderCursor(f)
+	r_renderUIOutline(f)
 	flushView()
+}
+
+func r_renderUIOutline(f *faction) {
+	cw.SetFgColor(f.getFactionColor())
+	for y := 0; y < VIEWPORT_H; y++ {
+		cw.PutChar('|', VIEWPORT_W, y)
+	}
+	for x:=0; x < CONSOLE_W; x++ {
+		cw.PutChar('-', x, VIEWPORT_H)
+	}
+	cw.PutChar('+', VIEWPORT_W, VIEWPORT_H)
+	cw.SetBgColor(cw.BLACK)
 }
 
 func r_renderMapAroundCursor(g *gameMap, cx, cy int) {
