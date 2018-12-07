@@ -14,14 +14,15 @@ var (
 	GAME_IS_RUNNING = true
 	log *LOG
 	CURRENT_TURN = 0
+	CURRENT_MAP *gameMap
 )
 
 func main() {
 	cw.Init_console()
 	defer cw.Close_console()
 
-	gamemap := &gameMap{}
-	gamemap.init()
+	CURRENT_MAP = &gameMap{}
+	CURRENT_MAP.init()
 
 	//for i:=0; i<1024; i++ {
 	//	cw.PutChar(int32(i), i%80, i/80)
@@ -34,26 +35,26 @@ func main() {
 	log = &LOG{}
 
 	for GAME_IS_RUNNING {
-		for _, f := range gamemap.factions {
+		for _, f := range CURRENT_MAP.factions {
 			if !GAME_IS_RUNNING {
 				return
 			}
 			if f.playerControlled {
 				renderFactionStats(f)
-				plr_control(f, gamemap)
+				plr_control(f, CURRENT_MAP)
 			}
 		}
 		for i:=0; i<10; i++ {
-			for _, u := range gamemap.pawns {
-				u.executeOrders(gamemap)
+			for _, u := range CURRENT_MAP.pawns {
+				u.executeOrders(CURRENT_MAP)
 			}
 			CURRENT_TURN += 1
 		}
 
-		for _, f := range gamemap.factions {
-			f.recalculateFactionEconomy(gamemap)
+		for _, f := range CURRENT_MAP.factions {
+			f.recalculateFactionEconomy(CURRENT_MAP)
 		}
-		doAllNanolathes(gamemap)
+		doAllNanolathes(CURRENT_MAP)
 	}
 
 }

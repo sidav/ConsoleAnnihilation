@@ -142,13 +142,15 @@ func renderInfoOnCursor(f *faction, g *gameMap) {
 	}
 }
 
-//func r_renderPawnPossibleOrders(p *pawn) {
-//	orders := make([]string, 0)
-//	if p.canBuild() {
-//		orders = append(orders, "(B)uild")
-//	}
-//	// routines.DrawSidebarInfoMenu(p.name, p.faction.getFactionColor(), )// move to render?
-//}
+func r_renderPossibleOrdersForPawn(p *pawn) {
+	orders := make([]string, 0)
+	if p.canBuild() {
+		orders = append(orders, "(B)uild")
+	}
+	orders = append(orders, "(A)ttack-move")
+	routines.DrawSidebarInfoMenu("Orders for: " + p.name, p.faction.getFactionColor(),
+		SIDEBAR_X, 12, SIDEBAR_W, orders)// move to render?
+}
 
 func renderFactionStats(f *faction) {
 	eco := f.economy

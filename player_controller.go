@@ -47,6 +47,33 @@ func plr_selectPawn(f *faction, m *gameMap) bool { // true if pawn was selected
 	}
 }
 
+func plr_selectBuildingSite(p *pawn, b *pawn, m *gameMap) {
+	log.appendMessage("Select construction site for "+b.name)
+	for {
+		f := p.faction
+		cx, cy := f.cursor.getCoords()
+		f.cursor.currentCursorMode = CURSOR_BUILD
+		f.cursor.w = b.buildingInfo.w
+		f.cursor.h = b.buildingInfo.h
+		r_renderScreenForFaction(f, m)
+		flushView()
+
+		keyPressed := cw.ReadKey()
+		switch keyPressed {
+		case "ENTER", "RETURN":
+			b.x = cx - b.buildingInfo.w/2
+			b.y = cy - b.buildingInfo.h/2
+			p.order = &order{orderType: order_build, x: cx, y: cy, targetBuilding: b}
+			return
+		case "ESCAPE":
+			log.appendMessage("Construction cancelled."+b.name)
+			return
+		default:
+			plr_moveCursor(m, f, keyPressed)
+		}
+	}
+}
+
 func plr_selectOrder(f *faction, m *gameMap) {
 
 }
@@ -59,7 +86,8 @@ func plr_giveDefaultOrderToUnit(f *faction, m *gameMap) {
 		cx, cy := f.cursor.getCoords()
 		f.cursor.currentCursorMode = CURSOR_MOVE
 		r_renderScreenForFaction(f, m)
-
+		r_renderPossibleOrdersForPawn(u)
+		flushView()
 
 		keyPressed := cw.ReadKey()
 		switch keyPressed {
@@ -67,7 +95,7 @@ func plr_giveDefaultOrderToUnit(f *faction, m *gameMap) {
 			issueDefaultOrderToUnit(u, m, cx, cy)
 			return
 		case "b": // Temporary dohuya!
-			u.order = &order{orderType: order_build, x: cx, y: cy, targetBuilding: createBuilding("corekbotlab", cx, cy, f)}
+			plr_selectBuildingSite(u, createBuilding("corekbotlab", cx, cy, f), m)
 			return
 		case "ESCAPE":
 			return

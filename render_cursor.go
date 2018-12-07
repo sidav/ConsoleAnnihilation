@@ -9,6 +9,8 @@ func r_renderCursor(f *faction) {
 		renderSelectCursor(f)
 	case CURSOR_MOVE:
 		renderMoveCursor(c)
+	case CURSOR_BUILD:
+		renderBuildCursor(c)
 	}
 }
 
@@ -61,4 +63,21 @@ func renderMoveCursor(c *cursor) {
 	//cw.PutChar('\\', x+1, y+1)
 
 	flushView()
+}
+
+func renderBuildCursor(c *cursor) {
+	x := VIEWPORT_W / 2
+	y := VIEWPORT_H / 2
+
+	for i := 0; i < c.w; i++ {
+		for j := 0; j < c.h; j++ {
+			if CURRENT_MAP.getPawnAtCoordinates(c.x+i-c.w/2, c.y+j-c.h/2) == nil {
+				cw.SetBgColor(cw.GREEN)
+			} else {
+				cw.SetBgColor(cw.RED)
+			}
+			cw.PutChar(' ', x+i-c.w/2, y+j-c.h/2)
+		}
+	}
+	cw.SetBgColor(cw.BLACK)
 }
