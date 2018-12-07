@@ -91,7 +91,7 @@ func doAllNanolathes(m *gameMap) { // does the building itself
 				m.addBuilding(tBld, false)
 			}
 
-			if u.faction.economy.nanolatheAllowed {
+			if u.faction.economy.nanolatheAllowed && (sqdistance <= building_w*building_w || sqdistance <= building_h*building_h){
 				if tBld.currentConstructionStatus == nil {
 					u.reportOrderCompletion("Nanolathe interrupted")
 				}
