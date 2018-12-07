@@ -72,4 +72,8 @@ func (g *gameMap) init() {
 	g.addPawn(createUnit("ak", mapW-1, 4, g.factions[1]))
 	g.addBuilding(createBuilding("armkbotlab", mapW-5, 1, g.factions[1]), true )
 	g.addBuilding(createBuilding("armvehfactory", mapW-5, 5, g.factions[1]), true)
+
+	for _, f := range g.factions {
+		f.recalculateFactionEconomy(g)
+	}
 }
