@@ -38,9 +38,9 @@ func ShowSidebarSingleSelectMenu(title string, titleColor, mx, my, mw int, items
 		cw.Flush_console()
 		key := cw.ReadKey()
 		switch key {
-		case "DOWN":
+		case "DOWN", "2":
 			cursorIndex = (cursorIndex + 1) % len(items)
-		case "UP":
+		case "UP", "8":
 			cursorIndex -= 1
 			if cursorIndex < 0 {
 				cursorIndex = len(items) - 1

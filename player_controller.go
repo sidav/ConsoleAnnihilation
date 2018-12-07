@@ -66,7 +66,7 @@ func plr_selectBuildingSite(p *pawn, b *pawn, m *gameMap) {
 			p.order = &order{orderType: order_build, x: cx, y: cy, targetBuilding: b}
 			return
 		case "ESCAPE":
-			log.appendMessage("Construction cancelled."+b.name)
+			log.appendMessage("Construction cancelled: "+b.name)
 			return
 		default:
 			plr_moveCursor(m, f, keyPressed)
