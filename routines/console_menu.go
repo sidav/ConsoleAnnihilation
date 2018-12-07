@@ -1,6 +1,9 @@
 package routines
 
-import cw "TCellConsoleWrapper/tcell_wrapper"
+import (
+	cw "TCellConsoleWrapper/tcell_wrapper"
+	"strings"
+)
 
 const (
 	TITLE_COLOR = cw.DARK_BLUE
@@ -16,6 +19,23 @@ func drawTitle(title string) {
 	cw.SetColor(TITLE_COLOR, cw.BLACK)
 	titleXCoord := consoleWidth / 2 - len(title) / 2
 	cw.PutString(" "+title+" ", titleXCoord, 0)
+}
+
+func drawWrappedTextInRect(text string, x, y, w, h int) {
+	currentLine := 0
+	currentLineLength := 0
+	words := strings.Split(text, " ")
+	for _, word := range words {
+		if currentLineLength + len(word) >= w {
+			currentLine += 1
+			currentLineLength = 0
+			if currentLine == h {
+				return
+			}
+		}
+		cw.PutString(word+" ", x+currentLineLength, y+currentLine)
+		currentLineLength += len(word) + 1
+	}
 }
 
 func ShowSingleChoiceMenu(title, subheading string, lines []string) int { //returns the index of selected line or -1 if nothing was selected.

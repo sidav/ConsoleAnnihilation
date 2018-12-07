@@ -21,6 +21,34 @@ func DrawSidebarInfoMenu(title string, titleColor, mx, my, mw int, items []strin
 	// no flush?
 }
 
-func DrawSidebarLineMenu(title string, mx, my, mw int, items []string) {
-	// drawSidebarMenuTitle(title, mx, my, mw)
+func ShowSidebarSingleSelectMenu(title string, titleColor, mx, my, mw int, items []string) int { // returns an index of selected element or -1 if none selected.
+	drawSidebarMenuTitle(title, titleColor, mx, my, mw)
+	cursorIndex := 0
+	for {
+		for i := 0; i < len(items); i++ {
+			if i == cursorIndex {
+				cw.SetBgColor(cw.BEIGE)
+				cw.SetFgColor(cw.BLACK)
+			} else {
+				cw.SetBgColor(cw.BLACK)
+				cw.SetFgColor(cw.BEIGE)
+			}
+			cw.PutString(items[i], mx, my+i+1)
+		}
+		cw.Flush_console()
+		key := cw.ReadKey()
+		switch key {
+		case "DOWN":
+			cursorIndex = (cursorIndex + 1) % len(items)
+		case "UP":
+			cursorIndex -= 1
+			if cursorIndex < 0 {
+				cursorIndex = len(items) - 1
+			}
+		case "ENTER":
+			return cursorIndex
+		case "ESCAPE":
+			return -1
+		}
+	}
 }
