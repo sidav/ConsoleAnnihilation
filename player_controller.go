@@ -1,6 +1,7 @@
 package main
 
 import (
+	"SomeTBSGame/routines"
 	cw "TCellConsoleWrapper/tcell_wrapper"
 )
 
@@ -12,7 +13,7 @@ func plr_control(f *faction, m *gameMap) {
 	for PLR_LOOP {
 		if plr_selectPawn(f, m) {
 			// plr_selectOrder(f, m)
-			plr_giveDefaultOrderToUnit(f, m)
+			plr_selectOrder(f, m)
 		}
 	}
 }
@@ -47,6 +48,48 @@ func plr_selectPawn(f *faction, m *gameMap) bool { // true if pawn was selected
 	}
 }
 
+func plr_selectOrder(f *faction, m *gameMap) {
+	u := f.cursor.snappedPawn //m.getUnitAtCoordinates(cx, cy)
+	log.appendMessage(u.name + " is awaiting orders.")
+
+	for {
+		cx, cy := f.cursor.getCoords()
+		f.cursor.currentCursorMode = CURSOR_MOVE
+		r_renderScreenForFaction(f, m)
+		r_renderPossibleOrdersForPawn(u)
+		flushView()
+
+		keyPressed := cw.ReadKey()
+		switch keyPressed {
+		case "ENTER", "RETURN":
+			issueDefaultOrderToUnit(u, m, cx, cy)
+			return
+		case "b": // build
+			if u.canBuild() {
+				code := plr_selectBuidingToConstruct(u)
+				if code != "" {
+					plr_selectBuildingSite(u, createBuilding(code, cx, cy, f), m)
+					return
+				}
+			}
+		case "ESCAPE":
+			return
+		default:
+			plr_moveCursor(m, f, keyPressed)
+		}
+	}
+}
+
+func plr_selectBuidingToConstruct(p *pawn) string {
+	avail_buildings := p.nanolatherInfo.allowedBuildings
+	index := routines.ShowSidebarSingleSelectMenu("BUILD:", p.faction.getFactionColor(),
+		SIDEBAR_X, SIDEBAR_FLOOR_2,  SIDEBAR_W,  SIDEBAR_H - SIDEBAR_FLOOR_2, avail_buildings)
+	if index != -1 {
+		return avail_buildings[index]
+	}
+	return ""
+}
+
 func plr_selectBuildingSite(p *pawn, b *pawn, m *gameMap) {
 	log.appendMessage("Select construction site for "+b.name)
 	for {
@@ -67,37 +110,6 @@ func plr_selectBuildingSite(p *pawn, b *pawn, m *gameMap) {
 			return
 		case "ESCAPE":
 			log.appendMessage("Construction cancelled: "+b.name)
-			return
-		default:
-			plr_moveCursor(m, f, keyPressed)
-		}
-	}
-}
-
-func plr_selectOrder(f *faction, m *gameMap) {
-
-}
-
-func plr_giveDefaultOrderToUnit(f *faction, m *gameMap) {
-	u := f.cursor.snappedPawn //m.getUnitAtCoordinates(cx, cy)
-	log.appendMessage(u.name + " is awaiting orders.")
-
-	for {
-		cx, cy := f.cursor.getCoords()
-		f.cursor.currentCursorMode = CURSOR_MOVE
-		r_renderScreenForFaction(f, m)
-		r_renderPossibleOrdersForPawn(u)
-		flushView()
-
-		keyPressed := cw.ReadKey()
-		switch keyPressed {
-		case "ENTER", "RETURN":
-			issueDefaultOrderToUnit(u, m, cx, cy)
-			return
-		case "b": // Temporary dohuya!
-			plr_selectBuildingSite(u, createBuilding("corekbotlab", cx, cy, f), m)
-			return
-		case "ESCAPE":
 			return
 		default:
 			plr_moveCursor(m, f, keyPressed)

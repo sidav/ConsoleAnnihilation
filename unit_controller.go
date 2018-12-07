@@ -64,8 +64,8 @@ func (u *pawn) doBuildOrder(m *gameMap) { // only moves to location and/or sets 
 	sqdistance := (ox-ux)*(ox-ux) + (oy-uy)*(oy-uy)
 
 	if sqdistance <= building_w*building_w || sqdistance <= building_h*building_h { // is in building range
-		u.res.metalSpending = u.builderInfo.builderCoeff * tBld.currentConstructionStatus.costM / tBld.currentConstructionStatus.maxConstructionAmount
-		u.res.energySpending = u.builderInfo.builderCoeff * tBld.currentConstructionStatus.costE / tBld.currentConstructionStatus.maxConstructionAmount
+		u.res.metalSpending = u.nanolatherInfo.builderCoeff * tBld.currentConstructionStatus.costM / tBld.currentConstructionStatus.maxConstructionAmount
+		u.res.energySpending = u.nanolatherInfo.builderCoeff * tBld.currentConstructionStatus.costE / tBld.currentConstructionStatus.maxConstructionAmount
 	} else { // out of range, move to the construction site
 		order.x, order.y = tBld.getCenter()
 		u.doMoveOrder(m)
@@ -95,7 +95,7 @@ func doAllNanolathes(m *gameMap) { // does the building itself
 				if tBld.currentConstructionStatus == nil {
 					u.reportOrderCompletion("Nanolathe interrupted")
 				}
-				tBld.currentConstructionStatus.currentConstructionAmount += u.builderInfo.builderCoeff
+				tBld.currentConstructionStatus.currentConstructionAmount += u.nanolatherInfo.builderCoeff
 				if tBld.currentConstructionStatus.isCompleted() {
 					tBld.currentConstructionStatus = nil
 					u.order = nil

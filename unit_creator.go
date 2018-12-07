@@ -8,8 +8,8 @@ func createUnit(name string, x, y int, f *faction) *pawn {
 		newUnit = &pawn{ name: "Commander",
 			unitInfo: &unit{
 			 ticksForMoveOneCell: 10, appearance: ccell{char: '@'}},
-			res:         &pawnResourceInformation{metalIncome: 1, energyIncome: 10, metalStorage: 100, energyStorage: 1000},
-			builderInfo: &nanolatherInformation{builderCoeff: 10},
+			res:            &pawnResourceInformation{metalIncome: 1, energyIncome: 10, metalStorage: 100, energyStorage: 1000},
+			nanolatherInfo: &nanolatherInformation{builderCoeff: 10, allowedBuildings: []string{"corekbotlab", "solar", "metalmaker"} },
 		}
 	//case "weasel":
 	//	newUnit = &unit{name: "Weasel", ticksForMoveOneCell: 6, appearance: ccell{char: 'w'}}

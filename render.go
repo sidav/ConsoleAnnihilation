@@ -7,12 +7,15 @@ import (
 )
 
 const (
-	CONSOLE_W  = 80
-	CONSOLE_H  = 25
-	VIEWPORT_W = 40
-	VIEWPORT_H = 20
-	SIDEBAR_X  = VIEWPORT_W + 1
-	SIDEBAR_W  = CONSOLE_W - VIEWPORT_W - 1
+	CONSOLE_W       = 80
+	CONSOLE_H       = 25
+	VIEWPORT_W      = 40
+	VIEWPORT_H      = 20
+	SIDEBAR_X       = VIEWPORT_W + 1
+	SIDEBAR_W       = CONSOLE_W - VIEWPORT_W - 1
+	SIDEBAR_H       = CONSOLE_H - LOG_HEIGHT
+	SIDEBAR_FLOOR_2 = 7  // y-coord right below resources info
+	SIDEBAR_FLOOR_3 = 10 // y-coord right below "floor 2"
 )
 
 func r_setFgColorByCcell(c *ccell) {
@@ -34,7 +37,7 @@ func r_renderUIOutline(f *faction) {
 	for y := 0; y < VIEWPORT_H; y++ {
 		cw.PutChar('|', VIEWPORT_W, y)
 	}
-	for x:=0; x < CONSOLE_W; x++ {
+	for x := 0; x < CONSOLE_W; x++ {
 		cw.PutChar('-', x, VIEWPORT_H)
 	}
 	cw.PutChar('+', VIEWPORT_W, VIEWPORT_H)
@@ -84,27 +87,27 @@ func renderUnitsInViewport(p *pawn, g *gameMap, vx, vy int) {
 }
 
 func renderBuildingsInViewport(p *pawn, g *gameMap, vx, vy int) {
-		b:= p.buildingInfo
-		app := b.appearance
-		bx, by := p.getCoords()
-		for x := 0; x < b.w; x++ {
-			for y := 0; y < b.h; y++ {
-				if p.currentConstructionStatus == nil {
-					color := app.colors[x+b.w*y]
-					if color == -1 {
-						cw.SetFgColor(p.faction.getFactionColor())
-					} else {
-						cw.SetFgColor(color)
-					}
-				} else { // building is under construction
-					color := 2
+	b := p.buildingInfo
+	app := b.appearance
+	bx, by := p.getCoords()
+	for x := 0; x < b.w; x++ {
+		for y := 0; y < b.h; y++ {
+			if p.currentConstructionStatus == nil {
+				color := app.colors[x+b.w*y]
+				if color == -1 {
+					cw.SetFgColor(p.faction.getFactionColor())
+				} else {
 					cw.SetFgColor(color)
 				}
-				if areGlobalCoordsOnScreen(bx+x, by+y, vx, vy) {
-					cw.PutChar(int32(app.chars[x+b.w*y]), bx+x-vx, by+y-vy)
-				}
+			} else { // building is under construction
+				color := 2
+				cw.SetFgColor(color)
+			}
+			if areGlobalCoordsOnScreen(bx+x, by+y, vx, vy) {
+				cw.PutChar(int32(app.chars[x+b.w*y]), bx+x-vx, by+y-vy)
 			}
 		}
+	}
 }
 
 func renderInfoOnCursor(f *faction, g *gameMap) {
@@ -138,7 +141,7 @@ func renderInfoOnCursor(f *faction, g *gameMap) {
 				res.metalIncome, res.metalSpending, res.energyIncome, res.energySpending+res.energyReqForConditionalMetalIncome)
 			details = append(details, economyInfo)
 		}
-		routines.DrawSidebarInfoMenu(title, color, SIDEBAR_X, 7, SIDEBAR_W, details)
+		routines.DrawSidebarInfoMenu(title, color, SIDEBAR_X, SIDEBAR_FLOOR_2, SIDEBAR_W, details)
 	}
 }
 
@@ -148,8 +151,8 @@ func r_renderPossibleOrdersForPawn(p *pawn) {
 		orders = append(orders, "(B)uild")
 	}
 	orders = append(orders, "(A)ttack-move")
-	routines.DrawSidebarInfoMenu("Orders for: " + p.name, p.faction.getFactionColor(),
-		SIDEBAR_X, 12, SIDEBAR_W, orders)// move to render?
+	routines.DrawSidebarInfoMenu("Orders for: "+p.name, p.faction.getFactionColor(),
+		SIDEBAR_X, SIDEBAR_FLOOR_3, SIDEBAR_W, orders) // move to render?
 }
 
 func renderFactionStats(f *faction) {
@@ -165,16 +168,16 @@ func renderFactionStats(f *faction) {
 	cw.SetFgColor(cw.DARK_CYAN)
 	renderStatusbar("METAL", metal, maxmetal, statsx, 1, CONSOLE_W-VIEWPORT_W-3, cw.DARK_CYAN)
 	cw.SetFgColor(cw.DARK_CYAN)
-	metalDetails := fmt.Sprintf("%d/%d stored  %d (+%d / -%d) per turn",eco.currentMetal, eco.maxMetal,
-		eco.metalIncome - eco.metalSpending, eco.metalIncome, eco.metalSpending)
+	metalDetails := fmt.Sprintf("%d/%d stored  %d (+%d / -%d) per turn", eco.currentMetal, eco.maxMetal,
+		eco.metalIncome-eco.metalSpending, eco.metalIncome, eco.metalSpending)
 	cw.PutString(metalDetails, statsx, 2)
 
 	energy, maxenergy := eco.currentEnergy, eco.maxEnergy
 	cw.SetFgColor(cw.DARK_YELLOW)
 	renderStatusbar("ENERGY", energy, maxenergy, statsx, 4, CONSOLE_W-VIEWPORT_W-3, cw.DARK_YELLOW)
 	cw.SetFgColor(cw.DARK_YELLOW)
-	energyDetails := fmt.Sprintf("%d/%d stored  %d (+%d / -%d) per turn",eco.currentEnergy, eco.maxEnergy,
-		eco.energyIncome - eco.energySpending, eco.energyIncome, eco.energySpending)
+	energyDetails := fmt.Sprintf("%d/%d stored  %d (+%d / -%d) per turn", eco.currentEnergy, eco.maxEnergy,
+		eco.energyIncome-eco.energySpending, eco.energyIncome, eco.energySpending)
 	cw.PutString(energyDetails, statsx, 5)
 }
 

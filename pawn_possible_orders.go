@@ -1,7 +1,7 @@
 package main
 
 func (p *pawn) canBuild() bool {
-	return p.builderInfo != nil
+	return p.nanolatherInfo != nil
 }
 
 func (p *pawn) canMove() bool {
