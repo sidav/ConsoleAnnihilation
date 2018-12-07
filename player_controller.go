@@ -123,7 +123,9 @@ func plr_moveCursor(g *gameMap, f *faction, keyPressed string) {
 		}
 		f.cursor.snappedPawn = nil
 	}
-	snapCursorToPawn(f, g)
+	if f.cursor.currentCursorMode != CURSOR_BUILD {
+		snapCursorToPawn(f, g)
+	}
 }
 
 func snapCursorToPawn(f *faction, g *gameMap) {
