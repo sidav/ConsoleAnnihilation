@@ -5,5 +5,5 @@ func (p *pawn) canBuild() bool {
 }
 
 func (p *pawn) canMove() bool {
-	return true 
+	return true // temp
 }

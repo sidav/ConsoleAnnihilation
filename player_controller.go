@@ -1,6 +1,8 @@
 package main
 
-import cw "TCellConsoleWrapper/tcell_wrapper"
+import (
+	cw "TCellConsoleWrapper/tcell_wrapper"
+)
 
 var PLR_LOOP = true
 
@@ -8,48 +10,57 @@ func plr_control(f *faction, m *gameMap) {
 	PLR_LOOP = true
 	snapCursorToPawn(f, m)
 	for PLR_LOOP {
-		plr_selectPawn(f, m)
+		if plr_selectPawn(f, m) {
+			// plr_selectOrder(f, m)
+			plr_giveDefaultOrderToUnit(f, m)
+		}
 	}
 }
 
-func plr_selectPawn(f *faction, m *gameMap) {
+func plr_selectPawn(f *faction, m *gameMap) bool { // true if pawn was selected
 	f.cursor.currentCursorMode = CURSOR_SELECT
-	r_renderScreenForFaction(f, m)
-	keyPressed := cw.ReadKey()
-	switch keyPressed {
-	case "SPACE", " ":
-		PLR_LOOP = false // end turn
-	case "ENTER", "RETURN":
-		plr_giveDefaultOrderToUnit(f, m)
-	case "ESCAPE":
-		GAME_IS_RUNNING = false
-		PLR_LOOP = false
-	default:
-		plr_moveCursor(m, f, keyPressed)
+	for {
+		r_renderScreenForFaction(f, m)
+		keyPressed := cw.ReadKey()
+		switch keyPressed {
+		case "SPACE", " ":
+			PLR_LOOP = false // end turn
+			return false
+		case "ENTER", "RETURN":
+			u := f.cursor.snappedPawn //m.getUnitAtCoordinates(cx, cy)
+			if u == nil {
+				// log.appendMessage("SELECTED NIL")
+				return false
+			}
+			if u.faction.factionNumber != f.factionNumber {
+				log.appendMessage("Enemy units can't be selected, Commander.")
+				return false
+			}
+			return true
+		case "ESCAPE":
+			GAME_IS_RUNNING = false
+			PLR_LOOP = false
+			return false
+		default:
+			plr_moveCursor(m, f, keyPressed)
+		}
 	}
 }
 
-func plr_selectOrder(f* faction, m *gameMap) {
-	
+func plr_selectOrder(f *faction, m *gameMap) {
+
 }
 
 func plr_giveDefaultOrderToUnit(f *faction, m *gameMap) {
 	u := f.cursor.snappedPawn //m.getUnitAtCoordinates(cx, cy)
-	if u == nil {
-		// log.appendMessage("SELECTED NIL")
-		return
-	}
-	if u.faction.factionNumber != f.factionNumber {
-		log.appendMessage("Enemy units can't be selected, Commander.")
-		return
-	} else {
-		log.appendMessage(u.name + " is awaiting orders.")
-	}
+	log.appendMessage(u.name + " is awaiting orders.")
 
 	for {
 		cx, cy := f.cursor.getCoords()
 		f.cursor.currentCursorMode = CURSOR_MOVE
 		r_renderScreenForFaction(f, m)
+
+
 		keyPressed := cw.ReadKey()
 		switch keyPressed {
 		case "ENTER", "RETURN":
@@ -90,7 +101,7 @@ func plr_moveCursor(g *gameMap, f *faction, keyPressed string) {
 func snapCursorToPawn(f *faction, g *gameMap) {
 	b := g.getPawnAtCoordinates(f.cursor.x, f.cursor.y)
 	if b == nil {
-		f.cursor.snappedPawn = nil 
+		f.cursor.snappedPawn = nil
 	} else {
 		f.cursor.x, f.cursor.y = b.getCenter()
 		f.cursor.snappedPawn = b

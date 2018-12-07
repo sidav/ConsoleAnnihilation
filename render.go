@@ -129,6 +129,14 @@ func renderInfoOnCursor(f *faction, g *gameMap) {
 	}
 }
 
+//func r_renderPawnPossibleOrders(p *pawn) {
+//	orders := make([]string, 0)
+//	if p.canBuild() {
+//		orders = append(orders, "(B)uild")
+//	}
+//	// routines.DrawSidebarInfoMenu(p.name, p.faction.getFactionColor(), )// move to render?
+//}
+
 func renderFactionStats(f *faction) {
 	eco := f.economy
 	statsx := VIEWPORT_W + 1
