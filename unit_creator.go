@@ -9,14 +9,20 @@ func createUnit(name string, x, y int, f *faction) *pawn {
 			unitInfo: &unit{
 			 ticksForMoveOneCell: 10, appearance: ccell{char: '@'}},
 			res:            &pawnResourceInformation{metalIncome: 1, energyIncome: 10, metalStorage: 100, energyStorage: 1000},
-			nanolatherInfo: &nanolatherInformation{builderCoeff: 10, allowedBuildings: []string{"corekbotlab", "solar", "metalmaker"} },
+			nanolatherInfo: &nanolatherInformation{builderCoeff: 10, allowedBuildings: []string{"corekbotlab", "solar", "metalmaker", "corevehfactory", "quark"} },
 		}
-	//case "weasel":
-	//	newUnit = &unit{name: "Weasel", ticksForMoveOneCell: 6, appearance: ccell{char: 'w'}}
-	//case "thecan":
-	//	newUnit = &unit{name: "The Can", ticksForMoveOneCell: 17, appearance: ccell{char: 'c'}}
-	//case "ak":
-	//	newUnit = &unit{name: "A.K.", ticksForMoveOneCell: 9, appearance: ccell{char: 'a'}}
+	case "weasel":
+		newUnit = &pawn{name: "Weasel",
+		unitInfo: &unit{ticksForMoveOneCell: 6, appearance: ccell{char: 'w'}},
+		}
+	case "thecan":
+		newUnit = &pawn {name: "The Can",
+		unitInfo: &unit{ticksForMoveOneCell: 17, appearance: ccell{char: 'c'}},
+		}
+	case "ak":
+		newUnit = &pawn {name: "A.K.",
+		unitInfo: &unit{ticksForMoveOneCell: 9, appearance: ccell{char: 'a'}},
+		}
 	default:
 		newUnit = &pawn {name: "UNKNOWN UNIT",
 			unitInfo: &unit{appearance: ccell{char: '?'}},
