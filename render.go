@@ -147,8 +147,11 @@ func renderInfoOnCursor(f *faction, g *gameMap) {
 
 func r_renderPossibleOrdersForPawn(p *pawn) {
 	orders := make([]string, 0)
-	if p.canBuild() {
+	if p.canConstructBuildings() {
 		orders = append(orders, "(B)uild")
+	}
+	if p.canConstructUnits() {
+		orders = append(orders, "(C)onstruct units")
 	}
 	orders = append(orders, "(A)ttack-move")
 	routines.DrawSidebarInfoMenu("Orders for: "+p.name, p.faction.getFactionColor(),

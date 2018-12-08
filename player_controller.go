@@ -67,7 +67,7 @@ func plr_selectOrder(f *faction, m *gameMap) {
 			issueDefaultOrderToUnit(u, m, cx, cy)
 			return
 		case "b": // build
-			if u.canBuild() {
+			if u.canConstructBuildings() {
 				code := plr_selectBuidingToConstruct(u)
 				if code != "" {
 					plr_selectBuildingSite(u, createBuilding(code, cx, cy, f), m)
