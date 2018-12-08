@@ -2,6 +2,7 @@ package routines
 
 import (
 	cw "TCellConsoleWrapper/tcell_wrapper"
+	"strconv"
 	"strings"
 )
 
@@ -24,7 +25,7 @@ func DrawSidebarInfoMenu(title string, titleColor, mx, my, mw int, items []strin
 	// no flush?
 }
 
-func ShowSidebarSingleSelectMenu(title string, titleColor, mx, my, mw int, mh int, items []string) int { // returns an index of selected element or -1 if none selected.
+func ShowSidebarSingleChoiceMenu(title string, titleColor, mx, my, mw int, mh int, items []string) int { // returns an index of selected element or -1 if none selected.
 	drawSidebarMenuTitle(title, titleColor, mx, my, mw)
 	cursorIndex := 0
 	for {
@@ -61,6 +62,56 @@ func ShowSidebarSingleSelectMenu(title string, titleColor, mx, my, mw int, mh in
 			return cursorIndex
 		case "ESCAPE":
 			return -1
+		}
+	}
+}
+
+func ShowSidebarPickValuesMenu(title string, titleColor, mx, my, mw int, mh int, items []string) *[]int { // returns a pointer to a slice of values for items.
+	drawSidebarMenuTitle(title, titleColor, mx, my, mw)
+	cursorIndex := 0
+	values := make([]int, len(items))
+	for {
+
+		for y := 1; y < mh; y++ {
+			cw.PutString(strings.Repeat(" ", mw), mx, y+my) // clear menu screen space
+		}
+		for i := 0; i < len(items); i++ {
+			str := items[i]
+			if i == cursorIndex {
+				cw.SetBgColor(cw.BEIGE)
+				cw.SetFgColor(cw.BLACK)
+				// str = "->"+str
+			} else {
+				cw.SetBgColor(cw.BLACK)
+				cw.SetFgColor(cw.BEIGE)
+			}
+			valStr := "<" + strconv.Itoa(values[i]) + ">"
+			str += strings.Repeat(" ", mw - len(str) - len(valStr)) // fill the whole menu width
+			str += valStr
+			cw.PutString(str, mx, my+i+1)
+		}
+		cw.SetBgColor(cw.BLACK)
+		cw.Flush_console()
+
+		key := cw.ReadKey()
+		switch key {
+		case "DOWN", "2":
+			cursorIndex = (cursorIndex + 1) % len(items)
+		case "UP", "8":
+			cursorIndex -= 1
+			if cursorIndex < 0 {
+				cursorIndex = len(items) - 1
+			}
+		case "LEFT", "4":
+			if values[cursorIndex] > 0 {
+				values[cursorIndex] -= 1
+			}
+		case "RIGHT", "6":
+			values[cursorIndex]++
+		case "ENTER":
+			return &values
+		case "ESCAPE":
+			return nil
 		}
 	}
 }

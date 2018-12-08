@@ -84,7 +84,7 @@ func plr_selectOrder(f *faction, m *gameMap) {
 
 func plr_selectBuidingToConstruct(p *pawn) string {
 	avail_buildings := p.nanolatherInfo.allowedBuildings
-	index := routines.ShowSidebarSingleSelectMenu("BUILD:", p.faction.getFactionColor(),
+	index := routines.ShowSidebarSingleChoiceMenu("BUILD:", p.faction.getFactionColor(),
 		SIDEBAR_X, SIDEBAR_FLOOR_2,  SIDEBAR_W,  SIDEBAR_H - SIDEBAR_FLOOR_2, avail_buildings)
 	if index != -1 {
 		return avail_buildings[index]
