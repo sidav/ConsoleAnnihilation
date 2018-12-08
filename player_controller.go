@@ -83,11 +83,20 @@ func plr_selectOrder(f *faction, m *gameMap) {
 }
 
 func plr_selectBuidingToConstruct(p *pawn) string {
-	avail_buildings := p.nanolatherInfo.allowedBuildings
+	availableBuildingCodes := p.nanolatherInfo.allowedBuildings
+
+	names := make([]string, 0)
+	descriptions := make([]string, 0)
+	for _, code := range availableBuildingCodes {
+		name, desc := getBuildingNameAndDescription(code)
+		names = append(names, name)
+		descriptions = append(descriptions, desc)
+	}
+	
 	index := routines.ShowSidebarSingleChoiceMenu("BUILD:", p.faction.getFactionColor(),
-		SIDEBAR_X, SIDEBAR_FLOOR_2,  SIDEBAR_W,  SIDEBAR_H - SIDEBAR_FLOOR_2, avail_buildings)
+		SIDEBAR_X, SIDEBAR_FLOOR_2,  SIDEBAR_W,  SIDEBAR_H - SIDEBAR_FLOOR_2, names, descriptions)
 	if index != -1 {
-		return avail_buildings[index]
+		return availableBuildingCodes[index]
 	}
 	return ""
 }

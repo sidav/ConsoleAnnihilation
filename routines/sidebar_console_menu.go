@@ -25,7 +25,7 @@ func DrawSidebarInfoMenu(title string, titleColor, mx, my, mw int, items []strin
 	// no flush?
 }
 
-func ShowSidebarSingleChoiceMenu(title string, titleColor, mx, my, mw int, mh int, items []string) int { // returns an index of selected element or -1 if none selected.
+func ShowSidebarSingleChoiceMenu(title string, titleColor, mx, my, mw int, mh int, items []string, descriptions []string) int { // returns an index of selected element or -1 if none selected.
 	drawSidebarMenuTitle(title, titleColor, mx, my, mw)
 	cursorIndex := 0
 	for {
@@ -45,6 +45,12 @@ func ShowSidebarSingleChoiceMenu(title string, titleColor, mx, my, mw int, mh in
 			}
 			// str += strings.Repeat(" ", mw - len(str)) // fill the whole menu width
 			cw.PutString(str, mx, my+i+1)
+			cw.SetBgColor(cw.BLACK)
+			cw.SetFgColor(cw.BEIGE)
+
+			if len(descriptions) > 0 {
+				drawWrappedTextInRect(descriptions[cursorIndex], 0, my+mh+1, mx+mw, 5)
+			}
 		}
 		cw.SetBgColor(cw.BLACK)
 		cw.Flush_console()

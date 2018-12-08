@@ -24,14 +24,22 @@ func drawTitle(title string) {
 func drawWrappedTextInRect(text string, x, y, w, h int) {
 	currentLine := 0
 	currentLineLength := 0
+	for yy := 1; yy < h; yy++ {
+		cw.PutString(strings.Repeat(" ", w), x, yy+y) // clear menu screen space
+	}
 	words := strings.Split(text, " ")
 	for _, word := range words {
+		if word == "\\n" {
+			currentLine += 1
+			currentLineLength = 0
+			continue
+		}
 		if currentLineLength + len(word) >= w {
 			currentLine += 1
 			currentLineLength = 0
-			if currentLine == h {
-				return
-			}
+		}
+		if currentLine == h {
+			return
 		}
 		cw.PutString(word+" ", x+currentLineLength, y+currentLine)
 		currentLineLength += len(word) + 1
