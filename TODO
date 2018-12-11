@@ -1,0 +1,5 @@
+Closest plans: 
+- Fix a crash when building receives a "move" order;
+- Further decrease the unit/building differentiation;
+- Add order lines;
+- Add rally points
