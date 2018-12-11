@@ -1,7 +1,7 @@
 package routines
 
 import (
-	cw "TCellConsoleWrapper/tcell_wrapper"
+	cw "TCellConsoleWrapper"
 	"strconv"
 	"strings"
 )

@@ -1,6 +1,6 @@
 package main
 
-import cw "TCellConsoleWrapper/tcell_wrapper"
+import cw "TCellConsoleWrapper"
 
 func r_renderCursor(f *faction) {
 	c := f.cursor

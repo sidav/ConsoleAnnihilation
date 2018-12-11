@@ -2,7 +2,7 @@ package main
 
 import (
 	"SomeTBSGame/routines"
-	cw "TCellConsoleWrapper/tcell_wrapper"
+	cw "TCellConsoleWrapper"
 )
 
 var PLR_LOOP = true

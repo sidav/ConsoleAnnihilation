@@ -1,6 +1,6 @@
 package main
 
-import cw "TCellConsoleWrapper/tcell_wrapper"
+import cw "TCellConsoleWrapper"
 
 func areCoordsValid(x, y int) bool {
 	return (x >= 0) && (x < mapW) && (y >= 0) && (y < mapH)

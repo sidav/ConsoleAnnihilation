@@ -2,20 +2,19 @@ package main
 
 import (
 	"SomeTBSGame/routines"
-	cw "TCellConsoleWrapper/tcell_wrapper"
+	cw "TCellConsoleWrapper"
 	"fmt"
 )
 
-const (
-	CONSOLE_W       = 80
-	CONSOLE_H       = 25
-	VIEWPORT_W      = 40
-	VIEWPORT_H      = 20
-	SIDEBAR_X       = VIEWPORT_W + 1
-	SIDEBAR_W       = CONSOLE_W - VIEWPORT_W - 1
-	SIDEBAR_H       = CONSOLE_H - LOG_HEIGHT
-	SIDEBAR_FLOOR_2 = 7  // y-coord right below resources info
-	SIDEBAR_FLOOR_3 = 10 // y-coord right below "floor 2"
+var (
+	CONSOLE_W, CONSOLE_H = 80, 25
+	VIEWPORT_W           = 40
+	VIEWPORT_H           = CONSOLE_H - LOG_HEIGHT
+	SIDEBAR_X            = VIEWPORT_W + 1
+	SIDEBAR_W            = CONSOLE_W - VIEWPORT_W - 1
+	SIDEBAR_H            = CONSOLE_H - LOG_HEIGHT
+	SIDEBAR_FLOOR_2      = 7  // y-coord right below resources info
+	SIDEBAR_FLOOR_3      = 10 // y-coord right below "floor 2"
 )
 
 func r_setFgColorByCcell(c *ccell) {
@@ -23,7 +22,21 @@ func r_setFgColorByCcell(c *ccell) {
 	// cw.SetFgColorRGB(c.r, c.g, c.b)
 }
 
+func r_updateBoundsIfNeccessary() {
+	if cw.WasResized() {
+		CONSOLE_W, CONSOLE_H = cw.GetConsoleSize()
+		VIEWPORT_W           = cw.CONSOLE_WIDTH / 2
+		VIEWPORT_H           = CONSOLE_H - LOG_HEIGHT - 1
+		SIDEBAR_X            = VIEWPORT_W + 1
+		SIDEBAR_W            = CONSOLE_W - VIEWPORT_W - 1
+		SIDEBAR_H            = CONSOLE_H - LOG_HEIGHT
+		SIDEBAR_FLOOR_2      = 7  // y-coord right below resources info
+		SIDEBAR_FLOOR_3      = 10 // y-coord right below "floor 2"
+	}
+}
+
 func r_renderScreenForFaction(f *faction, g *gameMap) {
+	r_updateBoundsIfNeccessary()
 	r_renderMapAroundCursor(g, f.cursor.x, f.cursor.y)
 	renderFactionStats(f)
 	renderInfoOnCursor(f, g)
@@ -209,7 +222,7 @@ func renderStatusbar(name string, curvalue, maxvalue, x, y, width, barColor int)
 func renderLog(flush bool) {
 	cw.SetFgColor(cw.WHITE)
 	for i := 0; i < LOG_HEIGHT; i++ {
-		cw.PutString(log.last_msgs[i].getText(), 0, VIEWPORT_H+i)
+		cw.PutString(log.last_msgs[i].getText(), 0, VIEWPORT_H+i+1)
 	}
 	if flush {
 		flushView()
