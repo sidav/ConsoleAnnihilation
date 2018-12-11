@@ -132,6 +132,11 @@ func renderInfoOnCursor(f *faction, g *gameMap) {
 	sp := f.cursor.snappedPawn
 
 	if sp != nil {
+
+		if sp.order != nil {
+			renderOrderLine(sp.x, sp.y, sp.order.x, sp.order.y, true, f.cursor.x  - VIEWPORT_W/2, f.cursor.y - VIEWPORT_H/2)
+		}
+
 		color = sp.faction.getFactionColor()
 		title = sp.name
 		if sp.faction != f {
@@ -227,6 +232,67 @@ func renderLog(flush bool) {
 	if flush {
 		flushView()
 	}
+}
+
+func renderOrderLine(fromx, fromy, tox, toy int, flush bool, vx, vy int) {
+	line := routines.GetLine(fromx, fromy, tox, toy)
+	char := '?'
+	if len(line) > 1 {
+		dirVector := routines.CreateVectorByStartAndEndInt(fromx, fromy, tox, toy)
+		dirVector.TransformIntoUnitVector()
+		dirx, diry := dirVector.GetRoundedCoords()
+		char = getTargetingChar(dirx, diry)
+	}
+	//if fromx == tox && fromy == toy {
+	//	renderPawn(d.player, true)
+	//}
+	for i := 1; i < len(line); i++ {
+		// x, y := line[i].X, line[i].Y
+		//if d.isPawnPresent(x, y) {
+		//	renderPawn(d.getPawnAt(x, y), true)
+		//} else {
+			cw.SetFgColor(cw.YELLOW)
+			if i == len(line)-1 {
+				char = 'X'
+			}
+			viewx, viewy := line[i].X-vx, line[i].Y-vy
+			if areGlobalCoordsOnScreen(viewx, viewy, vx, vy) {
+				cw.PutChar(char, viewx, viewy)
+			}
+		// }
+	}
+	if flush {
+		cw.Flush_console()
+	}
+}
+
+func getTargetingChar(x, y int) rune {
+	if abs(x) > 1 {
+		x /= abs(x)
+	}
+	if abs(y) > 1 {
+		y /= abs(y)
+	}
+	if x == 0 {
+		return '|'
+	}
+	if y == 0 {
+		return '-'
+	}
+	if x*y == 1 {
+		return '\\'
+	}
+	if x*y == -1 {
+		return '/'
+	}
+	return '?'
+}
+
+func abs(x int) int {
+	if x < 0 {
+		return -x
+	}
+	return x
 }
 
 func flushView() {
