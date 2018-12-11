@@ -12,11 +12,23 @@ const (
 )
 
 type order struct {
-	orderType             ORDER_TYPE_ENUM
-	x, y                  int
-	targetUnit            *pawn
+	orderType  ORDER_TYPE_ENUM
+	x, y       int
+	targetUnit *pawn
 
-	buildingHasBeenPlaced bool    // for build orders
+	buildingHasBeenPlaced bool // for build orders
 	buildingToConstruct   *pawn
 	constructingQueue     []*pawn // for units
+}
+
+func (clone *order) cloneFrom(o *order) {
+	clone.orderType = o.orderType
+	clone.x, clone.y = o.x, o.y
+	clone.targetUnit = o.targetUnit
+	clone.buildingHasBeenPlaced = o.buildingHasBeenPlaced
+	clone.buildingToConstruct = o.buildingToConstruct
+}
+
+func (o *order) canBeDrawnAsLine() bool {
+	return o.orderType != order_hold && o.orderType != order_construct
 }

@@ -146,7 +146,8 @@ func doAllNanolathes(m *gameMap) { // does the building itself
 				if uCnst.currentConstructionStatus.isCompleted() {
 					uCnst.currentConstructionStatus = nil
 					uCnst.x, uCnst.y = ux, uy
-					uCnst.order = &order{orderType: order_move, x: ux, y: u.y + u.buildingInfo.h + 1}
+					uCnst.order = &order{}
+					uCnst.order.cloneFrom(u.nanolatherInfo.defaultOrderForUnitBuilt)
 					m.addPawn(uCnst)
 					u.order.constructingQueue = u.order.constructingQueue[1:]
 					u.reportOrderCompletion("Nanolathe completed")

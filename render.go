@@ -133,9 +133,7 @@ func renderInfoOnCursor(f *faction, g *gameMap) {
 
 	if sp != nil {
 
-		if sp.order != nil {
-			renderOrderLine(sp.x, sp.y, sp.order.x, sp.order.y, true, f.cursor.x  - VIEWPORT_W/2, f.cursor.y - VIEWPORT_H/2)
-		}
+		renderOrderLine(sp)
 
 		color = sp.faction.getFactionColor()
 		title = sp.name
@@ -234,7 +232,26 @@ func renderLog(flush bool) {
 	}
 }
 
-func renderOrderLine(fromx, fromy, tox, toy int, flush bool, vx, vy int) {
+func renderOrderLine(p *pawn) {
+	var ordr *order
+	if p.order != nil {
+		if p.order.canBeDrawnAsLine() {
+			ordr = p.order
+		}
+	}
+	if ordr == nil {
+		if p.canConstructUnits() {
+			ordr = p.nanolatherInfo.defaultOrderForUnitBuilt
+		}
+	}
+	if ordr != nil {
+		f := p.faction
+		cx, cy := p.getCenter()
+		renderLine(cx, cy, ordr.x, ordr.y, false, f.cursor.x-VIEWPORT_W/2, f.cursor.y-VIEWPORT_H/2)
+	}
+}
+
+func renderLine(fromx, fromy, tox, toy int, flush bool, vx, vy int) {
 	line := routines.GetLine(fromx, fromy, tox, toy)
 	char := '?'
 	if len(line) > 1 {

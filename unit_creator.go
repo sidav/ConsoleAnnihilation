@@ -14,7 +14,7 @@ func createUnit(name string, x, y int, f *faction, alreadyConstructed bool) *paw
 	case "coreck":
 		newUnit = &pawn{name: "Tech 1 Construction KBot",
 			unitInfo:       &unit{appearance: ccell{char: 'k'}},
-			moveInfo:       &pawnMovementInformation{ticksForMoveSingleCell: 5},
+			moveInfo:       &pawnMovementInformation{ticksForMoveSingleCell: 15},
 			res:            &pawnResourceInformation{metalStorage: 25, energyStorage: 50},
 			nanolatherInfo: &nanolatherInformation{builderCoeff: 5, allowedBuildings: []string{"corekbotlab", "solar", "metalmaker", "corevehfactory", "quark"}},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 25, costM: 650, costE: 1200},
