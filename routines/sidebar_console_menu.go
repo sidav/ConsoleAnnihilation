@@ -72,7 +72,7 @@ func ShowSidebarSingleChoiceMenu(title string, titleColor, mx, my, mw int, mh in
 	}
 }
 
-func ShowSidebarPickValuesMenu(title string, titleColor, mx, my, mw int, mh int, items []string) *[]int { // returns a pointer to a slice of values for items.
+func ShowSidebarPickValuesMenu(title string, titleColor, mx, my, mw int, mh int, items []string) *[]int { // returns a pointer to a slice of indices for items.
 	drawSidebarMenuTitle(title, titleColor, mx, my, mw)
 	cursorIndex := 0
 	values := make([]int, len(items))
@@ -114,6 +114,92 @@ func ShowSidebarPickValuesMenu(title string, titleColor, mx, my, mw int, mh int,
 			}
 		case "RIGHT", "6":
 			values[cursorIndex]++
+		case "ENTER":
+			return &values
+		case "ESCAPE":
+			return nil
+		}
+	}
+}
+
+func ShowSidebarCreateQueueMenu(title string, titleColor, mx, my, mw int, mh int, items []string) *[]int { // returns a slice of ordered indices
+	drawSidebarMenuTitle(title, titleColor, mx, my, mw)
+	cursorIndex := 0
+	values := make([]int, 0)
+	for {
+
+
+		for y := 1; y < mh; y++ {
+			cw.PutString(strings.Repeat(" ", mw), mx, y+my) // clear menu screen space
+		}
+
+		for i := 0; i < len(items); i++ {
+			str := items[i]
+			if i == cursorIndex {
+				cw.SetBgColor(cw.BEIGE)
+				cw.SetFgColor(cw.BLACK)
+				// str = "->"+str
+			} else {
+				cw.SetBgColor(cw.BLACK)
+				cw.SetFgColor(cw.BEIGE)
+			}
+			valStr := ""
+			for ind, val := range values {
+				if val == i {
+					if len(valStr) > 0 {
+						valStr += ","
+					}
+					valStr += strconv.Itoa(ind+1)
+				}
+			}
+			charsForFill := mw - len(str) - len(valStr)
+			if charsForFill > 0 {
+				str += strings.Repeat(" ", charsForFill) // fill the whole menu width
+			}
+			str += valStr
+			cw.PutString(str, mx, my+i+1)
+		}
+		cw.SetBgColor(cw.BLACK)
+
+		queue := make([]string, 0)
+		multiplicator := 1
+		for ind, str := range values {
+			if ind > 0 && values[ind-1] == str {
+				multiplicator += 1
+			} else {
+				if multiplicator > 1 {
+					queue[len(queue)-1] += "  x"+strconv.Itoa(multiplicator)
+					multiplicator = 1
+				}
+				queue = append(queue, items[str])
+			}
+		}
+		if multiplicator > 1 {
+			queue[len(queue)-1] += "  x"+strconv.Itoa(multiplicator)
+			multiplicator = 1
+		}
+		DrawSidebarInfoMenu("QUEUE", cw.BLUE, mx, my+len(items), mw, queue)
+
+		cw.Flush_console()
+
+		key := cw.ReadKey()
+		switch key {
+		case "DOWN", "2":
+			cursorIndex = (cursorIndex + 1) % len(items)
+		case "UP", "8":
+			cursorIndex -= 1
+			if cursorIndex < 0 {
+				cursorIndex = len(items) - 1
+			}
+		case "LEFT", "4":
+			for i := len(values) - 1; i >= 0; i-- {
+				if values[i] == cursorIndex {
+					values = append(values[:i], values[i+1:]...) // removes i-th element
+					break
+				}
+			}
+		case "RIGHT", "6":
+			values = append(values, cursorIndex)
 		case "ENTER":
 			return &values
 		case "ESCAPE":
