@@ -56,9 +56,10 @@ func createBuilding(name string, x, y int, f *faction) *pawn {
 			"/=\\" +
 			"=x=" +
 			"\\=/", colors: colors}
-		b = &pawn{ name: "Tech 1 KBot Lab",
-			buildingInfo: &building{w: 3, h: 3, appearance: app},
-			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 100, costM: 100, costE: 500}}
+		b = &pawn{name: "Tech 1 KBot Lab",
+			buildingInfo:              &building{w: 3, h: 3, appearance: app},
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 100, costM: 100, costE: 500},
+		}
 
 	case "corekbotlab":
 		colors := []int{
@@ -72,35 +73,35 @@ func createBuilding(name string, x, y int, f *faction) *pawn {
 		b = &pawn{name: "Tech 1 KBot Lab",
 			buildingInfo:              &building{w: 3, h: 3, appearance: app},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 100, costM: 100, costE: 500},
-			nanolatherInfo: &nanolatherInformation{builderCoeff: 1, allowedUnits: []string{"ak"} },
+			nanolatherInfo:            &nanolatherInformation{builderCoeff: 1, allowedUnits: []string{"ak", "thud"}},
 		}
 
-		case "armvehfactory":
-			colors := []int{
-				7, 7, 7, 7,
-				7, -1, -1, 7,
-				7, 7, 7, 7}
-			app := &buildingAppearance{chars: "" +
-				"====" +
-				"|--|" +
-				"\\==/", colors: colors}
-			b = &pawn{name: "Tech 1 Vehicle Factory",
-				buildingInfo: &building{w: 4, h: 3, appearance: app},
-				currentConstructionStatus: &constructionInformation{maxConstructionAmount: 100, costM: 100, costE: 500},
-			}
+	case "armvehfactory":
+		colors := []int{
+			7, 7, 7, 7,
+			7, -1, -1, 7,
+			7, 7, 7, 7}
+		app := &buildingAppearance{chars: "" +
+			"====" +
+			"|--|" +
+			"\\==/", colors: colors}
+		b = &pawn{name: "Tech 1 Vehicle Factory",
+			buildingInfo:              &building{w: 4, h: 3, appearance: app},
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 100, costM: 100, costE: 500},
+		}
 
-		case "corevehfactory":
-			colors := []int{
-				7, 7, 7, 7,
-				7, -1, -1, 7,
-				7, -1, -1, 7}
-			app := &buildingAppearance{chars: "" +
-				"=--=" +
-				"|/\\|" +
-				"\\\\//", colors: colors}
-			b = &pawn{name: "Tech 1 Vehicle Factory", buildingInfo: &building{ w: 4, h: 3, appearance: app},
-				currentConstructionStatus: &constructionInformation{maxConstructionAmount: 100, costM: 100, costE: 500},
-			}
+	case "corevehfactory":
+		colors := []int{
+			7, 7, 7, 7,
+			7, -1, -1, 7,
+			7, -1, -1, 7}
+		app := &buildingAppearance{chars: "" +
+			"=--=" +
+			"|/\\|" +
+			"\\\\//", colors: colors}
+		b = &pawn{name: "Tech 1 Vehicle Factory", buildingInfo: &building{w: 4, h: 3, appearance: app},
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 100, costM: 100, costE: 500},
+		}
 
 	default:
 		colors := []int{

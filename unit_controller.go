@@ -82,7 +82,7 @@ func (p *pawn) doConstructOrder(m *gameMap) {
 	order := p.order
 
 	if len(p.order.constructingQueue) == 0 {
-		p.reportOrderCompletion("Construction queue finished. ")
+		p.reportOrderCompletion("Construction queue finished")
 		p.order = nil
 		return
 	}
@@ -132,7 +132,8 @@ func doAllNanolathes(m *gameMap) { // does the building itself
 
 			if u.faction.economy.nanolatheAllowed {
 				if uCnst.currentConstructionStatus == nil {
-					u.reportOrderCompletion(u.name + ": WTF CONSTRUCTION STATUS IS NIL FOR "+uCnst.name)
+					u.reportOrderCompletion("WTF CONSTRUCTION STATUS IS NIL FOR "+uCnst.name)
+					continue
 				}
 				uCnst.currentConstructionStatus.currentConstructionAmount += u.nanolatherInfo.builderCoeff
 				if uCnst.currentConstructionStatus.isCompleted() {
