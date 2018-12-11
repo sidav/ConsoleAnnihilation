@@ -122,7 +122,7 @@ func ShowSidebarPickValuesMenu(title string, titleColor, mx, my, mw int, mh int,
 	}
 }
 
-func ShowSidebarCreateQueueMenu(title string, titleColor, mx, my, mw int, mh int, items []string) *[]int { // returns a slice of ordered indices
+func ShowSidebarCreateQueueMenu(title string, titleColor, mx, my, mw int, mh int, items []string) []int { // returns a slice of ordered indices
 	drawSidebarMenuTitle(title, titleColor, mx, my, mw)
 	cursorIndex := 0
 	values := make([]int, 0)
@@ -178,7 +178,7 @@ func ShowSidebarCreateQueueMenu(title string, titleColor, mx, my, mw int, mh int
 			queue[len(queue)-1] += "  x"+strconv.Itoa(multiplicator)
 			multiplicator = 1
 		}
-		DrawSidebarInfoMenu("QUEUE", cw.BLUE, mx, my+len(items), mw, queue)
+		DrawSidebarInfoMenu("QUEUE", cw.BLUE, mx, my+len(items)+1, mw, queue)
 
 		cw.Flush_console()
 
@@ -201,7 +201,7 @@ func ShowSidebarCreateQueueMenu(title string, titleColor, mx, my, mw int, mh int
 		case "RIGHT", "6":
 			values = append(values, cursorIndex)
 		case "ENTER":
-			return &values
+			return values
 		case "ESCAPE":
 			return nil
 		}

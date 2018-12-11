@@ -55,7 +55,7 @@ func (u *pawn) doMoveOrder(m *gameMap) { // TODO: rewrite
 
 func (u *pawn) doBuildOrder(m *gameMap) { // only moves to location and/or sets the spendings. Building itself is in doAllNanolathes()
 	order := u.order
-	tBld := order.targetBuilding
+	tBld := order.buildingToConstruct
 	ux, uy := u.getCoords()
 	ox, oy := tBld.getCenter()
 
@@ -77,7 +77,7 @@ func (u *pawn) doBuildOrder(m *gameMap) { // only moves to location and/or sets 
 func doAllNanolathes(m *gameMap) { // does the building itself
 	for _, u := range m.pawns {
 		if u.order != nil && u.order.orderType == order_build {
-			tBld := u.order.targetBuilding
+			tBld := u.order.buildingToConstruct
 
 			ux, uy := u.getCoords()
 			ox, oy := tBld.getCenter()

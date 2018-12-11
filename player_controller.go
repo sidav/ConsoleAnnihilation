@@ -51,28 +51,32 @@ func plr_selectPawn(f *faction, m *gameMap) bool { // true if pawn was selected
 }
 
 func plr_selectOrder(f *faction, m *gameMap) {
-	u := f.cursor.snappedPawn //m.getUnitAtCoordinates(cx, cy)
-	log.appendMessage(u.name + " is awaiting orders.")
+	selectedPawn := f.cursor.snappedPawn //m.getUnitAtCoordinates(cx, cy)
+	log.appendMessage(selectedPawn.name + " is awaiting orders.")
 
 	for {
 		cx, cy := f.cursor.getCoords()
 		f.cursor.currentCursorMode = CURSOR_MOVE
 		r_renderScreenForFaction(f, m)
-		r_renderPossibleOrdersForPawn(u)
+		r_renderPossibleOrdersForPawn(selectedPawn)
 		flushView()
 
 		keyPressed := cw.ReadKey()
 		switch keyPressed {
 		case "ENTER", "RETURN":
-			issueDefaultOrderToUnit(u, m, cx, cy)
+			issueDefaultOrderToUnit(selectedPawn, m, cx, cy)
 			return
 		case "b": // build
-			if u.canConstructBuildings() {
-				code := plr_selectBuidingToConstruct(u)
+			if selectedPawn.canConstructBuildings() {
+				code := plr_selectBuidingToConstruct(selectedPawn)
 				if code != "" {
-					plr_selectBuildingSite(u, createBuilding(code, cx, cy, f), m)
+					plr_selectBuildingSite(selectedPawn, createBuilding(code, cx, cy, f), m)
 					return
 				}
+			}
+		case "c": // construct units
+			if selectedPawn.canConstructUnits() {
+				plr_selectUnitsToConstruct(selectedPawn)
 			}
 		case "ESCAPE":
 			return
@@ -80,6 +84,29 @@ func plr_selectOrder(f *faction, m *gameMap) {
 			plr_moveCursor(m, f, keyPressed)
 		}
 	}
+}
+
+func plr_selectUnitsToConstruct(p *pawn) {
+	availableUnitCodes := p.nanolatherInfo.allowedUnits
+
+	names := make([]string, 0)
+
+	// descriptions := make([]string, 0)
+	for _, code := range availableUnitCodes {
+		name := createUnit(code, p.x, p.y, p.faction).name
+		names = append(names, name)
+		// descriptions = append(descriptions, desc)
+	}
+
+	indicesQueue := routines.ShowSidebarCreateQueueMenu("CONSTRUCT:", p.faction.getFactionColor(),
+		SIDEBAR_X, SIDEBAR_FLOOR_2,  SIDEBAR_W,  SIDEBAR_H - SIDEBAR_FLOOR_2, names)
+
+
+	p.order = &order{orderType: order_construct}
+	for _, i := range indicesQueue {
+		p.order.constructingQueue = append(p.order.constructingQueue, createUnit(availableUnitCodes[i], p.x, p.y, p.faction))
+	}
+	log.appendMessagef("Construction of %d units initiated.", len(p.order.constructingQueue))
 }
 
 func plr_selectBuidingToConstruct(p *pawn) string {
@@ -117,7 +144,7 @@ func plr_selectBuildingSite(p *pawn, b *pawn, m *gameMap) {
 		case "ENTER", "RETURN":
 			b.x = cx - b.buildingInfo.w/2
 			b.y = cy - b.buildingInfo.h/2
-			p.order = &order{orderType: order_build, x: cx, y: cy, targetBuilding: b}
+			p.order = &order{orderType: order_build, x: cx, y: cy, buildingToConstruct: b}
 			return
 		case "ESCAPE":
 			log.appendMessage("Construction cancelled: "+b.name)
