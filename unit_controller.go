@@ -8,7 +8,7 @@ func (p *pawn) isTimeToAct() bool {
 	return p.nextTurnToAct <= CURRENT_TURN
 }
 
-func (u *pawn) executeOrdersAsUnit(m *gameMap) {
+func (u *pawn) executeOrders(m *gameMap) {
 	if !u.isTimeToAct() {
 		return
 	}
@@ -27,7 +27,10 @@ func (u *pawn) executeOrdersAsUnit(m *gameMap) {
 		u.doMoveOrder(m)
 	case order_build:
 		u.doBuildOrder(m)
+	case order_construct:
+		u.doConstructOrder(m)
 	}
+
 	// move
 
 }
@@ -74,8 +77,24 @@ func (u *pawn) doBuildOrder(m *gameMap) { // only moves to location and/or sets 
 	}
 }
 
+func (p *pawn) doConstructOrder(m *gameMap) {
+	order := p.order
+
+	if len(p.order.constructingQueue) == 0 {
+		p.reportOrderCompletion("Construction queue finished. ")
+		p.order = nil
+		return
+	}
+
+	uCnst := order.constructingQueue[0]
+
+	p.res.metalSpending = p.nanolatherInfo.builderCoeff * uCnst.currentConstructionStatus.costM / uCnst.currentConstructionStatus.maxConstructionAmount
+	p.res.energySpending = p.nanolatherInfo.builderCoeff * uCnst.currentConstructionStatus.costE / uCnst.currentConstructionStatus.maxConstructionAmount
+}
+
 func doAllNanolathes(m *gameMap) { // does the building itself
 	for _, u := range m.pawns {
+		// buildings construction
 		if u.order != nil && u.order.orderType == order_build {
 			tBld := u.order.buildingToConstruct
 
@@ -99,6 +118,28 @@ func doAllNanolathes(m *gameMap) { // does the building itself
 				if tBld.currentConstructionStatus.isCompleted() {
 					tBld.currentConstructionStatus = nil
 					u.order = nil
+					u.reportOrderCompletion("Nanolathe completed")
+				}
+			}
+		}
+
+		// units construction
+		if u.order != nil && u.order.orderType == order_construct {
+			uCnst := u.order.constructingQueue[0]
+
+			ux, uy := u.getCenter()
+
+			if u.faction.economy.nanolatheAllowed {
+				if uCnst.currentConstructionStatus == nil {
+					u.reportOrderCompletion(u.name + ": WTF CONSTRUCTION STATUS IS NIL FOR "+uCnst.name)
+				}
+				uCnst.currentConstructionStatus.currentConstructionAmount += u.nanolatherInfo.builderCoeff
+				if uCnst.currentConstructionStatus.isCompleted() {
+					uCnst.currentConstructionStatus = nil
+					uCnst.x, uCnst.y = ux, uy
+					uCnst.order = &order{orderType: order_move, x: ux, y: u.y + u.buildingInfo.h + 1}
+					m.addPawn(uCnst)
+					u.order.constructingQueue = u.order.constructingQueue[1:]
 					u.reportOrderCompletion("Nanolathe completed")
 				}
 			}

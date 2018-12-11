@@ -60,7 +60,7 @@ func (g *gameMap) init() {
 	}
 
 	g.factions = append(g.factions, createFaction("The Core Contingency", 0, true))
-	g.addPawn(createUnit("commander", 3, 5, g.factions[0]))
+	g.addPawn(createUnit("commander", 3, 5, g.factions[0], true))
 	// g.addBuilding(createBuilding("metalmaker", 5, 1, g.factions[0]), true)
 	// g.addUnit(createUnit("weasel", 3, 6, g.factions[0]))
 	// g.addUnit(createUnit("thecan", 3, 4, g.factions[0]))
@@ -68,8 +68,8 @@ func (g *gameMap) init() {
 	// g.addBuilding(createBuilding("corevehfactory", 5, 5, g.factions[0]), true)
 
 	g.factions = append(g.factions, createFaction("The Arm Rebellion", 1, false))
-	g.addPawn(createUnit("commander", mapW-10, 5, g.factions[1]))
-	g.addPawn(createUnit("ak", mapW-1, 4, g.factions[1]))
+	g.addPawn(createUnit("commander", mapW-10, 5, g.factions[1], true))
+	g.addPawn(createUnit("ak", mapW-1, 4, g.factions[1], true))
 	g.addBuilding(createBuilding("armkbotlab", mapW-5, 1, g.factions[1]), true )
 	g.addBuilding(createBuilding("armvehfactory", mapW-5, 5, g.factions[1]), true)
 

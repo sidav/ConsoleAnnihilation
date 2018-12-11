@@ -1,7 +1,7 @@
 package main
 
 // TODO: move unit stats to JSON
-func createUnit(name string, x, y int, f *faction) *pawn {
+func createUnit(name string, x, y int, f *faction, alreadyConstructed bool) *pawn {
 	var newUnit *pawn
 	switch name {
 	case "commander":
@@ -22,6 +22,7 @@ func createUnit(name string, x, y int, f *faction) *pawn {
 	case "ak":
 		newUnit = &pawn {name: "A.K.",
 		unitInfo: &unit{ticksForMoveOneCell: 9, appearance: ccell{char: 'a'}},
+		currentConstructionStatus: &constructionInformation{maxConstructionAmount: 10, costM: 250, costE: 500},
 		}
 	default:
 		newUnit = &pawn {name: "UNKNOWN UNIT",
@@ -31,5 +32,8 @@ func createUnit(name string, x, y int, f *faction) *pawn {
 	newUnit.x = x
 	newUnit.y = y
 	newUnit.faction = f
+	if alreadyConstructed {
+		newUnit.currentConstructionStatus = nil
+	}
 	return newUnit
 }

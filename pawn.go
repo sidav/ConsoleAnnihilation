@@ -49,13 +49,13 @@ func (p *pawn) getCenter() (int, int) {
 	}
 }
 
-func (p *pawn) executeOrders(m *gameMap)	{
-	if p.isBuilding() {
-		return
-	} else {
-		p.executeOrdersAsUnit(m)
-	}
-}
+//func (p *pawn) executeOrders(m *gameMap)	{
+//	if p.isBuilding() {
+//		return
+//	} else {
+//		p.executeOrders(m)
+//	}
+//}
 
 func (p *pawn) getCurrentOrderDescription() string {
 	if p.currentConstructionStatus != nil {
@@ -72,6 +72,8 @@ func (p *pawn) getCurrentOrderDescription() string {
 		return "MOVING"
 	case order_build:
 		return "NANOLATHING"
+	case order_construct:
+		return "CONSTRUCTING"
 	default:
 		return "DOING SOMETHING"
 	}

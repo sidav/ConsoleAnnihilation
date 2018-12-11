@@ -93,7 +93,7 @@ func plr_selectUnitsToConstruct(p *pawn) {
 
 	// descriptions := make([]string, 0)
 	for _, code := range availableUnitCodes {
-		name := createUnit(code, p.x, p.y, p.faction).name
+		name := createUnit(code, p.x, p.y, p.faction, false).name
 		names = append(names, name)
 		// descriptions = append(descriptions, desc)
 	}
@@ -104,7 +104,8 @@ func plr_selectUnitsToConstruct(p *pawn) {
 
 	p.order = &order{orderType: order_construct}
 	for _, i := range indicesQueue {
-		p.order.constructingQueue = append(p.order.constructingQueue, createUnit(availableUnitCodes[i], p.x, p.y, p.faction))
+		p.order.constructingQueue = append(p.order.constructingQueue,
+			createUnit(availableUnitCodes[i], p.x, p.y, p.faction, false))
 	}
 	log.appendMessagef("Construction of %d units initiated.", len(p.order.constructingQueue))
 }
