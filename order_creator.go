@@ -9,5 +9,7 @@ func issueDefaultOrderToUnit(u *pawn, m *gameMap, x, y int) {
 			return
 		}
 	}
-	u.setOrder(&order{orderType: order_move, x:x, y:y})
+	if u.canMove() {
+		u.setOrder(&order{orderType: order_move, x: x, y: y})
+	}
 }

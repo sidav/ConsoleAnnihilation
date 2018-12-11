@@ -9,5 +9,5 @@ func (p *pawn) canConstructUnits() bool {
 }
 
 func (p *pawn) canMove() bool {
-	return true // temp
+	return p.moveInfo != nil
 }

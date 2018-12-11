@@ -13,6 +13,7 @@ type pawn struct {
 	res                       *pawnResourceInformation
 	nanolatherInfo            *nanolatherInformation
 	currentConstructionStatus *constructionInformation
+	moveInfo                  *pawnMovementInformation
 	nextTurnToAct             int
 }
 

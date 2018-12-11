@@ -47,7 +47,8 @@ func (u *pawn) doMoveOrder(m *gameMap) { // TODO: rewrite
 
 	u.x += vx
 	u.y += vy
-	u.nextTurnToAct = CURRENT_TURN + u.unitInfo.ticksForMoveOneCell
+
+	u.nextTurnToAct = CURRENT_TURN + u.moveInfo.ticksForMoveSingleCell
 
 	if u.x == ox && u.y == oy {
 		u.reportOrderCompletion("Arrived")
