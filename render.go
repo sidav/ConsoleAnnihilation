@@ -256,7 +256,7 @@ func renderOrderLine(fromx, fromy, tox, toy int, flush bool, vx, vy int) {
 				char = 'X'
 			}
 			viewx, viewy := line[i].X-vx, line[i].Y-vy
-			if areGlobalCoordsOnScreen(viewx, viewy, vx, vy) {
+			if areCoordsInRect(viewx, viewy, 0, 0, VIEWPORT_W, VIEWPORT_H) {
 				cw.PutChar(char, viewx, viewy)
 			}
 		// }
