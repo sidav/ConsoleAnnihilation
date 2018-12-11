@@ -67,6 +67,11 @@ func (u *pawn) doBuildOrder(m *gameMap) { // only moves to location and/or sets 
 	building_h := tBld.buildingInfo.h + 1
 	sqdistance := (ox-ux)*(ox-ux) + (oy-uy)*(oy-uy)
 
+	if tBld == nil {
+		log.appendMessage(u.name + " NIL BUILD")
+		return
+	}
+
 	if sqdistance <= building_w*building_w || sqdistance <= building_h*building_h { // is in building range
 		u.res.metalSpending = u.nanolatherInfo.builderCoeff * tBld.currentConstructionStatus.costM / tBld.currentConstructionStatus.maxConstructionAmount
 		u.res.energySpending = u.nanolatherInfo.builderCoeff * tBld.currentConstructionStatus.costE / tBld.currentConstructionStatus.maxConstructionAmount
@@ -114,6 +119,8 @@ func doAllNanolathes(m *gameMap) { // does the building itself
 			if u.faction.economy.nanolatheAllowed && (sqdistance <= building_w*building_w || sqdistance <= building_h*building_h){
 				if tBld.currentConstructionStatus == nil {
 					u.reportOrderCompletion("Nanolathe interrupted")
+					u.order = nil 
+					continue
 				}
 				tBld.currentConstructionStatus.currentConstructionAmount += u.nanolatherInfo.builderCoeff
 				if tBld.currentConstructionStatus.isCompleted() {

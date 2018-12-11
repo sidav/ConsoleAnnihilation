@@ -9,7 +9,15 @@ func createUnit(name string, x, y int, f *faction, alreadyConstructed bool) *paw
 			unitInfo:       &unit{appearance: ccell{char: '@'}},
 			moveInfo:       &pawnMovementInformation{ticksForMoveSingleCell: 10},
 			res:            &pawnResourceInformation{metalIncome: 1, energyIncome: 10, metalStorage: 1000, energyStorage: 1000},
-			nanolatherInfo: &nanolatherInformation{builderCoeff: 10, allowedBuildings: []string{"corekbotlab", "solar", "metalmaker", "corevehfactory", "quark"}},
+			nanolatherInfo: &nanolatherInformation{builderCoeff: 10, allowedBuildings: []string{"corekbotlab", "solar", "metalmaker", "corevehfactory"}},
+		}
+	case "coreck":
+		newUnit = &pawn{name: "Tech 1 Construction KBot",
+			unitInfo:       &unit{appearance: ccell{char: 'k'}},
+			moveInfo:       &pawnMovementInformation{ticksForMoveSingleCell: 5},
+			res:            &pawnResourceInformation{metalStorage: 25, energyStorage: 50},
+			nanolatherInfo: &nanolatherInformation{builderCoeff: 5, allowedBuildings: []string{"corekbotlab", "solar", "metalmaker", "corevehfactory", "quark"}},
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 25, costM: 650, costE: 1200},
 		}
 	case "weasel":
 		newUnit = &pawn{name: "Weasel",
