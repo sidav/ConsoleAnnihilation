@@ -45,15 +45,18 @@ func (u *pawn) doMoveOrder(m *gameMap) { // TODO: rewrite
 	vector.TransformIntoUnitVector()
 	vx, vy := vector.GetRoundedCoords()
 
-	u.x += vx
-	u.y += vy
+	if u.coll_canMoveByVector(vx, vy) {
 
-	u.nextTurnToAct = CURRENT_TURN + u.moveInfo.ticksForMoveSingleCell
+		u.x += vx
+		u.y += vy
 
-	if u.x == ox && u.y == oy {
-		u.reportOrderCompletion("Arrived")
-		u.order = nil
-		return
+		u.nextTurnToAct = CURRENT_TURN + u.moveInfo.ticksForMoveSingleCell
+
+		if u.x == ox && u.y == oy {
+			u.reportOrderCompletion("Arrived")
+			u.order = nil
+			return
+		}
 	}
 }
 
@@ -135,7 +138,7 @@ func doAllNanolathes(m *gameMap) { // does the building itself
 		if u.order != nil && u.order.orderType == order_construct {
 			uCnst := u.order.constructingQueue[0]
 
-			ux, uy := u.getCenter()
+			ux, _ := u.getCenter()
 
 			if u.faction.economy.nanolatheAllowed {
 				if uCnst.currentConstructionStatus == nil {
@@ -145,7 +148,7 @@ func doAllNanolathes(m *gameMap) { // does the building itself
 				uCnst.currentConstructionStatus.currentConstructionAmount += u.nanolatherInfo.builderCoeff
 				if uCnst.currentConstructionStatus.isCompleted() {
 					uCnst.currentConstructionStatus = nil
-					uCnst.x, uCnst.y = ux, uy
+					uCnst.x, uCnst.y = ux, u.y + u.buildingInfo.h - 1
 					uCnst.order = &order{}
 					uCnst.order.cloneFrom(u.nanolatherInfo.defaultOrderForUnitBuilt)
 					m.addPawn(uCnst)
