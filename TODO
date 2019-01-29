@@ -3,3 +3,5 @@ Closest plans:
 - better collision detection
 - pathfinding
 - replace a single order var for pawns with an order queue
+- Attacking
+- Non-hitscan (projectile) weapons
