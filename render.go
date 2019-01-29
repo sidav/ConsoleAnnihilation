@@ -14,7 +14,7 @@ var (
 	SIDEBAR_W            = CONSOLE_W - VIEWPORT_W - 1
 	SIDEBAR_H            = CONSOLE_H - LOG_HEIGHT
 	SIDEBAR_FLOOR_2      = 7  // y-coord right below resources info
-	SIDEBAR_FLOOR_3      = 10 // y-coord right below "floor 2"
+	SIDEBAR_FLOOR_3      = 11 // y-coord right below "floor 2"
 )
 
 func r_setFgColorByCcell(c *ccell) {
@@ -31,7 +31,7 @@ func r_updateBoundsIfNeccessary() {
 		SIDEBAR_W            = CONSOLE_W - VIEWPORT_W - 1
 		SIDEBAR_H            = CONSOLE_H - LOG_HEIGHT
 		SIDEBAR_FLOOR_2      = 7  // y-coord right below resources info
-		SIDEBAR_FLOOR_3      = 10 // y-coord right below "floor 2"
+		SIDEBAR_FLOOR_3      = 11 // y-coord right below "floor 2"
 	}
 }
 
@@ -152,6 +152,14 @@ func renderInfoOnCursor(f *faction, g *gameMap) {
 	}
 
 	if len(details) > 0 {
+		armorInfo := fmt.Sprintf("Armor %d / %d", sp.hitpoints, sp.maxHitpoints)
+		if sp.isLight {
+			armorInfo += ", light"
+		}
+		if sp.isHeavy {
+			armorInfo += ", heavy"
+		}
+		details = append(details, armorInfo)
 		if res != nil {
 			economyInfo := fmt.Sprintf("METAL: (+%d / -%d) ENERGY: (+%d / -%d)",
 				res.metalIncome, res.metalSpending, res.energyIncome, res.energySpending+res.energyReqForConditionalMetalIncome)
@@ -169,9 +177,11 @@ func r_renderPossibleOrdersForPawn(p *pawn) {
 	if p.canConstructUnits() {
 		orders = append(orders, "(C)onstruct units")
 	}
-	orders = append(orders, "(A)ttack-move")
+	if p.hasWeapons() {
+		orders = append(orders, "(A)ttack-move")
+	}
 	routines.DrawSidebarInfoMenu("Orders for: "+p.name, p.faction.getFactionColor(),
-		SIDEBAR_X, SIDEBAR_FLOOR_3, SIDEBAR_W, orders) // move to render?
+		SIDEBAR_X, SIDEBAR_FLOOR_3, SIDEBAR_W, orders)
 }
 
 func flushView() {

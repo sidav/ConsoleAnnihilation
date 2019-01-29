@@ -14,7 +14,15 @@ type pawn struct {
 	nanolatherInfo            *nanolatherInformation
 	currentConstructionStatus *constructionInformation
 	moveInfo                  *pawnMovementInformation
+	weapons                   []*pawnWeaponInformation
 	nextTurnToAct             int
+	// armor info:
+	hitpoints, maxHitpoints int
+	isLight, isHeavy bool // these are not mutually excluding lol. Trust me, I'm a programmer
+}
+
+func (p *pawn) hasWeapons() bool {
+	return len(p.weapons) > 0
 }
 
 func (p *pawn) isUnit() bool {

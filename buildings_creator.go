@@ -115,6 +115,10 @@ func createBuilding(name string, x, y int, f *faction) *pawn {
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 100, costM: 100, costE: 500},
 		}
 	}
+	if b.maxHitpoints == 0 {
+		b.maxHitpoints = 1
+	}
+	b.hitpoints = b.maxHitpoints
 	b.x = x
 	b.y = y
 	b.faction = f
