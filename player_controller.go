@@ -38,6 +38,8 @@ func plr_selectPawn(f *faction, m *gameMap) bool { // true if pawn was selected
 				return false
 			}
 			return true
+		case "TAB":
+			// TODO: Add the "snap cursor to the next idle unit" code.
 		case "C":
 			return trySnapCursorToCommander(f)
 		case "ESCAPE":
