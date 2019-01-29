@@ -25,6 +25,8 @@ func (u *pawn) executeOrders(m *gameMap) {
 	switch order.orderType {
 	case order_move:
 		u.doMoveOrder(m)
+	case order_attack:
+		u.doAttackOrder(m)
 	case order_build:
 		u.doBuildOrder(m)
 	case order_construct:
@@ -60,6 +62,21 @@ func (u *pawn) doMoveOrder(m *gameMap) { // TODO: rewrite
 	}
 }
 
+func (p *pawn) doAttackOrder(m *gameMap) { // TODO: rewrite
+	order := p.order
+
+	ux, uy := p.getCoords()
+	targetX, targetY := order.targetPawn.getCenter()
+
+	if getSqDistanceBetween(ux, uy, targetX, targetY) > p.getMaxRadiusToFire() * p.getMaxRadiusToFire() {
+		order.x = targetX
+		order.y = targetY
+		p.doMoveOrder(m)
+		return
+	}
+	log.appendMessage("pew pew")
+}
+
 func (u *pawn) doBuildOrder(m *gameMap) { // only moves to location and/or sets the spendings. Building itself is in doAllNanolathes()
 	order := u.order
 	tBld := order.buildingToConstruct
@@ -68,7 +85,7 @@ func (u *pawn) doBuildOrder(m *gameMap) { // only moves to location and/or sets 
 
 	building_w := tBld.buildingInfo.w + 1
 	building_h := tBld.buildingInfo.h + 1
-	sqdistance := (ox-ux)*(ox-ux) + (oy-uy)*(oy-uy)
+	sqdistance := getSqDistanceBetween(ox, oy, ux, uy)//(ox-ux)*(ox-ux) + (oy-uy)*(oy-uy)
 
 	if tBld == nil {
 		log.appendMessage(u.name + " NIL BUILD")

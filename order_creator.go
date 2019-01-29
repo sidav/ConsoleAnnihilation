@@ -8,6 +8,11 @@ func issueDefaultOrderToUnit(p *pawn, m *gameMap, x, y int) {
 	}
 	target := m.getPawnAtCoordinates(x, y)
 	if target != nil {
+		if target.faction != p.faction {
+			p.setOrder(&order{orderType: order_attack, targetPawn: target, x: x, y: y})
+			log.appendMessage(p.name + ": attacking.")
+			return
+		}
 		if target.isBuilding() && target.currentConstructionStatus.isCompleted() == false {
 			p.setOrder(&order{orderType: order_build, buildingToConstruct: target})
 			log.appendMessage(p.name + ": Helps nanolathing")

@@ -10,11 +10,15 @@ func areCoordsInRect(x, y, rx, ry, w, h int) bool {
 	return x >= rx && x < rx+w && y >= ry && y < ry+h
 }
 
+func getSqDistanceBetween(x1, y1, x2, y2 int) int {
+	return (x1-x2)*(x1-x2) + (y1-y2)*(y1-y2)
+}
+
 var (
 	GAME_IS_RUNNING = true
-	log *LOG
-	CURRENT_TURN = 0
-	CURRENT_MAP *gameMap
+	log             *LOG
+	CURRENT_TURN    = 0
+	CURRENT_MAP     *gameMap
 )
 
 func main() {
@@ -44,7 +48,7 @@ func main() {
 				plr_control(f, CURRENT_MAP)
 			}
 		}
-		for i:=0; i<10; i++ {
+		for i := 0; i < 10; i++ {
 			for _, u := range CURRENT_MAP.pawns {
 				u.executeOrders(CURRENT_MAP)
 			}

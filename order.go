@@ -14,7 +14,7 @@ const (
 type order struct {
 	orderType  ORDER_TYPE_ENUM
 	x, y       int
-	targetUnit *pawn
+	targetPawn *pawn
 
 	buildingHasBeenPlaced bool // for build orders
 	buildingToConstruct   *pawn
@@ -24,7 +24,7 @@ type order struct {
 func (clone *order) cloneFrom(o *order) {
 	clone.orderType = o.orderType
 	clone.x, clone.y = o.x, o.y
-	clone.targetUnit = o.targetUnit
+	clone.targetPawn = o.targetPawn
 	clone.buildingHasBeenPlaced = o.buildingHasBeenPlaced
 	clone.buildingToConstruct = o.buildingToConstruct
 }

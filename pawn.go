@@ -25,6 +25,16 @@ func (p *pawn) hasWeapons() bool {
 	return len(p.weapons) > 0
 }
 
+func (p *pawn) getMaxRadiusToFire() int {
+	max := 0
+	for _, weap := range p.weapons {
+		if weap.attackRadius > max {
+			max = weap.attackRadius
+		}
+	}
+	return max
+}
+
 func (p *pawn) isUnit() bool {
 	return p.unitInfo != nil
 }
