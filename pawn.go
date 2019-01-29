@@ -89,6 +89,8 @@ func (p *pawn) getCurrentOrderDescription() string {
 		return "STANDBY"
 	case order_move:
 		return "MOVING"
+	case order_attack:
+		return "ASSAULTING"
 	case order_build:
 		return fmt.Sprintf("NANOLATHING (%d%% ready)",
 			p.order.buildingToConstruct.currentConstructionStatus.getCompletionPercent())

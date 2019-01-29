@@ -8,7 +8,7 @@ func r_renderCursor(f *faction) {
 	case CURSOR_SELECT:
 		renderSelectCursor(f)
 	case CURSOR_MOVE:
-		renderMoveCursor(c)
+		renderMoveCursor(f)
 	case CURSOR_BUILD:
 		renderBuildCursor(c)
 	}
@@ -48,11 +48,15 @@ func renderSelectCursor(f *faction) {
 	flushView()
 }
 
-func renderMoveCursor(c *cursor) {
+func renderMoveCursor(f *faction) {
+	c := f.cursor
 	x := VIEWPORT_W / 2
 	y := VIEWPORT_H / 2
 	// cw.SetFgColorRGB(128, 255, 128)
 	cw.SetFgColor(cw.GREEN)
+	if c.snappedPawn != nil && c.snappedPawn.faction != f {
+		cw.SetFgColor(cw.DARK_RED)
+	}
 
 	cw.PutChar('>', x-1, y)
 	cw.PutChar('<', x+1, y)

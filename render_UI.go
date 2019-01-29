@@ -87,6 +87,11 @@ func renderOrderLine(p *pawn) {
 		}
 	}
 	if ordr != nil {
+		if ordr.orderType == order_attack {
+			cw.SetFgColor(cw.RED)
+		} else {
+			cw.SetFgColor(cw.YELLOW)
+		}
 		f := p.faction
 		cx, cy := p.getCenter()
 		renderLine(cx, cy, ordr.x, ordr.y, false, f.cursor.x-VIEWPORT_W/2, f.cursor.y-VIEWPORT_H/2)
@@ -110,7 +115,7 @@ func renderLine(fromx, fromy, tox, toy int, flush bool, vx, vy int) {
 		//if d.isPawnPresent(x, y) {
 		//	renderPawn(d.getPawnAt(x, y), true)
 		//} else {
-		cw.SetFgColor(cw.YELLOW)
+		// cw.SetFgColor(cw.YELLOW)
 		if i == len(line)-1 {
 			char = 'X'
 		}
