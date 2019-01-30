@@ -10,6 +10,10 @@ func areCoordsInRect(x, y, rx, ry, w, h int) bool {
 	return x >= rx && x < rx+w && y >= ry && y < ry+h
 }
 
+func areCoordsInRange(fx, fy, tx, ty, r int) bool {
+	return (fx-tx)*(fx-tx) + (fy-ty)*(fy-ty) <= r*r
+}
+
 func getSqDistanceBetween(x1, y1, x2, y2 int) int {
 	return (x1-x2)*(x1-x2) + (y1-y2)*(y1-y2)
 }
@@ -51,6 +55,7 @@ func main() {
 		for i := 0; i < 10; i++ {
 			for _, u := range CURRENT_MAP.pawns {
 				u.executeOrders(CURRENT_MAP)
+				u.openFireIfPossible()
 			}
 			CURRENT_TURN += 1
 		}

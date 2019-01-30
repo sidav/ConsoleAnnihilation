@@ -26,7 +26,7 @@ func (u *pawn) executeOrders(m *gameMap) {
 	case order_move:
 		u.doMoveOrder(m)
 	case order_attack:
-		u.doAttackOrder(m)
+		u.doAttackOrder()
 	case order_build:
 		u.doBuildOrder(m)
 	case order_construct:
@@ -62,19 +62,52 @@ func (u *pawn) doMoveOrder(m *gameMap) { // TODO: rewrite
 	}
 }
 
-func (p *pawn) doAttackOrder(m *gameMap) { // TODO: rewrite
+func (p *pawn) doAttackOrder() { // Only moves the unit to a firing position. The firing itself is in
 	order := p.order
 
 	ux, uy := p.getCoords()
 	targetX, targetY := order.targetPawn.getCenter()
 
-	if getSqDistanceBetween(ux, uy, targetX, targetY) > p.getMaxRadiusToFire() * p.getMaxRadiusToFire() {
+	if getSqDistanceBetween(ux, uy, targetX, targetY) > p.getMaxRadiusToFire()*p.getMaxRadiusToFire() {
 		order.x = targetX
 		order.y = targetY
-		p.doMoveOrder(m)
+		p.doMoveOrder(CURRENT_MAP)
 		return
 	}
-	log.appendMessage("pew pew")
+}
+
+func (p *pawn) openFireIfPossible() { // does the firing, does NOT necessary mean execution of attack order (but can be)
+	if !p.hasWeapons() || p.order != nil && p.order.orderType == order_build {
+		return
+	}
+	var pawnInOrder *pawn
+	if p.order != nil && p.order.targetPawn != nil {
+		pawnInOrder = p.order.targetPawn
+	}
+	for _, wpn := range p.weapons {
+		if (wpn.canBeFiredOnMove && wpn.nextTurnToFire > CURRENT_TURN) || (!wpn.canBeFiredOnMove && !p.isTimeToAct()) {
+			// log.appendMessage(fmt.Sprintf("Skipping fire: TtA:%b CBFoM:%b TRN: %b", p.isTimeToAct() ,wpn.canBeFiredOnMove, wpn.nextTurnToFire > CURRENT_TURN))
+			continue
+		}
+		var target *pawn
+		radius := wpn.attackRadius
+		if pawnInOrder != nil && areCoordsInRange(p.x, p.y, pawnInOrder.x, pawnInOrder.y, radius) {
+			target = pawnInOrder
+		} else {
+			potential_targets := CURRENT_MAP.getEnemyPawnsInRadiusFrom(p.x, p.y, radius, p.faction)
+			if len(potential_targets) > 0 {
+				target = potential_targets[0]
+			}
+		}
+		if target != nil {
+			if wpn.canBeFiredOnMove {
+				wpn.nextTurnToFire = CURRENT_TURN + wpn.attackDelay
+			} else {
+				p.nextTurnToAct = CURRENT_TURN + wpn.attackDelay
+			}
+			log.appendMessage(p.name + " pew pew " + target.name) // TODO: damage dealing
+		}
+	}
 }
 
 func (u *pawn) doBuildOrder(m *gameMap) { // only moves to location and/or sets the spendings. Building itself is in doAllNanolathes()
@@ -85,7 +118,7 @@ func (u *pawn) doBuildOrder(m *gameMap) { // only moves to location and/or sets 
 
 	building_w := tBld.buildingInfo.w + 1
 	building_h := tBld.buildingInfo.h + 1
-	sqdistance := getSqDistanceBetween(ox, oy, ux, uy)//(ox-ux)*(ox-ux) + (oy-uy)*(oy-uy)
+	sqdistance := getSqDistanceBetween(ox, oy, ux, uy) //(ox-ux)*(ox-ux) + (oy-uy)*(oy-uy)
 
 	if tBld == nil {
 		log.appendMessage(u.name + " NIL BUILD")
@@ -136,10 +169,10 @@ func doAllNanolathes(m *gameMap) { // does the building itself
 				m.addBuilding(tBld, false)
 			}
 
-			if u.faction.economy.nanolatheAllowed && (sqdistance <= building_w*building_w || sqdistance <= building_h*building_h){
+			if u.faction.economy.nanolatheAllowed && (sqdistance <= building_w*building_w || sqdistance <= building_h*building_h) {
 				if tBld.currentConstructionStatus == nil {
 					u.reportOrderCompletion("Nanolathe interrupted")
-					u.order = nil 
+					u.order = nil
 					continue
 				}
 				tBld.currentConstructionStatus.currentConstructionAmount += u.nanolatherInfo.builderCoeff
@@ -159,13 +192,13 @@ func doAllNanolathes(m *gameMap) { // does the building itself
 
 			if u.faction.economy.nanolatheAllowed {
 				if uCnst.currentConstructionStatus == nil {
-					u.reportOrderCompletion("WTF CONSTRUCTION STATUS IS NIL FOR "+uCnst.name)
+					u.reportOrderCompletion("WTF CONSTRUCTION STATUS IS NIL FOR " + uCnst.name)
 					continue
 				}
 				uCnst.currentConstructionStatus.currentConstructionAmount += u.nanolatherInfo.builderCoeff
 				if uCnst.currentConstructionStatus.isCompleted() {
 					uCnst.currentConstructionStatus = nil
-					uCnst.x, uCnst.y = ux, u.y + u.buildingInfo.h - 1
+					uCnst.x, uCnst.y = ux, u.y+u.buildingInfo.h-1
 					uCnst.order = &order{}
 					uCnst.order.cloneFrom(u.nanolatherInfo.defaultOrderForUnitBuilt)
 					m.addPawn(uCnst)

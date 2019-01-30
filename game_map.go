@@ -32,13 +32,35 @@ func (g *gameMap) getPawnAtCoordinates(x, y int) *pawn {
 	return nil
 }
 
-func (g *gameMap) getUnitAtCoordinates(x, y int) *pawn {
+func (g *gameMap) getUnitAtCoordinates(x, y int) *pawn { // TODO: remove (as a duplicate of getPawnAtCoordinates)
 	for _, b := range g.pawns {
 		if b.isOccupyingCoords(x, y) {
 			return b
 		}
 	}
 	return nil
+}
+
+func (g *gameMap) getPawnsInRadiusFrom(x, y, radius int) []*pawn {
+	var arr []*pawn
+	for _, p := range g.pawns {
+		px, py := p.getCenter()
+		if getSqDistanceBetween(x, y, px, py) <= radius*radius {
+			arr = append(arr, p)
+		}
+	}
+	return arr
+}
+
+func (g *gameMap) getEnemyPawnsInRadiusFrom(x, y, radius int, f *faction) []*pawn {
+	var arr []*pawn
+	for _, p := range g.pawns {
+		px, py := p.getCenter()
+		if p.faction != f && getSqDistanceBetween(x, y, px, py) <= radius*radius {
+			arr = append(arr, p)
+		}
+	}
+	return arr
 }
 
 func (g *gameMap) getBuildingAtCoordinates(x, y int) *pawn {
