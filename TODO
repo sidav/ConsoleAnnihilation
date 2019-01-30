@@ -5,4 +5,4 @@ Closest plans:
 - replace a single order var for pawns with an order queue
 - Attacking
 - Non-hitscan (projectile) weapons
-- Add the "snap cursor to the next idle unit" code.
+- Separate log for each faction

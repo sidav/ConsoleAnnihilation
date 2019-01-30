@@ -39,7 +39,7 @@ func plr_selectPawn(f *faction, m *gameMap) bool { // true if pawn was selected
 			}
 			return true
 		case "TAB":
-			// TODO: Add the "snap cursor to the next idle unit" code.
+			trySelectNextIdlePawn(f)
 		case "C":
 			return trySnapCursorToCommander(f)
 		case "ESCAPE":
@@ -203,6 +203,23 @@ func trySnapCursorToCommander(f *faction) bool {
 		}
 	}
 	return false
+}
+
+func trySelectNextIdlePawn(f *faction) {
+	totalPawnsOnMap := len(CURRENT_MAP.pawns)
+	for offset := 0; offset < totalPawnsOnMap; offset++ {
+		index_to_select := (offset + f.cursor.lastSelectedIdlePawnIndex) % totalPawnsOnMap
+
+		p := CURRENT_MAP.pawns[index_to_select]
+		if p.faction == f && (p.order == nil || p.order.orderType == order_hold ) {
+			log.appendMessage("Next idle unit selected.")
+			f.cursor.lastSelectedIdlePawnIndex = index_to_select + 1
+			f.cursor.x, f.cursor.y = p.getCenter()
+			f.cursor.snappedPawn = p
+			return
+		}
+	}
+	log.appendMessage("There currently are no idle units in your army, Commander.")
 }
 
 func plr_keyToDirection(keyPressed string) (int, int) {
