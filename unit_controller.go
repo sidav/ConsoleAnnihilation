@@ -77,7 +77,7 @@ func (p *pawn) doAttackOrder() { // Only moves the unit to a firing position. Th
 }
 
 func (p *pawn) openFireIfPossible() { // does the firing, does NOT necessary mean execution of attack order (but can be)
-	if !p.hasWeapons() || p.order != nil && p.order.orderType == order_build {
+	if p.currentConstructionStatus != nil || !p.hasWeapons() || p.order != nil && p.order.orderType == order_build {
 		return
 	}
 	var pawnInOrder *pawn

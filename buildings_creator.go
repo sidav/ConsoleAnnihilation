@@ -103,6 +103,19 @@ func createBuilding(name string, x, y int, f *faction) *pawn {
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 100, costM: 100, costE: 500},
 		}
 
+	case "lturret":
+		colors := []int{-1}
+		app := &buildingAppearance{chars: "T", colors: colors}
+		b = &pawn{name: "Light Laser Turret", maxHitpoints: 90, isHeavy: true,
+			buildingInfo: &building{w: 1, h: 1, appearance: app},
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 100, costM: 250, costE: 900},
+			weapons: []*pawnWeaponInformation{
+				{attackDelay: 12, attackEnergyCost: 15, attackRadius: 6, attacksLand: true,
+					hitscan: &WeaponHitscan{baseDamage:6},
+				},
+			},
+		}
+
 	default:
 		colors := []int{
 			-1, -1,

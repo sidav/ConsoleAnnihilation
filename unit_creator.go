@@ -9,7 +9,7 @@ func createUnit(name string, x, y int, f *faction, alreadyConstructed bool) *paw
 			unitInfo:       &unit{appearance: ccell{char: '@'}},
 			moveInfo:       &pawnMovementInformation{ticksForMoveSingleCell: 10, movesOnLand: true, movesOnSea: true},
 			res:            &pawnResourceInformation{metalIncome: 1, energyIncome: 10, metalStorage: 1000, energyStorage: 1000},
-			nanolatherInfo: &nanolatherInformation{builderCoeff: 10, allowedBuildings: []string{"corekbotlab", "solar", "metalmaker", "corevehfactory"}},
+			nanolatherInfo: &nanolatherInformation{builderCoeff: 10, allowedBuildings: []string{"corekbotlab", "solar", "metalmaker", "corevehfactory", "lturret"}},
 			weapons: []*pawnWeaponInformation{
 				{attackDelay: 10, attackEnergyCost: 1, attackRadius: 5, attacksLand: true,
 					hitscan: &WeaponHitscan{baseDamage:5},
