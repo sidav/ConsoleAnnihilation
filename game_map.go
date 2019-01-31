@@ -20,6 +20,11 @@ func (g *gameMap) addBuilding(b *pawn, asAlreadyConstructed bool) {
 		b.currentConstructionStatus = nil
 		b.buildingInfo.hasBeenPlaced = true
 	}
+
+	if b.nanolatherInfo != nil && len(b.nanolatherInfo.allowedUnits) > 0 { // sets default rally point for build units.
+		b.nanolatherInfo.defaultOrderForUnitBuilt = &order{orderType: order_move, x: b.x + b.buildingInfo.w / 2, y: b.y + b.buildingInfo.h + 1}
+	}
+
 	g.addPawn(b)
 }
 

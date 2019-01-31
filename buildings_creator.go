@@ -126,9 +126,6 @@ func createBuilding(name string, x, y int, f *faction) *pawn {
 		b.res = &pawnResourceInformation{} // adds zero-value resource info struct for spendings usage.
 	}
 
-	if b.nanolatherInfo != nil && len(b.nanolatherInfo.allowedUnits) > 0 { // sets default rally point for build units.
-		b.nanolatherInfo.defaultOrderForUnitBuilt = &order{orderType: order_move, x: x + b.buildingInfo.w / 2, y: y + b.buildingInfo.h + 1} 
-	}
 	return b
 }
 
