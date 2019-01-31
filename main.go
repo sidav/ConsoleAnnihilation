@@ -54,6 +54,11 @@ func main() {
 		}
 		for i := 0; i < 10; i++ {
 			for _, u := range CURRENT_MAP.pawns {
+				if u.hitpoints <= 0 {
+					log.appendMessage(u.name + " is destroyed!")
+					CURRENT_MAP.removePawn(u)
+					continue
+				}
 				u.executeOrders(CURRENT_MAP)
 				u.openFireIfPossible()
 			}

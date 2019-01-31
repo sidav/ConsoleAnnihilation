@@ -12,7 +12,7 @@ func createUnit(name string, x, y int, f *faction, alreadyConstructed bool) *paw
 			nanolatherInfo: &nanolatherInformation{builderCoeff: 10, allowedBuildings: []string{"corekbotlab", "solar", "metalmaker", "corevehfactory"}},
 			weapons: []*pawnWeaponInformation{
 				{attackDelay: 10, attackEnergyCost: 1, attackRadius: 5, attacksLand: true,
-					hitscan: &WeaponHitscan{baseDamage:10},
+					hitscan: &WeaponHitscan{baseDamage:5},
 				},
 			},
 		}
@@ -35,18 +35,33 @@ func createUnit(name string, x, y int, f *faction, alreadyConstructed bool) *paw
 			moveInfo:                  &pawnMovementInformation{ticksForMoveSingleCell: 10, movesOnLand: true},
 			unitInfo:                  &unit{appearance: ccell{char: 'c'}},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 10, costM: 250, costE: 500},
+			weapons: []*pawnWeaponInformation{
+				{attackDelay: 13, attackEnergyCost: 1, attackRadius: 4, attacksLand: true,
+					hitscan: &WeaponHitscan{baseDamage:3, heavyMod:4},
+				},
+			},
 		}
 	case "ak":
-		newUnit = &pawn{name: "A.K.",
+		newUnit = &pawn{name: "A.K.", maxHitpoints: 30,
 			moveInfo:                  &pawnMovementInformation{ticksForMoveSingleCell: 10, movesOnLand: true},
 			unitInfo:                  &unit{appearance: ccell{char: 'a'}},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 10, costM: 250, costE: 500},
+			weapons: []*pawnWeaponInformation{
+				{attackDelay: 7, attackEnergyCost: 1, attackRadius: 5, attacksLand: true,
+					hitscan: &WeaponHitscan{baseDamage:3},
+				},
+			},
 		}
 	case "thud":
-		newUnit = &pawn{name: "Thud",
+		newUnit = &pawn{name: "Thud", maxHitpoints: 35, isHeavy: true,
 			moveInfo:                  &pawnMovementInformation{ticksForMoveSingleCell: 16, movesOnLand: true},
 			unitInfo:                  &unit{appearance: ccell{char: 't'}},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 12, costM: 350, costE: 650},
+			weapons: []*pawnWeaponInformation{
+				{attackDelay: 13, attackEnergyCost: 1, attackRadius: 6, attacksLand: true,
+					hitscan: &WeaponHitscan{baseDamage:3, heavyMod:4},
+				},
+			},
 		}
 	default:
 		newUnit = &pawn{name: "UNKNOWN UNIT",
@@ -57,6 +72,7 @@ func createUnit(name string, x, y int, f *faction, alreadyConstructed bool) *paw
 	}
 	if newUnit.maxHitpoints == 0 {
 		newUnit.maxHitpoints = 1
+		log.appendMessage("No hitpoints set for "+newUnit.name)
 	}
 	newUnit.hitpoints = newUnit.maxHitpoints
 	newUnit.x = x

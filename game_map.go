@@ -23,6 +23,14 @@ func (g *gameMap) addBuilding(b *pawn, asAlreadyConstructed bool) {
 	g.addPawn(b)
 }
 
+func (g *gameMap) removePawn(p *pawn) {
+	for i := 0; i < len(g.pawns); i++ {
+		if p == g.pawns[i] {
+			g.pawns = append(g.pawns[:i], g.pawns[i+1:]...) // ow it's fucking... magic!
+		}
+	}
+}
+
 func (g *gameMap) getPawnAtCoordinates(x, y int) *pawn {
 	for _, b := range g.pawns {
 		if b.isOccupyingCoords(x, y) {

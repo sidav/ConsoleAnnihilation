@@ -105,7 +105,7 @@ func (p *pawn) openFireIfPossible() { // does the firing, does NOT necessary mea
 			} else {
 				p.nextTurnToAct = CURRENT_TURN + wpn.attackDelay
 			}
-			log.appendMessage(p.name + " pew pew " + target.name) // TODO: damage dealing
+			dealDamageToTarget(p, wpn, target)
 		}
 	}
 }
