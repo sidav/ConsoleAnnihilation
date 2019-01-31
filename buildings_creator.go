@@ -1,7 +1,5 @@
 package main
 
-import "fmt"
-
 func createBuilding(name string, x, y int, f *faction) *pawn {
 	var b *pawn
 	switch name {
@@ -146,7 +144,12 @@ func getBuildingNameAndDescription(code string) (string, string) {
 	bld := createBuilding(code, 0, 0, nil)
 	name := bld.name
 	constr := bld.currentConstructionStatus
-	description := fmt.Sprintf("Metal: %d ENERGY: %d Base build time: %d \\n ", constr.costM, constr.costE, constr.maxConstructionAmount)
+	description := constr.getDescriptionString() + " \\n "
+	if len(bld.weapons) > 0 {
+		for _, wpn := range bld.weapons {
+			description += wpn.getDescriptionString() + " \\n "
+		}
+	}
 	switch code {
 	case "armkbotlab", "corekbotlab":
 		description += "A basic nanolathing facility which is designed to construct the Kinetic Bio-Organic Technology " +
@@ -154,6 +157,8 @@ func getBuildingNameAndDescription(code string) (string, string) {
 	case "solar":
 		description += "A classic solar battery array. The heavy use of superconductors and wireless energy transfer technologies " +
 			"made this energy acqurement devices much more efficient than ever."
+	case "lturret":
+		description += "A basic yet quite universal base defense structure. Its only weapon uses EM-waves amplified by stimulated emission of radiation."
 	default:
 		description += "No description."
 	}
