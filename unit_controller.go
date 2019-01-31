@@ -2,6 +2,8 @@ package main
 
 import (
 	"SomeTBSGame/routines"
+	"TCellConsoleWrapper"
+	"time"
 )
 
 func (p *pawn) isTimeToAct() bool {
@@ -105,14 +107,13 @@ func (p *pawn) openFireIfPossible() { // does the firing, does NOT necessary mea
 			} else {
 				p.nextTurnToAct = CURRENT_TURN + wpn.attackDelay
 			}
-			// draw the pew pew laser
-			//if areGlobalCoordsOnScreenForFaction(p.x, p.y, p.faction) || areGlobalCoordsOnScreenForFaction(target.x, target.y, p.faction) {
-			//	log.appendMessage("PEW ----> PEW")
-			//	tcell_wrapper.SetFgColor(tcell_wrapper.RED)
-			//	renderLine(p.x, p.y, target.x, target.y, true, p.faction.cursor.x-VIEWPORT_W/2, p.faction.cursor.y-VIEWPORT_H/2)
-			//	tcell_wrapper.Flush_console()
-			//	time.Sleep(50 * time.Millisecond)
-			//}
+			// draw the pew pew laser TODO: move this crap somewhere already 
+			if areGlobalCoordsOnScreenForFaction(p.x, p.y, CURRENT_FACTION_SEEING_THE_SCREEN) || areGlobalCoordsOnScreenForFaction(target.x, target.y, CURRENT_FACTION_SEEING_THE_SCREEN) {
+				tcell_wrapper.SetFgColor(tcell_wrapper.RED)
+				renderLine(p.x, p.y, target.x, target.y, true, CURRENT_FACTION_SEEING_THE_SCREEN.cursor.x-VIEWPORT_W/2, CURRENT_FACTION_SEEING_THE_SCREEN.cursor.y-VIEWPORT_H/2)
+				// tcell_wrapper.Flush_console()
+				time.Sleep(250 * time.Millisecond)
+			}
 			dealDamageToTarget(p, wpn, target)
 		}
 	}

@@ -23,6 +23,7 @@ var (
 	log             *LOG
 	CURRENT_TURN    = 0
 	CURRENT_MAP     *gameMap
+	CURRENT_FACTION_SEEING_THE_SCREEN *faction // for various rendering crap
 )
 
 func main() {
@@ -48,6 +49,7 @@ func main() {
 				return
 			}
 			if f.playerControlled {
+				CURRENT_FACTION_SEEING_THE_SCREEN = f
 				renderFactionStats(f)
 				plr_control(f, CURRENT_MAP)
 			}
