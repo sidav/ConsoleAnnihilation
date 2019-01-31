@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 // TODO: move unit stats to JSON
 func createUnit(name string, x, y int, f *faction, alreadyConstructed bool) *pawn {
 	var newUnit *pawn
@@ -82,4 +84,20 @@ func createUnit(name string, x, y int, f *faction, alreadyConstructed bool) *paw
 		newUnit.currentConstructionStatus = nil
 	}
 	return newUnit
+}
+
+func getUnitNameAndDescription(code string) (string, string) {
+	unit := createUnit(code, 0, 0, nil, false)
+	name := unit.name
+	constr := unit.currentConstructionStatus
+	description := fmt.Sprintf("Metal: %d ENERGY: %d Base build time: %d \\n ", constr.costM, constr.costE, constr.maxConstructionAmount)
+	switch code {
+	case "ak":
+		description += "A basic assault KBot effective against light armor."
+	case "thud":
+		description += "A basic artillery KBot. Effective against heavy armor. \\n Designed to take out buildings. "
+	default:
+		description += "No description."
+	}
+	return name, description
 }

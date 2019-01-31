@@ -92,16 +92,17 @@ func plr_selectUnitsToConstruct(p *pawn) {
 	availableUnitCodes := p.nanolatherInfo.allowedUnits
 
 	names := make([]string, 0)
+	descriptions := make([]string, 0)
 
 	// descriptions := make([]string, 0)
 	for _, code := range availableUnitCodes {
-		name := createUnit(code, p.x, p.y, p.faction, false).name
+		name, desc := getUnitNameAndDescription(code)
 		names = append(names, name)
-		// descriptions = append(descriptions, desc)
+		descriptions = append(descriptions, desc)
 	}
 
 	indicesQueue := routines.ShowSidebarCreateQueueMenu("CONSTRUCT:", p.faction.getFactionColor(),
-		SIDEBAR_X, SIDEBAR_FLOOR_2,  SIDEBAR_W,  SIDEBAR_H - SIDEBAR_FLOOR_2, names)
+		SIDEBAR_X, SIDEBAR_FLOOR_2,  SIDEBAR_W,  SIDEBAR_H - SIDEBAR_FLOOR_2, names, descriptions)
 
 
 	p.order = &order{orderType: order_construct}

@@ -122,7 +122,7 @@ func ShowSidebarPickValuesMenu(title string, titleColor, mx, my, mw int, mh int,
 	}
 }
 
-func ShowSidebarCreateQueueMenu(title string, titleColor, mx, my, mw int, mh int, items []string) []int { // returns a slice of ordered indices
+func ShowSidebarCreateQueueMenu(title string, titleColor, mx, my, mw int, mh int, items []string, descriptions []string) []int { // returns a slice of ordered indices
 	drawSidebarMenuTitle(title, titleColor, mx, my, mw)
 	cursorIndex := 0
 	values := make([]int, 0)
@@ -159,7 +159,12 @@ func ShowSidebarCreateQueueMenu(title string, titleColor, mx, my, mw int, mh int
 			str += valStr
 			cw.PutString(str, mx, my+i+1)
 		}
+		
 		cw.SetBgColor(cw.BLACK)
+		cw.SetFgColor(cw.BEIGE)
+		if len(descriptions) > 0 {
+			drawWrappedTextInRect(descriptions[cursorIndex], 0, my+mh+1, mx+mw, 5)
+		}
 
 		queue := make([]string, 0)
 		multiplicator := 1
