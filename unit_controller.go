@@ -183,6 +183,11 @@ func doAllNanolathes(m *gameMap) { // does the building itself
 					u.order = nil
 					continue
 				}
+				if tBld.hitpoints <= 0 {
+					u.reportOrderCompletion("Nanolathe interrupted by hostile action")
+					u.order = nil
+					continue
+				}
 				tBld.currentConstructionStatus.currentConstructionAmount += u.nanolatherInfo.builderCoeff
 				if tBld.currentConstructionStatus.isCompleted() {
 					tBld.currentConstructionStatus = nil
