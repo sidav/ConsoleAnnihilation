@@ -31,13 +31,13 @@ func createUnit(name string, x, y int, f *faction, alreadyConstructed bool) *paw
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 10, costM: 250, costE: 500},
 		}
 	case "thecan":
-		newUnit = &pawn{name: "The Can",
+		newUnit = &pawn{name: "The Can", maxHitpoints: 75, isHeavy: true,
 			moveInfo:                  &pawnMovementInformation{ticksForMoveSingleCell: 10, movesOnLand: true},
 			unitInfo:                  &unit{appearance: ccell{char: 'c'}},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 10, costM: 250, costE: 500},
 			weapons: []*pawnWeaponInformation{
 				{attackDelay: 13, attackEnergyCost: 1, attackRadius: 4, attacksLand: true,
-					hitscan: &WeaponHitscan{baseDamage:3, heavyMod:4},
+					hitscan: &WeaponHitscan{baseDamage:4},
 				},
 			},
 		}
@@ -47,7 +47,7 @@ func createUnit(name string, x, y int, f *faction, alreadyConstructed bool) *paw
 			unitInfo:                  &unit{appearance: ccell{char: 'a'}},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 10, costM: 250, costE: 500},
 			weapons: []*pawnWeaponInformation{
-				{attackDelay: 7, attackEnergyCost: 1, attackRadius: 5, attacksLand: true,
+				{attackDelay: 7, attackEnergyCost: 1, attackRadius: 5, attacksLand: true, canBeFiredOnMove: true,
 					hitscan: &WeaponHitscan{baseDamage:3},
 				},
 			},

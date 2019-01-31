@@ -3,6 +3,6 @@ Closest plans:
 - better collision detection
 - pathfinding
 - replace a single order var for pawns with an order queue
-- Attacking
+- Visual attack animations.
 - Non-hitscan (projectile) weapons
 - Separate log for each faction
