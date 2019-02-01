@@ -30,6 +30,21 @@ func createBuilding(name string, x, y int, f *faction) *pawn {
 			res:                       &pawnResourceInformation{energyIncome: 20},
 		}
 
+	case "mextractor":
+		colors := []int{
+			-1, 7, -1,
+			7, -1, 7,
+			-1, 7, -1,
+		}
+		app := &buildingAppearance{chars: "#|#" +
+			"-%-" +
+			"#|#", colors: colors}
+		b = &pawn{name: "Metal Extractor",
+			buildingInfo:              &building{w: 3, h: 3, appearance: app},
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 60, costM: 100, costE: 500},
+			res:                       &pawnResourceInformation{energyReqForConditionalMetalIncome: 15, isMetalExtractor: true},
+		}
+
 	case "quark": // cheating building, useful for debugging
 		colors := []int{
 			7, -1, 7,
@@ -187,10 +202,12 @@ func createBuilding(name string, x, y int, f *faction) *pawn {
 	b.x = x
 	b.y = y
 	b.faction = f
+	if b.res != nil && b.res.isMetalExtractor {
+		b.res.metalIncome = CURRENT_MAP.getNumberOfMetalDepositsUnderBuilding(b)
+	}
 	if b.nanolatherInfo != nil && b.res == nil {
 		b.res = &pawnResourceInformation{} // adds zero-value resource info struct for spendings usage.
 	}
-
 	return b
 }
 

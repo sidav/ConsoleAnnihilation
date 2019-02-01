@@ -85,6 +85,20 @@ func (g *gameMap) getBuildingAtCoordinates(x, y int) *pawn {
 	return nil
 }
 
+func (g *gameMap) getNumberOfMetalDepositsInRect(x, y, w, h int) int {
+	total := 0
+	for i:=0; i<w;i++ {
+		for j:=0;j<h;j++{
+			total += g.tileMap[x+i][y+j].metalAmount
+		}
+	}
+	return total
+}
+
+func (g *gameMap) getNumberOfMetalDepositsUnderBuilding(b *pawn) int {
+	return g.getNumberOfMetalDepositsInRect(b.x, b.y, b.buildingInfo.w, b.buildingInfo.h)
+}
+
 func (g *gameMap) init() {
 	g.pawns = make([]*pawn, 0)
 	g.factions = make([]*faction, 0)
@@ -95,12 +109,12 @@ func (g *gameMap) init() {
 	}
 
 	// place metal deposits
-	g.tileMap[2][2] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, isPassable: true}
-	g.tileMap[3][2] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, isPassable: true}
-	g.tileMap[2][3] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, isPassable: true}
-	g.tileMap[13][2] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, isPassable: true}
-	g.tileMap[14][3] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, isPassable: true}
-	g.tileMap[13][1] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, isPassable: true}
+	g.tileMap[2][2] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, metalAmount: 1, isPassable: true}
+	g.tileMap[3][2] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, metalAmount: 1, isPassable: true}
+	g.tileMap[2][3] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, metalAmount: 1, isPassable: true}
+	g.tileMap[13][2] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, metalAmount: 1, isPassable: true}
+	g.tileMap[14][3] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, metalAmount: 1, isPassable: true}
+	g.tileMap[13][1] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, metalAmount: 1, isPassable: true}
 
 
 	g.factions = append(g.factions, createFaction("The Core Corporation", 0, true))
