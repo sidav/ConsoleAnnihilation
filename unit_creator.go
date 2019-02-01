@@ -4,8 +4,20 @@ package main
 func createUnit(name string, x, y int, f *faction, alreadyConstructed bool) *pawn {
 	var newUnit *pawn
 	switch name {
-	case "commander":
-		newUnit = &pawn{name: "Commander", maxHitpoints: 100, isHeavy: true,
+	case "armcommander":
+		newUnit = &pawn{name: "Arm Commander", maxHitpoints: 100, isHeavy: true, isCommander: true,
+			unitInfo:       &unit{appearance: ccell{char: '@'}},
+			moveInfo:       &pawnMovementInformation{ticksForMoveSingleCell: 10, movesOnLand: true, movesOnSea: true},
+			res:            &pawnResourceInformation{metalIncome: 1, energyIncome: 10, metalStorage: 1000, energyStorage: 1000},
+			nanolatherInfo: &nanolatherInformation{builderCoeff: 10, allowedBuildings: []string{}},
+			weapons: []*pawnWeaponInformation{
+				{attackDelay: 10, attackEnergyCost: 1, attackRadius: 6, attacksLand: true,
+					hitscan: &WeaponHitscan{baseDamage:4},
+				},
+			},
+		}
+	case "corecommander":
+		newUnit = &pawn{name: "Core Commander", maxHitpoints: 100, isHeavy: true, isCommander: true,
 			unitInfo:       &unit{appearance: ccell{char: '@'}},
 			moveInfo:       &pawnMovementInformation{ticksForMoveSingleCell: 10, movesOnLand: true, movesOnSea: true},
 			res:            &pawnResourceInformation{metalIncome: 1, energyIncome: 10, metalStorage: 1000, energyStorage: 1000},

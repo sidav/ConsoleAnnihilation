@@ -16,9 +16,10 @@ type pawn struct {
 	moveInfo                  *pawnMovementInformation
 	weapons                   []*pawnWeaponInformation
 	nextTurnToAct             int
+	isCommander               bool
 	// armor info:
 	hitpoints, maxHitpoints int
-	isLight, isHeavy bool // these are not mutually excluding lol. Trust me, I'm a programmer
+	isLight, isHeavy        bool // these are not mutually excluding lol. Trust me, I'm a programmer
 }
 
 func (p *pawn) hasWeapons() bool {
