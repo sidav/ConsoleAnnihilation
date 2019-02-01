@@ -68,10 +68,25 @@ func createBuilding(name string, x, y int, f *faction) *pawn {
 			"\\=/" +
 			"=0=" +
 			"/=\\", colors: colors}
-		b = &pawn{name: "Tech 1 KBot Lab",
+		b = &pawn{name: "Tech 1 Core KBot Lab",
 			buildingInfo:              &building{w: 3, h: 3, appearance: app},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 100, costM: 100, costE: 500},
 			nanolatherInfo:            &nanolatherInformation{builderCoeff: 1, allowedUnits: []string{"coreck", "ak", "thud"}},
+		}
+
+	case "coret2kbotlab":
+		colors := []int{
+			7, 7, 7,
+			7, -1, 7,
+			7, 7, 7}
+		app := &buildingAppearance{chars: "" +
+			"\\=/" +
+			">2<" +
+			"/=\\", colors: colors}
+		b = &pawn{name: "Tech 2 Core KBot Lab",
+			buildingInfo:              &building{w: 3, h: 3, appearance: app},
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 150, costM: 450, costE: 1200},
+			nanolatherInfo:            &nanolatherInformation{builderCoeff: 1, allowedUnits: []string{"thecan"}},
 		}
 
 	case "armvehfactory":

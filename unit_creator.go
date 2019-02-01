@@ -21,7 +21,7 @@ func createUnit(name string, x, y int, f *faction, alreadyConstructed bool) *paw
 			unitInfo:                  &unit{appearance: ccell{char: 'k'}},
 			moveInfo:                  &pawnMovementInformation{ticksForMoveSingleCell: 15, movesOnLand: true},
 			res:                       &pawnResourceInformation{metalStorage: 25, energyStorage: 50},
-			nanolatherInfo:            &nanolatherInformation{builderCoeff: 5, allowedBuildings: []string{"corekbotlab", "solar", "metalmaker", "corevehfactory", "quark"}},
+			nanolatherInfo:            &nanolatherInformation{builderCoeff: 5, allowedBuildings: []string{"corekbotlab", "coret2kbotlab", "solar", "metalmaker", "quark"}},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 25, costM: 650, costE: 1200},
 		}
 	case "weasel":
@@ -98,7 +98,10 @@ func getUnitNameAndDescription(code string) (string, string) {
 	case "ak":
 		description += "A basic assault KBot effective against light armor."
 	case "thud":
-		description += "A basic artillery KBot. Effective against heavy armor. \\n Designed to take out buildings. "
+		description += "A basic artillery KBot. Effective against heavy armor. Designed to take out buildings. "
+	case "thecan":
+		description += "Slow and clunky, The Can is designed to take part in front-line assault. Although its " +
+			"armor can suffer significant amount of punishment, this KBot should be supported due to its short range."
 	default:
 		description += "No description."
 	}
