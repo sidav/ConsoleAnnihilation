@@ -43,7 +43,7 @@ func createUnit(name string, x, y int, f *faction, alreadyConstructed bool) *paw
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 10, costM: 250, costE: 500},
 		}
 	case "thecan":
-		newUnit = &pawn{name: "The Can", maxHitpoints: 75, isHeavy: true,
+		newUnit = &pawn{name: "The Can", maxHitpoints: 125, isHeavy: true,
 			moveInfo:                  &pawnMovementInformation{ticksForMoveSingleCell: 10, movesOnLand: true},
 			unitInfo:                  &unit{appearance: ccell{char: 'c'}},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 10, costM: 250, costE: 500},
@@ -113,7 +113,7 @@ func getUnitNameAndDescription(code string) (string, string) {
 		description += "A basic artillery KBot. Effective against heavy armor. Designed to take out buildings. "
 	case "thecan":
 		description += "Slow and clunky, The Can is designed to take part in front-line assault. Although its " +
-			"armor can suffer significant amount of punishment, this KBot should be supported due to its short range."
+			"armor can sustain significant amount of punishment, this KBot should be supported due to its short range."
 	default:
 		description += "No description."
 	}

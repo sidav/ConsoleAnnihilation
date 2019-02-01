@@ -109,9 +109,12 @@ func (g *gameMap) init() {
 	g.addBuilding(createBuilding("armhq", mapW-5, 9, g.factions[1]), true )
 	// g.addPawn(createUnit("ak", mapW-1, 4, g.factions[1], true))
 	g.addBuilding(createBuilding("lturret", mapW-10, 1, g.factions[1]), true )
-	g.addBuilding(createBuilding("lturret", mapW-10, 5, g.factions[1]), true)
-	g.addBuilding(createBuilding("lturret", mapW-10, 10, g.factions[1]), true )
-	g.addBuilding(createBuilding("lturret", mapW-10, 15, g.factions[1]), true )
+	g.addBuilding(createBuilding("lturret", mapW-10, 4, g.factions[1]), true)
+	g.addBuilding(createBuilding("guardian", mapW-7, 3, g.factions[1]), true)
+	g.addBuilding(createBuilding("lturret", mapW-10, 8, g.factions[1]), true )
+	g.addBuilding(createBuilding("lturret", mapW-10, 12, g.factions[1]), true)
+	g.addBuilding(createBuilding("lturret", mapW-10, 16, g.factions[1]), true )
+	g.addBuilding(createBuilding("guardian", mapW-7, 14, g.factions[1]), true)
 	g.addBuilding(createBuilding("lturret", mapW-10, 19, g.factions[1]), true )
 
 	for _, f := range g.factions {

@@ -143,8 +143,27 @@ func createBuilding(name string, x, y int, f *faction) *pawn {
 			buildingInfo:              &building{w: 1, h: 1, appearance: app},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 100, costM: 250, costE: 900},
 			weapons: []*pawnWeaponInformation{
-				{attackDelay: 12, attackEnergyCost: 15, attackRadius: 6, attacksLand: true,
+				{attackDelay: 16, attackEnergyCost: 15, attackRadius: 6, attacksLand: true,
 					hitscan: &WeaponHitscan{baseDamage: 6},
+				},
+			},
+		}
+
+	case "guardian":
+		colors := []int{
+			7, -1, 7,
+			-1, 5, -1,
+			7, -1, 7}
+		app := &buildingAppearance{chars: "" +
+			"=-=" +
+			"|*|" +
+			"=-=", colors: colors}
+		b = &pawn{name: "Guardian", maxHitpoints: 90, isHeavy: true,
+			buildingInfo:              &building{w: 3, h: 3, appearance: app},
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 100, costM: 250, costE: 900},
+			weapons: []*pawnWeaponInformation{
+				{attackDelay: 35, attackEnergyCost: 250, attackRadius: 12, attacksLand: true,
+					hitscan: &WeaponHitscan{baseDamage: 3, heavyMod: 5},
 				},
 			},
 		}
