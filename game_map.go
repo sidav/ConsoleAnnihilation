@@ -45,14 +45,14 @@ func (g *gameMap) getPawnAtCoordinates(x, y int) *pawn {
 	return nil
 }
 
-func (g *gameMap) getUnitAtCoordinates(x, y int) *pawn { // TODO: remove (as a duplicate of getPawnAtCoordinates)
-	for _, b := range g.pawns {
-		if b.isOccupyingCoords(x, y) {
-			return b
-		}
-	}
-	return nil
-}
+//func (g *gameMap) getUnitAtCoordinates(x, y int) *pawn { // TODO: remove (as a duplicate of getPawnAtCoordinates)
+//	for _, b := range g.pawns {
+//		if b.isOccupyingCoords(x, y) {
+//			return b
+//		}
+//	}
+//	return nil
+//}
 
 func (g *gameMap) getPawnsInRadiusFrom(x, y, radius int) []*pawn {
 	var arr []*pawn
@@ -95,7 +95,9 @@ func (g *gameMap) init() {
 	}
 
 	g.factions = append(g.factions, createFaction("The Core Corporation", 0, true))
-	g.addPawn(createUnit("corecommander", 3, 5, g.factions[0], true))
+	g.addPawn(createUnit("corecommander", 3, 9, g.factions[0], true))
+	g.factions[0].cursor.x = 3
+	g.factions[0].cursor.y = 9
 	// g.addBuilding(createBuilding("metalmaker", 5, 1, g.factions[0]), true)
 	// g.addUnit(createUnit("weasel", 3, 6, g.factions[0]))
 	// g.addUnit(createUnit("thecan", 3, 4, g.factions[0]))
