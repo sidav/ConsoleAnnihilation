@@ -78,6 +78,21 @@ func (p *pawn) getCenter() (int, int) {
 //	}
 //}
 
+func (p *pawn) getArmorDescriptionString() string {
+	armorInfo := fmt.Sprintf("Armor %d / %d", p.hitpoints, p.maxHitpoints)
+	if p.isLight {
+		armorInfo += ", light"
+	}
+	if p.isHeavy {
+		armorInfo += ", heavy"
+	}
+	if p.eachTickToRegen > 0 {
+		regenPerTurnMult10 := 100/(p.eachTickToRegen)
+		armorInfo += fmt.Sprintf(", regen %d.%d", regenPerTurnMult10/10, regenPerTurnMult10%10)
+	}
+	return armorInfo
+}
+
 func (p *pawn) getCurrentOrderDescription() string {
 	if p.currentConstructionStatus != nil {
 		constr := p.currentConstructionStatus

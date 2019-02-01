@@ -11,7 +11,7 @@ type pawnWeaponInformation struct {
 }
 
 func (wpn *pawnWeaponInformation) getDescriptionString() string{
-	desc := fmt.Sprintf("Attack radius: %d, base delay: %d, ", wpn.attackRadius, wpn.attackDelay)
+	desc := fmt.Sprintf("Attack radius: %d, base delay: %d.%d, ", wpn.attackRadius, wpn.attackDelay/10, wpn.attackDelay % 10)
 	if wpn.hitscan != nil {
 		desc += fmt.Sprintf("damage: %d", wpn.hitscan.baseDamage)
 		if wpn.hitscan.lightMod != 0 {

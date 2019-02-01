@@ -152,14 +152,12 @@ func renderInfoOnCursor(f *faction, g *gameMap) {
 	}
 
 	if len(details) > 0 {
-		armorInfo := fmt.Sprintf("Armor %d / %d", sp.hitpoints, sp.maxHitpoints)
-		if sp.isLight {
-			armorInfo += ", light"
+		details = append(details, sp.getArmorDescriptionString())
+		if sp.hasWeapons() {
+			for _, wpn := range sp.weapons {
+				details = append(details, wpn.getDescriptionString())
+			}
 		}
-		if sp.isHeavy {
-			armorInfo += ", heavy"
-		}
-		details = append(details, armorInfo)
 		if res != nil {
 			economyInfo := fmt.Sprintf("METAL: (+%d / -%d) ENERGY: (+%d / -%d)",
 				res.metalIncome, res.metalSpending, res.energyIncome, res.energySpending+res.energyReqForConditionalMetalIncome)
