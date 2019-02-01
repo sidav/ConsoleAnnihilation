@@ -69,7 +69,7 @@ func createBuilding(name string, x, y int, f *faction) *pawn {
 			"=^^=" +
 			"<HQ>" +
 			"=VV=", colors: colors}
-		b = &pawn{name: "Arm proxy HQ", maxHitpoints: 300, isHeavy: true, isCommander: true,
+		b = &pawn{name: "Arm proxy HQ", maxHitpoints: 300, isHeavy: true, isCommander: true, eachTickToRegen: 10,
 			buildingInfo:              &building{w: 4, h: 3, appearance: app},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 40, costM: 100, costE: 1200},
 			res:                       &pawnResourceInformation{metalIncome: 10, energyIncome: 100},
@@ -149,6 +149,7 @@ func createBuilding(name string, x, y int, f *faction) *pawn {
 			"\\\\//", colors: colors}
 		b = &pawn{name: "Tech 1 Vehicle Factory", buildingInfo: &building{w: 4, h: 3, appearance: app},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 100, costM: 100, costE: 500},
+			nanolatherInfo:            &nanolatherInformation{builderCoeff: 1, allowedUnits: []string{"flash"}},
 		}
 
 	case "lturret":
@@ -171,9 +172,9 @@ func createBuilding(name string, x, y int, f *faction) *pawn {
 			7, -1, 7}
 		app := &buildingAppearance{chars: "" +
 			"=-=" +
-			"|*|" +
+			"|&|" +
 			"=-=", colors: colors}
-		b = &pawn{name: "Guardian", maxHitpoints: 90, isHeavy: true,
+		b = &pawn{name: "Guardian", maxHitpoints: 65, isHeavy: true,
 			buildingInfo:              &building{w: 3, h: 3, appearance: app},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 100, costM: 250, costE: 900},
 			weapons: []*pawnWeaponInformation{

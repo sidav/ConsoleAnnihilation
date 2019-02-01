@@ -7,7 +7,7 @@ func createUnit(name string, x, y int, f *faction, alreadyConstructed bool) *paw
 	case "armcommander":
 		newUnit = &pawn{name: "Arm Commander", maxHitpoints: 100, isHeavy: true, isCommander: true,
 			unitInfo:       &unit{appearance: ccell{char: '@'}},
-			moveInfo:       &pawnMovementInformation{ticksForMoveSingleCell: 10, movesOnLand: true, movesOnSea: true},
+			moveInfo:       &pawnMovementInformation{ticksForMoveSingleCell: 10, movesOnLand: true, movesOnSea: true}, eachTickToRegen: 7,
 			res:            &pawnResourceInformation{metalIncome: 1, energyIncome: 10, metalStorage: 1000, energyStorage: 1000},
 			nanolatherInfo: &nanolatherInformation{builderCoeff: 10, allowedBuildings: []string{}},
 			weapons: []*pawnWeaponInformation{
@@ -19,7 +19,7 @@ func createUnit(name string, x, y int, f *faction, alreadyConstructed bool) *paw
 	case "corecommander":
 		newUnit = &pawn{name: "Core Commander", maxHitpoints: 100, isHeavy: true, isCommander: true,
 			unitInfo:       &unit{appearance: ccell{char: '@'}},
-			moveInfo:       &pawnMovementInformation{ticksForMoveSingleCell: 10, movesOnLand: true, movesOnSea: true},
+			moveInfo:       &pawnMovementInformation{ticksForMoveSingleCell: 10, movesOnLand: true, movesOnSea: true}, eachTickToRegen: 7,
 			res:            &pawnResourceInformation{metalIncome: 1, energyIncome: 10, metalStorage: 1000, energyStorage: 1000},
 			nanolatherInfo: &nanolatherInformation{builderCoeff: 10, allowedBuildings: []string{"corekbotlab", "solar", "metalmaker", "corevehfactory", "lturret"}},
 			weapons: []*pawnWeaponInformation{
@@ -29,7 +29,7 @@ func createUnit(name string, x, y int, f *faction, alreadyConstructed bool) *paw
 			},
 		}
 	case "protocommander":
-		newUnit = &pawn{name: "Prototype Commander Unit", maxHitpoints: 100, isHeavy: true, isCommander: true,
+		newUnit = &pawn{name: "Prototype Commander Unit", maxHitpoints: 100, isHeavy: true, isCommander: true, eachTickToRegen: 7,
 			unitInfo:       &unit{appearance: ccell{char: '@'}},
 			moveInfo:       &pawnMovementInformation{ticksForMoveSingleCell: 10, movesOnLand: true, movesOnSea: true},
 			res:            &pawnResourceInformation{metalIncome: 1, energyIncome: 10, metalStorage: 1000, energyStorage: 1000},
@@ -53,6 +53,17 @@ func createUnit(name string, x, y int, f *faction, alreadyConstructed bool) *paw
 			moveInfo:                  &pawnMovementInformation{ticksForMoveSingleCell: 10, movesOnLand: true},
 			unitInfo:                  &unit{appearance: ccell{char: 'w'}},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 10, costM: 250, costE: 500},
+		}
+	case "flash":
+		newUnit = &pawn{name: "Flash", maxHitpoints: 55, isLight: true, eachTickToRegen: 6,
+			moveInfo:                  &pawnMovementInformation{ticksForMoveSingleCell: 7, movesOnLand: true},
+			unitInfo:                  &unit{appearance: ccell{char: 'f'}},
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 12, costM: 350, costE: 600},
+			weapons: []*pawnWeaponInformation{
+				{attackDelay: 13, attackEnergyCost: 1, attackRadius: 4, attacksLand: true, canBeFiredOnMove: true,
+					hitscan: &WeaponHitscan{baseDamage:4},
+				},
+			},
 		}
 	case "thecan":
 		newUnit = &pawn{name: "The Can", maxHitpoints: 125, isHeavy: true,

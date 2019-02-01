@@ -66,6 +66,9 @@ func main() {
 					CURRENT_MAP.removePawn(u)
 					continue
 				}
+				if u.eachTickToRegen > 0 && CURRENT_TURN % u.eachTickToRegen == 0 && u.hitpoints < u.maxHitpoints {
+					u.hitpoints++
+				}
 				u.executeOrders(CURRENT_MAP)
 				u.openFireIfPossible()
 			}
