@@ -94,8 +94,17 @@ func (g *gameMap) init() {
 		}
 	}
 
+	// place metal deposits
+	g.tileMap[2][2] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, isPassable: true}
+	g.tileMap[3][2] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, isPassable: true}
+	g.tileMap[2][3] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, isPassable: true}
+	g.tileMap[13][2] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, isPassable: true}
+	g.tileMap[14][3] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, isPassable: true}
+	g.tileMap[13][1] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, isPassable: true}
+
+
 	g.factions = append(g.factions, createFaction("The Core Corporation", 0, true))
-	g.addPawn(createUnit("corecommander", 3, 9, g.factions[0], true))
+	g.addPawn(createUnit("protocommander", 3, 9, g.factions[0], true))
 	g.factions[0].cursor.x = 3
 	g.factions[0].cursor.y = 9
 	// g.addBuilding(createBuilding("metalmaker", 5, 1, g.factions[0]), true)

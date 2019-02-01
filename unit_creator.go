@@ -28,6 +28,18 @@ func createUnit(name string, x, y int, f *faction, alreadyConstructed bool) *paw
 				},
 			},
 		}
+	case "protocommander":
+		newUnit = &pawn{name: "Prototype Commander Unit", maxHitpoints: 100, isHeavy: true, isCommander: true,
+			unitInfo:       &unit{appearance: ccell{char: '@'}},
+			moveInfo:       &pawnMovementInformation{ticksForMoveSingleCell: 10, movesOnLand: true, movesOnSea: true},
+			res:            &pawnResourceInformation{metalIncome: 1, energyIncome: 10, metalStorage: 1000, energyStorage: 1000},
+			nanolatherInfo: &nanolatherInformation{builderCoeff: 10, allowedBuildings: []string{"corekbotlab", "solar", "metalmaker", "corevehfactory", "lturret"}},
+			weapons: []*pawnWeaponInformation{
+				{attackDelay: 10, attackEnergyCost: 1, attackRadius: 5, attacksLand: true,
+					hitscan: &WeaponHitscan{baseDamage:5},
+				},
+			},
+		}
 	case "coreck":
 		newUnit = &pawn{name: "Tech 1 Construction KBot",
 			unitInfo:                  &unit{appearance: ccell{char: 'k'}},
