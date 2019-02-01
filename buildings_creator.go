@@ -202,9 +202,6 @@ func createBuilding(name string, x, y int, f *faction) *pawn {
 	b.x = x
 	b.y = y
 	b.faction = f
-	if b.res != nil && b.res.isMetalExtractor {
-		b.res.metalIncome = CURRENT_MAP.getNumberOfMetalDepositsUnderBuilding(b)
-	}
 	if b.nanolatherInfo != nil && b.res == nil {
 		b.res = &pawnResourceInformation{} // adds zero-value resource info struct for spendings usage.
 	}

@@ -72,6 +72,10 @@ func (f *faction) recalculateFactionEconomy(g *gameMap) { // move somewhere?
 			eco.maxEnergy += u.res.energyStorage
 			energyInc += u.res.energyIncome // always unconditional
 
+			if u.res.isMetalExtractor && u.res.metalIncome == 0 { // metal income from the extractor needs to be recalculated.
+				u.res.metalIncome = CURRENT_MAP.getNumberOfMetalDepositsUnderBuilding(u)
+			}
+
 			// calculate conditional metal income and mathing energy spendings
 			if u.res.energyReqForConditionalMetalIncome > 0 {
 				metalConditionalInc += u.res.metalIncome
