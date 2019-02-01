@@ -49,7 +49,7 @@ func ShowSidebarSingleChoiceMenu(title string, titleColor, mx, my, mw int, mh in
 			cw.SetFgColor(cw.BEIGE)
 
 			if len(descriptions) > 0 {
-				drawWrappedTextInRect(descriptions[cursorIndex], 0, my+mh, mx+mw, 5)
+				DrawWrappedTextInRect(descriptions[cursorIndex], 0, my+mh, mx+mw, 5)
 			}
 		}
 		cw.SetBgColor(cw.BLACK)
@@ -163,7 +163,7 @@ func ShowSidebarCreateQueueMenu(title string, titleColor, mx, my, mw int, mh int
 		cw.SetBgColor(cw.BLACK)
 		cw.SetFgColor(cw.BEIGE)
 		if len(descriptions) > 0 {
-			drawWrappedTextInRect(descriptions[cursorIndex], 0, my+mh, mx+mw, 5)
+			DrawWrappedTextInRect(descriptions[cursorIndex], 0, my+mh, mx+mw, 5)
 		}
 
 		queue := make([]string, 0)

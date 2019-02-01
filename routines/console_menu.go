@@ -21,7 +21,7 @@ func drawTitle(title string) {
 	cw.PutString(" "+title+" ", titleXCoord, 0)
 }
 
-func drawWrappedTextInRect(text string, x, y, w, h int) {
+func DrawWrappedTextInRect(text string, x, y, w, h int) {
 	currentLine := 0
 	currentLineLength := 0
 	for yy := 1; yy < h; yy++ {
