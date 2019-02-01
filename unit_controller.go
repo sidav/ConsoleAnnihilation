@@ -64,10 +64,14 @@ func (u *pawn) doMoveOrder(m *gameMap) { // TODO: rewrite
 	}
 }
 
-func (p *pawn) doAttackOrder() { // Only moves the unit to a firing position. The firing itself is in
+func (p *pawn) doAttackOrder() { // Only moves the unit to a firing position. The firing itself is in openFireIfPossible()
 	order := p.order
 
 	ux, uy := p.getCoords()
+	if order.targetPawn.hitpoints <= 0 {
+		p.reportOrderCompletion("target destroyed. Now standing by")
+		p.order = nil
+	}
 	targetX, targetY := order.targetPawn.getCenter()
 
 	if getSqDistanceBetween(ux, uy, targetX, targetY) > p.getMaxRadiusToFire()*p.getMaxRadiusToFire() {
