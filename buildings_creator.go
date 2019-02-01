@@ -45,6 +45,26 @@ func createBuilding(name string, x, y int, f *faction) *pawn {
 			res:                       &pawnResourceInformation{metalIncome: 5, energyIncome: 100},
 		}
 
+	case "armhq": // cheating building for stub AI
+		colors := []int{
+			7, 13, 13, 7,
+			13, -1, -1, 13,
+			7, 13, 13, 7}
+		app := &buildingAppearance{chars: "" +
+			"=^^=" +
+			"<HQ>" +
+			"=VV=", colors: colors}
+		b = &pawn{name: "Arm proxy HQ", maxHitpoints: 300, isHeavy: true, isCommander: true,
+			buildingInfo:              &building{w: 4, h: 3, appearance: app},
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 40, costM: 100, costE: 1200},
+			res:                       &pawnResourceInformation{metalIncome: 10, energyIncome: 100},
+			weapons: []*pawnWeaponInformation{
+				{attackDelay: 12, attackEnergyCost: 15, attackRadius: 6, attacksLand: true,
+					hitscan: &WeaponHitscan{baseDamage: 6},
+				},
+			},
+		}
+
 	case "armkbotlab":
 		colors := []int{
 			7, 7, 7,
@@ -120,11 +140,11 @@ func createBuilding(name string, x, y int, f *faction) *pawn {
 		colors := []int{-1}
 		app := &buildingAppearance{chars: "T", colors: colors}
 		b = &pawn{name: "Light Laser Turret", maxHitpoints: 90, isHeavy: true,
-			buildingInfo: &building{w: 1, h: 1, appearance: app},
+			buildingInfo:              &building{w: 1, h: 1, appearance: app},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 100, costM: 250, costE: 900},
 			weapons: []*pawnWeaponInformation{
 				{attackDelay: 12, attackEnergyCost: 15, attackRadius: 6, attacksLand: true,
-					hitscan: &WeaponHitscan{baseDamage:6},
+					hitscan: &WeaponHitscan{baseDamage: 6},
 				},
 			},
 		}
