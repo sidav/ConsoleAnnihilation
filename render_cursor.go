@@ -1,6 +1,6 @@
 package main
 
-import cw "TCellConsoleWrapper/tcell_wrapper"
+import cw "TCellConsoleWrapper"
 
 func r_renderCursor(f *faction) {
 	c := f.cursor
@@ -8,7 +8,9 @@ func r_renderCursor(f *faction) {
 	case CURSOR_SELECT:
 		renderSelectCursor(f)
 	case CURSOR_MOVE:
-		renderMoveCursor(c)
+		renderMoveCursor(f)
+	case CURSOR_BUILD:
+		renderBuildCursor(c)
 	}
 }
 
@@ -16,20 +18,21 @@ func renderSelectCursor(f *faction) {
 	c := f.cursor
 	x := VIEWPORT_W / 2
 	y := VIEWPORT_H / 2
-	snap := c.snappedBuilding
+	snap := c.snappedPawn
 	// cw.SetFgColorRGB(128, 128, 128)
-
 	if snap == nil {
 		cw.SetFgColor(cw.WHITE)
+	} else if snap.faction == f {
+		cw.SetFgColor(cw.GREEN)
+	} else {
+		cw.SetFgColor(cw.RED)
+	}
+
+	if snap == nil || snap.isUnit() {
 		cw.PutChar('[', x-1, y)
 		cw.PutChar(']', x+1, y)
 	} else {
-		if snap.faction == f {
-			cw.SetFgColor(cw.GREEN)
-		} else {
-			cw.SetFgColor(cw.RED)
-		}
-		w, h := snap.w, snap.h
+		w, h := snap.buildingInfo.w, snap.buildingInfo.h
 		offset := w % 2
 		for cy := 0; cy < h; cy++ {
 			cw.PutChar('[', x-w/2-1, cy-h/2+y)
@@ -45,11 +48,15 @@ func renderSelectCursor(f *faction) {
 	flushView()
 }
 
-func renderMoveCursor(c *cursor) {
+func renderMoveCursor(f *faction) {
+	c := f.cursor
 	x := VIEWPORT_W / 2
 	y := VIEWPORT_H / 2
 	// cw.SetFgColorRGB(128, 255, 128)
 	cw.SetFgColor(cw.GREEN)
+	if c.snappedPawn != nil && c.snappedPawn.faction != f {
+		cw.SetFgColor(cw.DARK_RED)
+	}
 
 	cw.PutChar('>', x-1, y)
 	cw.PutChar('<', x+1, y)
@@ -60,4 +67,21 @@ func renderMoveCursor(c *cursor) {
 	//cw.PutChar('\\', x+1, y+1)
 
 	flushView()
+}
+
+func renderBuildCursor(c *cursor) {
+	x := VIEWPORT_W / 2
+	y := VIEWPORT_H / 2
+
+	for i := 0; i < c.w; i++ {
+		for j := 0; j < c.h; j++ {
+			if CURRENT_MAP.getPawnAtCoordinates(c.x+i-c.w/2, c.y+j-c.h/2) == nil {
+				cw.SetBgColor(cw.GREEN)
+			} else {
+				cw.SetBgColor(cw.RED)
+			}
+			cw.PutChar(' ', x+i-c.w/2, y+j-c.h/2)
+		}
+	}
+	cw.SetBgColor(cw.BLACK)
 }

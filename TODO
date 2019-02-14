@@ -1,0 +1,8 @@
+Closest plans:
+- Further decrease the unit/building differentiation;
+- better collision detection
+- pathfinding
+- replace a single order var for pawns with an order queue
+- Visual attack animations.
+- Non-hitscan (projectile) weapons
+- Separate log for each faction

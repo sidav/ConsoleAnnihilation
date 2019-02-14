@@ -1,7 +1,8 @@
 package main
 
-type pawnBuilderInformation struct {
+type nanolatherInformation struct {
 	builderCoeff int
 	allowedBuildings []string
 	allowedUnits []string
+	defaultOrderForUnitBuilt *order
 }

@@ -66,11 +66,15 @@ func (f *faction) recalculateFactionEconomy(g *gameMap) { // move somewhere?
 	var metalConditionalInc, metalUnconditionalInc, energyInc int
 	var metalDec, energyConditionalDec, energyUnconditionalDec int
 
-	for _, u := range g.units { // TODO: only units? FUCK!
-		if u.faction == f && u.res != nil {
+	for _, u := range g.pawns {
+		if u.faction == f && u.res != nil && u.currentConstructionStatus == nil {
 			eco.maxMetal += u.res.metalStorage
 			eco.maxEnergy += u.res.energyStorage
 			energyInc += u.res.energyIncome // always unconditional
+
+			if u.res.isMetalExtractor && u.res.metalIncome == 0 { // metal income from the extractor needs to be recalculated.
+				u.res.metalIncome = CURRENT_MAP.getNumberOfMetalDepositsUnderBuilding(u)
+			}
 
 			// calculate conditional metal income and mathing energy spendings
 			if u.res.energyReqForConditionalMetalIncome > 0 {
@@ -84,39 +88,17 @@ func (f *faction) recalculateFactionEconomy(g *gameMap) { // move somewhere?
 			energyUnconditionalDec += u.res.energySpending
 		}
 	}
-	for _, building := range g.buildings { //
-		if building.faction == f && building.res != nil {
-			eco.maxMetal += building.res.metalStorage
-			eco.maxEnergy += building.res.energyStorage
-			energyInc += building.res.energyIncome // always unconditional
-
-			// calculate conditional metal income and mathing energy spendings
-			if building.res.energyReqForConditionalMetalIncome > 0 {
-				metalConditionalInc += building.res.metalIncome
-				energyConditionalDec += building.res.energyReqForConditionalMetalIncome
-			} else {
-				metalUnconditionalInc += building.res.metalIncome
-			}
-			// Calculate unconditional spendings
-			metalDec += building.res.metalSpending // always unconditional
-			energyUnconditionalDec += building.res.energySpending
-		}
-	}
-	// If spending is allowed with conditional, then spend/gain everything
-	if f.isSpendingAllowedWithBalance(metalConditionalInc+metalUnconditionalInc, metalDec, energyInc, energyUnconditionalDec+energyConditionalDec) {
-		eco.nanolatheAllowed = true
-
+	// If energy spending is allowed, then spend/gain ONLY conditional
+	if f.isEnergySpendingAllowed(energyInc, energyUnconditionalDec+energyConditionalDec) {
 		eco.metalIncome = metalConditionalInc + metalUnconditionalInc
 		eco.metalSpending = metalDec
-		eco.currentMetal += eco.metalIncome - eco.metalSpending
+		eco.currentMetal += eco.metalIncome
 
 		eco.energyIncome = energyInc
 		eco.energySpending = energyConditionalDec + energyUnconditionalDec
-		eco.currentEnergy += eco.energyIncome - eco.energySpending
+		eco.currentEnergy += eco.energyIncome - energyConditionalDec
 
-	} else { // spending is disallowed, so we just gain resources and got no spendings
-		eco.nanolatheAllowed = false
-
+	} else { // energy spending is disallowed, so we just gain ONLY unconditional resources
 		eco.metalIncome = metalUnconditionalInc
 		eco.metalSpending = metalDec
 		eco.currentMetal += metalUnconditionalInc
@@ -126,7 +108,19 @@ func (f *faction) recalculateFactionEconomy(g *gameMap) { // move somewhere?
 		eco.currentEnergy += eco.energyIncome
 	}
 
+	eco.nanolatheAllowed = f.isSpendingAllowedWithBalance(0, metalDec, 0, energyUnconditionalDec) // metalInc, energyInc and energyConditionalDec are already taken into account, so 0
+	if eco.nanolatheAllowed { // if nanolathe allowed, spend UNconditional energy and metal spendings
+		eco.currentMetal -= eco.metalSpending
+		eco.currentEnergy -= energyUnconditionalDec
+	}
+
 	eco.ensureCorrectStorages()
+}
+
+func (f *faction) isEnergySpendingAllowed(energyInc, energyDec int) bool {
+	eco := f.economy
+	es := eco.currentEnergy
+	return es+energyInc >= energyDec
 }
 
 func (f *faction) isSpendingAllowedWithBalance(metalInc, metalDec, energyInc, energyDec int) bool {

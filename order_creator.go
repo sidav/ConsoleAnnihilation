@@ -1,12 +1,28 @@
 package main
 
-func issueDefaultOrder(u *unit, m *gameMap, x, y int) {
-	// target = m.getUnitAtCoordinates(x, y)
-	tBld := m.getBuildingAtCoordinates(x, y)
-	if tBld != nil {
-		u.setOrder(&order{orderType: order_build, targetBuilding:tBld})
-		log.appendMessage(u.name + ": Helps nanolathing")
+func issueDefaultOrderToUnit(p *pawn, m *gameMap, x, y int) {
+	cx, cy := p.getCenter()
+	if x == cx && y == cy {
+		p.reportOrderCompletion(p.getCurrentOrderDescription() + " order untouched")
 		return
 	}
-	u.setOrder(&order{orderType: order_move, x:x, y:y})
+	target := m.getPawnAtCoordinates(x, y)
+	if target != nil {
+		if target.faction != p.faction {
+			p.setOrder(&order{orderType: order_attack, targetPawn: target, x: x, y: y})
+			log.appendMessage(p.name + ": attacking.")
+			return
+		}
+		if target.isBuilding() && target.currentConstructionStatus.isCompleted() == false {
+			p.setOrder(&order{orderType: order_build, buildingToConstruct: target})
+			log.appendMessage(p.name + ": Helps nanolathing")
+			return
+		}
+	}
+	if p.canMove() {
+		p.setOrder(&order{orderType: order_move, x: x, y: y})
+	}  else if p.canConstructUnits() {
+		p.nanolatherInfo.defaultOrderForUnitBuilt = &order{orderType: order_move, x: x, y: y}
+		p.reportOrderCompletion("rally point set")
+	}
 }
