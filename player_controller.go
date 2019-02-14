@@ -3,9 +3,13 @@ package main
 import (
 	"SomeTBSGame/routines"
 	cw "TCellConsoleWrapper"
+	"time"
 )
 
 var PLR_LOOP = true
+var IS_PAUSED = true
+var TIME_FOR_SINGLE_TURN_IN_REALTIME = 700
+var last_time time.Time
 
 func plr_control(f *faction, m *gameMap) {
 	PLR_LOOP = true
@@ -21,12 +25,40 @@ func plr_control(f *faction, m *gameMap) {
 func plr_selectPawn(f *faction, m *gameMap) bool { // true if pawn was selected
 	f.cursor.currentCursorMode = CURSOR_SELECT
 	for {
-		r_renderScreenForFaction(f, m)
-		keyPressed := cw.ReadKey()
+		r_renderScreenForFaction(f, m) // TODO: think what to do with all that rendering overkill.
+		keyPressed := cw.ReadKeyAsync()
 		switch keyPressed {
+
+		case "NOTHING":
+			if !IS_PAUSED {
+				if isTimeToAutoEndTurn() {
+					last_time = time.Now()
+					PLR_LOOP = false // end turn
+					return false
+				}
+			}
 		case "SPACE", " ":
-			PLR_LOOP = false // end turn
-			return false
+			IS_PAUSED = !IS_PAUSED
+			if IS_PAUSED {
+				log.appendMessage("Tactical pause engaged.")
+			} else {
+				log.appendMessage("Switched to real-time mode.")
+			}
+		case "=":
+			if TIME_FOR_SINGLE_TURN_IN_REALTIME > 100 {
+				TIME_FOR_SINGLE_TURN_IN_REALTIME -= 100
+				log.appendMessagef("Game speed increased to %d", 10 - (TIME_FOR_SINGLE_TURN_IN_REALTIME / 100))
+			} else {
+				log.appendMessage("Can't increase game speed any further.")
+			}
+		case "-":
+			if TIME_FOR_SINGLE_TURN_IN_REALTIME < 2000 {
+				TIME_FOR_SINGLE_TURN_IN_REALTIME += 100
+				log.appendMessagef("Game speed decreased to %d", 10 - (TIME_FOR_SINGLE_TURN_IN_REALTIME / 100))
+			} else {
+				log.appendMessage("Can't decrease game speed any further.")
+			}
+
 		case "ENTER", "RETURN":
 			u := f.cursor.snappedPawn //m.getUnitAtCoordinates(cx, cy)
 			if u == nil {
@@ -244,4 +276,8 @@ func plr_keyToDirection(keyPressed string) (int, int) {
 	default:
 		return 0, 0
 	}
+}
+
+func isTimeToAutoEndTurn() bool {
+	return time.Since(last_time) >= time.Duration(TIME_FOR_SINGLE_TURN_IN_REALTIME) * time.Millisecond
 }
