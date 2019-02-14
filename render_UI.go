@@ -12,8 +12,15 @@ func renderFactionStats(f *faction) {
 
 	// fr, fg, fb := getFactionRGB(f.factionNumber)
 	// cw.SetFgColorRGB(fr, fg, fb)
-	cw.SetFgColor(f.getFactionColor())
-	cw.PutString(fmt.Sprintf("%s: turn %d", f.name, CURRENT_TURN/10+1), statsx, 0)
+	if IS_PAUSED {
+		cw.SetFgColor(f.getFactionColor())
+		cw.PutString(f.name + ": ", statsx, 0)
+		cw.SetFgColor(cw.YELLOW)
+		cw.PutString(fmt.Sprintf("turn %d (PAUSED)", CURRENT_TURN/10+1), statsx+len(f.name)+2, 0)
+	} else {
+		cw.SetFgColor(f.getFactionColor())
+		cw.PutString(fmt.Sprintf("%s: turn %d", f.name, CURRENT_TURN/10+1), statsx, 0)
+	}
 
 	metal, maxmetal, metalFlow := eco.currentMetal, eco.maxMetal, eco.metalIncome-eco.metalSpending
 	cw.SetFgColor(cw.DARK_CYAN)

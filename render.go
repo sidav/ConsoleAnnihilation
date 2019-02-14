@@ -54,6 +54,10 @@ func r_renderUIOutline(f *faction) {
 		cw.PutChar('-', x, VIEWPORT_H)
 	}
 	cw.PutChar('+', VIEWPORT_W, VIEWPORT_H)
+	if IS_PAUSED {
+		cw.SetFgColor(cw.YELLOW)
+		cw.PutString("TACTICAL PAUSE", VIEWPORT_W / 2 - 7, VIEWPORT_H)
+	}
 	cw.SetBgColor(cw.BLACK)
 }
 
