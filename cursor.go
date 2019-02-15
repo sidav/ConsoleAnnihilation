@@ -15,6 +15,7 @@ type cursor struct {
 	snappedPawn               *pawn
 	currentCursorMode         CURSOR_MODE_ENUM
 	w, h                      int // Used for certain modes only.
+	buildOnMetalOnly 		  bool // for build mode only
 	lastSelectedIdlePawnIndex int // for selecting the next idle unit
 }
 

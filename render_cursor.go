@@ -73,12 +73,17 @@ func renderBuildCursor(c *cursor) {
 	x := VIEWPORT_W / 2
 	y := VIEWPORT_H / 2
 
+	// TODO: optimize it with getPawnsInRect()
 	for i := 0; i < c.w; i++ {
 		for j := 0; j < c.h; j++ {
-			if CURRENT_MAP.getPawnAtCoordinates(c.x+i-c.w/2, c.y+j-c.h/2) == nil {
-				cw.SetBgColor(cw.GREEN)
-			} else {
+			if c.buildOnMetalOnly && CURRENT_MAP.getNumberOfMetalDepositsInRect(c.x-c.w/2, c.y-c.h/2, c.w, c.h) == 0 {
 				cw.SetBgColor(cw.RED)
+			} else {
+				if CURRENT_MAP.getPawnAtCoordinates(c.x+i-c.w/2, c.y+j-c.h/2) == nil {
+					cw.SetBgColor(cw.GREEN)
+				} else {
+					cw.SetBgColor(cw.RED)
+				}
 			}
 			cw.PutChar(' ', x+i-c.w/2, y+j-c.h/2)
 		}

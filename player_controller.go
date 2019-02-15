@@ -177,16 +177,21 @@ func plr_selectBuildingSite(p *pawn, b *pawn, m *gameMap) {
 		f.cursor.currentCursorMode = CURSOR_BUILD
 		f.cursor.w = b.buildingInfo.w
 		f.cursor.h = b.buildingInfo.h
+		f.cursor.buildOnMetalOnly = b.buildingInfo.canBeBuiltOnMetalOnly
 		r_renderScreenForFaction(f, m)
 		flushView()
 
 		keyPressed := cw.ReadKey()
 		switch keyPressed {
 		case "ENTER", "RETURN":
-			b.x = cx - b.buildingInfo.w/2
-			b.y = cy - b.buildingInfo.h/2
-			p.order = &order{orderType: order_build, x: cx, y: cy, buildingToConstruct: b}
-			return
+			if m.canBuildingBeBuiltAt(b, cx, cy) {
+				b.x = cx - b.buildingInfo.w/2
+				b.y = cy - b.buildingInfo.h/2
+				p.order = &order{orderType: order_build, x: cx, y: cy, buildingToConstruct: b}
+				return
+			} else {
+				log.appendMessage("This building can't be placed here!")
+			}
 		case "ESCAPE":
 			log.appendMessage("Construction cancelled: " + b.name)
 			return

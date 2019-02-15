@@ -40,7 +40,7 @@ func createBuilding(name string, x, y int, f *faction) *pawn {
 			"-%-" +
 			"#|#", colors: colors}
 		b = &pawn{name: "Metal Extractor",
-			buildingInfo:              &building{w: 3, h: 3, appearance: app},
+			buildingInfo:              &building{w: 3, h: 3, appearance: app, canBeBuiltOnMetalOnly: true},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 60, costM: 100, costE: 500},
 			res:                       &pawnResourceInformation{energyReqForConditionalMetalIncome: 15, isMetalExtractor: true},
 		}
