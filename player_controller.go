@@ -6,10 +6,13 @@ import (
 	"time"
 )
 
-var PLR_LOOP = true
-var IS_PAUSED = true
-var TIME_FOR_SINGLE_TURN_IN_REALTIME = 700
-var last_time time.Time
+var (
+	PLR_LOOP       = true
+	IS_PAUSED      = true
+	reRenderNeeded = true
+	endTurnEachMs  = 700
+	last_time      time.Time
+)
 
 func plr_control(f *faction, m *gameMap) {
 	PLR_LOOP = true
@@ -25,17 +28,20 @@ func plr_control(f *faction, m *gameMap) {
 func plr_selectPawn(f *faction, m *gameMap) bool { // true if pawn was selected
 	f.cursor.currentCursorMode = CURSOR_SELECT
 	for {
-		r_renderScreenForFaction(f, m) // TODO: think what to do with all that rendering overkill.
+		if reRenderNeeded {
+			r_renderScreenForFaction(f, m) // TODO: think what to do with all that rendering overkill.
+		}
 		keyPressed := cw.ReadKeyAsync()
+		reRenderNeeded = true
 		switch keyPressed {
 
 		case "NOTHING":
-			if !IS_PAUSED {
-				if isTimeToAutoEndTurn() {
-					last_time = time.Now()
-					PLR_LOOP = false // end turn
-					return false
-				}
+			if !IS_PAUSED && isTimeToAutoEndTurn() {
+				last_time = time.Now()
+				PLR_LOOP = false // end turn
+				return false
+			} else {
+				reRenderNeeded = false
 			}
 		case "SPACE", " ":
 			IS_PAUSED = !IS_PAUSED
@@ -45,16 +51,16 @@ func plr_selectPawn(f *faction, m *gameMap) bool { // true if pawn was selected
 				log.appendMessage("Switched to real-time mode.")
 			}
 		case "=":
-			if TIME_FOR_SINGLE_TURN_IN_REALTIME > 100 {
-				TIME_FOR_SINGLE_TURN_IN_REALTIME -= 100
-				log.appendMessagef("Game speed increased to %d", 10 - (TIME_FOR_SINGLE_TURN_IN_REALTIME / 100))
+			if endTurnEachMs > 100 {
+				endTurnEachMs -= 100
+				log.appendMessagef("Game speed increased to %d", 10-(endTurnEachMs/100))
 			} else {
 				log.appendMessage("Can't increase game speed any further.")
 			}
 		case "-":
-			if TIME_FOR_SINGLE_TURN_IN_REALTIME < 2000 {
-				TIME_FOR_SINGLE_TURN_IN_REALTIME += 100
-				log.appendMessagef("Game speed decreased to %d", 10 - (TIME_FOR_SINGLE_TURN_IN_REALTIME / 100))
+			if endTurnEachMs < 2000 {
+				endTurnEachMs += 100
+				log.appendMessagef("Game speed decreased to %d", 10-(endTurnEachMs/100))
 			} else {
 				log.appendMessage("Can't decrease game speed any further.")
 			}
@@ -134,8 +140,7 @@ func plr_selectUnitsToConstruct(p *pawn) {
 	}
 
 	indicesQueue := routines.ShowSidebarCreateQueueMenu("CONSTRUCT:", p.faction.getFactionColor(),
-		SIDEBAR_X, SIDEBAR_FLOOR_2,  SIDEBAR_W,  SIDEBAR_H - SIDEBAR_FLOOR_2, names, descriptions)
-
+		SIDEBAR_X, SIDEBAR_FLOOR_2, SIDEBAR_W, SIDEBAR_H-SIDEBAR_FLOOR_2, names, descriptions)
 
 	p.order = &order{orderType: order_construct}
 	for _, i := range indicesQueue {
@@ -155,9 +160,9 @@ func plr_selectBuidingToConstruct(p *pawn) string {
 		names = append(names, name)
 		descriptions = append(descriptions, desc)
 	}
-	
+
 	index := routines.ShowSidebarSingleChoiceMenu("BUILD:", p.faction.getFactionColor(),
-		SIDEBAR_X, SIDEBAR_FLOOR_2,  SIDEBAR_W,  SIDEBAR_H - SIDEBAR_FLOOR_2, names, descriptions)
+		SIDEBAR_X, SIDEBAR_FLOOR_2, SIDEBAR_W, SIDEBAR_H-SIDEBAR_FLOOR_2, names, descriptions)
 	if index != -1 {
 		return availableBuildingCodes[index]
 	}
@@ -165,7 +170,7 @@ func plr_selectBuidingToConstruct(p *pawn) string {
 }
 
 func plr_selectBuildingSite(p *pawn, b *pawn, m *gameMap) {
-	log.appendMessage("Select construction site for "+b.name)
+	log.appendMessage("Select construction site for " + b.name)
 	for {
 		f := p.faction
 		cx, cy := f.cursor.getCoords()
@@ -183,7 +188,7 @@ func plr_selectBuildingSite(p *pawn, b *pawn, m *gameMap) {
 			p.order = &order{orderType: order_build, x: cx, y: cy, buildingToConstruct: b}
 			return
 		case "ESCAPE":
-			log.appendMessage("Construction cancelled: "+b.name)
+			log.appendMessage("Construction cancelled: " + b.name)
 			return
 		default:
 			plr_moveCursor(m, f, keyPressed)
@@ -244,7 +249,7 @@ func trySelectNextIdlePawn(f *faction) {
 		index_to_select := (offset + f.cursor.lastSelectedIdlePawnIndex) % totalPawnsOnMap
 
 		p := CURRENT_MAP.pawns[index_to_select]
-		if p.faction == f && (p.order == nil || p.order.orderType == order_hold ) {
+		if p.faction == f && (p.order == nil || p.order.orderType == order_hold) {
 			log.appendMessage("Next idle unit selected.")
 			f.cursor.lastSelectedIdlePawnIndex = index_to_select + 1
 			f.cursor.x, f.cursor.y = p.getCenter()
@@ -279,5 +284,5 @@ func plr_keyToDirection(keyPressed string) (int, int) {
 }
 
 func isTimeToAutoEndTurn() bool {
-	return time.Since(last_time) >= time.Duration(TIME_FOR_SINGLE_TURN_IN_REALTIME) * time.Millisecond
+	return time.Since(last_time) >= time.Duration(endTurnEachMs)*time.Millisecond
 }
