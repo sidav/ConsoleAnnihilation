@@ -139,15 +139,34 @@ func plr_selectUnitsToConstruct(p *pawn) {
 		descriptions = append(descriptions, desc)
 	}
 
-	indicesQueue := routines.ShowSidebarCreateQueueMenu("CONSTRUCT:", p.faction.getFactionColor(),
-		SIDEBAR_X, SIDEBAR_FLOOR_2, SIDEBAR_W, SIDEBAR_H-SIDEBAR_FLOOR_2, names, descriptions)
-
-	p.order = &order{orderType: order_construct}
-	for _, i := range indicesQueue {
-		p.order.constructingQueue = append(p.order.constructingQueue,
-			createUnit(availableUnitCodes[i], p.x, p.y, p.faction, false))
+	presetValues := make([]int, 0)
+	// init values array for already existing queue
+	if p.order != nil && p.order.constructingQueue != nil {
+		for _, pawnInQueue := range p.order.constructingQueue {
+			for i, name := range names {
+				if pawnInQueue.name == name {
+					presetValues = append(presetValues, i)
+				}
+			}
+		}
 	}
-	log.appendMessagef("Construction of %d units initiated.", len(p.order.constructingQueue))
+
+	indicesQueue := routines.ShowSidebarCreateQueueMenu("CONSTRUCT:", p.faction.getFactionColor(),
+		SIDEBAR_X, SIDEBAR_FLOOR_2, SIDEBAR_W, SIDEBAR_H-SIDEBAR_FLOOR_2, names, descriptions, presetValues)
+
+	if indicesQueue != nil {
+		if len(indicesQueue) > 0 {
+			p.order = &order{orderType: order_construct}
+			for _, i := range indicesQueue {
+				p.order.constructingQueue = append(p.order.constructingQueue,
+					createUnit(availableUnitCodes[i], p.x, p.y, p.faction, false))
+			}
+			log.appendMessagef("Construction of %d units initiated.", len(p.order.constructingQueue))
+		} else {
+			p.order = nil
+			log.appendMessage("Construction orders cancelled.")
+		}
+	}
 }
 
 func plr_selectBuidingToConstruct(p *pawn) string {

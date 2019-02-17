@@ -122,10 +122,15 @@ func ShowSidebarPickValuesMenu(title string, titleColor, mx, my, mw int, mh int,
 	}
 }
 
-func ShowSidebarCreateQueueMenu(title string, titleColor, mx, my, mw int, mh int, items []string, descriptions []string) []int { // returns a slice of ordered indices
+func ShowSidebarCreateQueueMenu(title string, titleColor, mx, my, mw int, mh int, items []string, descriptions []string, presetValues []int) []int { // returns a slice of ordered indices
 	drawSidebarMenuTitle(title, titleColor, mx, my, mw)
 	cursorIndex := 0
-	values := make([]int, 0)
+	var values []int
+	if len(presetValues) > 0 {
+		values = presetValues
+	} else {
+		values = make([]int, 0)
+	}
 	for {
 
 
