@@ -46,7 +46,11 @@ func r_renderScreenForFaction(f *faction, g *gameMap) {
 }
 
 func r_renderUIOutline(f *faction) {
-	cw.SetFgColor(f.getFactionColor())
+	if IS_PAUSED {
+		cw.SetBgColor(f.getFactionColor())
+	} else {
+		cw.SetFgColor(f.getFactionColor())
+	}
 	for y := 0; y < VIEWPORT_H; y++ {
 		cw.PutChar('|', VIEWPORT_W, y)
 	}
@@ -55,6 +59,7 @@ func r_renderUIOutline(f *faction) {
 	}
 	cw.PutChar('+', VIEWPORT_W, VIEWPORT_H)
 	if IS_PAUSED {
+		cw.SetBgColor(cw.BLACK)
 		cw.SetFgColor(cw.YELLOW)
 		cw.PutString("TACTICAL PAUSE", VIEWPORT_W / 2 - 7, VIEWPORT_H)
 	}
