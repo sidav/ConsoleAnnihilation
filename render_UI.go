@@ -81,6 +81,20 @@ func renderLog(flush bool) {
 	}
 }
 
+func r_renderAttackRadius(p *pawn) {
+	if len(p.weapons) > 0 {
+		// (p.x, p.y, p.weapons[0].attackRadius, false, CURRENT_FACTION_SEEING_THE_SCREEN.cursor.x-VIEWPORT_W/2, CURRENT_FACTION_SEEING_THE_SCREEN.cursor.y-VIEWPORT_H/2)
+		vx, vy := CURRENT_FACTION_SEEING_THE_SCREEN.cursor.x-VIEWPORT_W/2, CURRENT_FACTION_SEEING_THE_SCREEN.cursor.y-VIEWPORT_H/2
+		line := routines.GetCircle(p.x, p.y, p.weapons[0].attackRadius)
+		for _, point := range *line {
+			x, y := point.X, point.Y
+			if areCoordsInRect(x-vx, y-vy, 0, 0, VIEWPORT_W, VIEWPORT_H) {
+				cw.PutChar('X', x-vx, y-vy)
+			}
+		}
+	}
+}
+
 func renderOrderLine(p *pawn) {
 	var ordr *order
 	if p.order != nil {

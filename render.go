@@ -158,6 +158,7 @@ func renderInfoOnCursor(f *faction, g *gameMap) {
 				res = sp.res
 			}
 		}
+		r_renderAttackRadius(sp)
 	}
 
 	if len(details) > 0 {
