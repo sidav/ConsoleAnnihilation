@@ -88,10 +88,14 @@ func r_renderAttackRadius(p *pawn) {
 		line := routines.GetCircle(p.x, p.y, p.weapons[0].attackRadius)
 		for _, point := range *line {
 			x, y := point.X, point.Y
-			if areCoordsInRect(x-vx, y-vy, 0, 0, VIEWPORT_W, VIEWPORT_H) {
-				cw.PutChar('X', x-vx, y-vy)
+			cw.SetFgColor(cw.BLACK)
+			if areCoordsInRect(x-vx, y-vy, 0, 0, VIEWPORT_W, VIEWPORT_H) && areCoordsValid(x, y) {
+				tileApp := CURRENT_MAP.tileMap[x][y].appearance
+				cw.SetBgColor(tileApp.color)
+				cw.PutChar(tileApp.char, x-vx, y-vy)
 			}
 		}
+		cw.SetBgColor(cw.BLACK)
 	}
 }
 
