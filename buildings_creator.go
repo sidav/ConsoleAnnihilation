@@ -1,8 +1,8 @@
 package main
 
-func createBuilding(name string, x, y int, f *faction) *pawn {
+func createBuilding(codename string, x, y int, f *faction) *pawn {
 	var b *pawn
-	switch name {
+	switch codename {
 
 	case "metalmaker":
 		colors := []int{
@@ -235,6 +235,7 @@ func createBuilding(name string, x, y int, f *faction) *pawn {
 	b.x = x
 	b.y = y
 	b.faction = f
+	b.codename = codename
 	if b.nanolatherInfo != nil && b.res == nil {
 		b.res = &pawnResourceInformation{} // adds zero-value resource info struct for spendings usage.
 	}

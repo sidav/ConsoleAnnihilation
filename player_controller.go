@@ -138,6 +138,10 @@ func plr_selectOrder(f *faction, m *gameMap) {
 			if selectedPawn.canConstructUnits() {
 				plr_selectUnitsToConstruct(selectedPawn)
 			}
+		case "r": // repeat construction queue
+			if selectedPawn.canConstructUnits() {
+				selectedPawn.repeatConstructionQueue = !selectedPawn.repeatConstructionQueue
+			}
 		case "ESCAPE":
 			return
 		default:

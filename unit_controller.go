@@ -248,6 +248,9 @@ func doAllNanolathes(m *gameMap) { // does the building itself
 					uCnst.order.cloneFrom(u.nanolatherInfo.defaultOrderForUnitBuilt)
 					m.addPawn(uCnst)
 					u.order.constructingQueue = u.order.constructingQueue[1:]
+					if u.repeatConstructionQueue {
+						u.order.constructingQueue = append(u.order.constructingQueue, createUnit(uCnst.codename, 0, 0, u.faction, false))
+					}
 					u.reportOrderCompletion("Nanolathe completed")
 				}
 			}

@@ -184,6 +184,11 @@ func r_renderPossibleOrdersForPawn(p *pawn) {
 	}
 	if p.canConstructUnits() {
 		orders = append(orders, "(C)onstruct units")
+		if p.repeatConstructionQueue {
+			orders = append(orders, "(R)epeat queue: ENABLED")
+		} else {
+			orders = append(orders, "(R)epeat queue: DISABLED")
+		}
 		if p.faction.cursor.currentCursorMode == CURSOR_AMOVE {
 			orders = append(orders, "Default order: move")
 			orders = append(orders, "(a): set to attack-move")

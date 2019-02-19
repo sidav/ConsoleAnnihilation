@@ -1,9 +1,9 @@
 package main
 
 // TODO: move unit stats to JSON
-func createUnit(name string, x, y int, f *faction, alreadyConstructed bool) *pawn {
+func createUnit(codename string, x, y int, f *faction, alreadyConstructed bool) *pawn {
 	var newUnit *pawn
-	switch name {
+	switch codename {
 	case "armcommander":
 		newUnit = &pawn{name: "Arm Commander", maxHitpoints: 100, isHeavy: true, isCommander: true,
 			unitInfo:       &unit{appearance: ccell{char: '@'}},
@@ -113,6 +113,7 @@ func createUnit(name string, x, y int, f *faction, alreadyConstructed bool) *paw
 	newUnit.x = x
 	newUnit.y = y
 	newUnit.faction = f
+	newUnit.codename = codename
 	if alreadyConstructed {
 		newUnit.currentConstructionStatus = nil
 	}

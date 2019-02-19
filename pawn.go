@@ -5,6 +5,7 @@ import "fmt"
 type pawn struct {
 	// pawn is a building or a unit.
 	name                      string
+	codename 				  string // for inner usage
 	unitInfo                  *unit
 	buildingInfo              *building
 	faction                   *faction
@@ -17,6 +18,8 @@ type pawn struct {
 	weapons                   []*pawnWeaponInformation
 	nextTurnToAct             int
 	isCommander               bool
+
+	repeatConstructionQueue  bool // for factories
 	// armor info:
 	hitpoints, maxHitpoints int
 	isLight, isHeavy        bool // these are not mutually excluding lol. Trust me, I'm a programmer
