@@ -110,14 +110,33 @@ func (g *gameMap) getNumberOfMetalDepositsInRect(x, y, w, h int) int {
 	return total
 }
 
+func (g *gameMap) getNumberOfThermalDepositsInRect(x, y, w, h int) int {
+	total := 0
+	for i := 0; i < w; i++ {
+		for j := 0; j < h; j++ {
+			if areCoordsValid(x+i, y+j) {
+				total += g.tileMap[x+i][y+j].thermalAmount
+			}
+		}
+	}
+	return total
+}
+
 func (g *gameMap) getNumberOfMetalDepositsUnderBuilding(b *pawn) int {
 	return g.getNumberOfMetalDepositsInRect(b.x, b.y, b.buildingInfo.w, b.buildingInfo.h)
+}
+
+func (g *gameMap) getNumberOfThermalDepositsUnderBuilding(b *pawn) int {
+	return g.getNumberOfThermalDepositsInRect(b.x, b.y, b.buildingInfo.w, b.buildingInfo.h)
 }
 
 func (g *gameMap) canBuildingBeBuiltAt(b *pawn, cx, cy int) bool {
 	b.x = cx - b.buildingInfo.w/2
 	b.y = cy - b.buildingInfo.h/2
 	if b.buildingInfo.canBeBuiltOnMetalOnly && g.getNumberOfMetalDepositsUnderBuilding(b) == 0 {
+		return false
+	}
+	if b.buildingInfo.canBeBuiltOnThermalOnly && g.getNumberOfThermalDepositsUnderBuilding(b) == 0 {
 		return false
 	}
 	if len(g.getPawnsInRect(b.x, b.y, b.buildingInfo.w, b.buildingInfo.h)) > 0 {
@@ -172,6 +191,8 @@ func (g *gameMap) init() {
 	g.tileMap[12][16] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, metalAmount: 1, isPassable: true}
 	g.tileMap[13][15] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, metalAmount: 1, isPassable: true}
 	g.tileMap[13][14] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, metalAmount: 1, isPassable: true}
+	g.tileMap[3][15] = &tile{appearance: &ccell{char: '$', r: 64, g: 64, b: 128, color: 8}, thermalAmount: 1, isPassable: true}
+	g.tileMap[4][14] = &tile{appearance: &ccell{char: '$', r: 64, g: 64, b: 128, color: 8}, thermalAmount: 1, isPassable: true}
 
 	g.factions = append(g.factions, createFaction("The Core Corporation", 0, true))
 	g.addPawn(createUnit("protocommander", 3, 9, g.factions[0], true))

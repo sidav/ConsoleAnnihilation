@@ -221,6 +221,7 @@ func plr_selectBuildingSite(p *pawn, b *pawn, m *gameMap) {
 		f.cursor.w = b.buildingInfo.w
 		f.cursor.h = b.buildingInfo.h
 		f.cursor.buildOnMetalOnly = b.buildingInfo.canBeBuiltOnMetalOnly
+		f.cursor.buildOnThermalOnly = b.buildingInfo.canBeBuiltOnThermalOnly
 		r_renderScreenForFaction(f, m)
 		flushView()
 

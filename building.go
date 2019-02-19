@@ -4,5 +4,5 @@ type building struct {
 	w, h                  int
 	appearance            *buildingAppearance
 	hasBeenPlaced         bool
-	canBeBuiltOnMetalOnly bool
+	canBeBuiltOnMetalOnly, canBeBuiltOnThermalOnly bool
 }

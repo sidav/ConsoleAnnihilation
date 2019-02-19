@@ -45,6 +45,23 @@ func createBuilding(codename string, x, y int, f *faction) *pawn {
 			res:                       &pawnResourceInformation{energyReqForConditionalMetalIncome: 9, isMetalExtractor: true},
 		}
 
+	case "geo":
+		colors := []int{
+			7, 13, 13, 7,
+			-1, 8, 8, -1,
+			-1, 8, 8, -1,
+			7, 13, 13, 7}
+		app := &buildingAppearance{chars: "" +
+			"=^^=" +
+			"{00}" +
+			"{00}" +
+			"=VV=", colors: colors}
+		b = &pawn{name: "Geothermal Powerplant",
+			buildingInfo:              &building{w: 4, h: 4, appearance: app, canBeBuiltOnThermalOnly: true},
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 60, costM: 350, costE: 1500},
+			res:                       &pawnResourceInformation{energyIncome: 250},
+		}
+
 	case "mstorage":
 		colors := []int{
 			-1, 7, -1,
