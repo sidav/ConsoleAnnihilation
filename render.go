@@ -119,7 +119,10 @@ func renderBuildingsInViewport(p *pawn, g *gameMap, vx, vy int) {
 					cw.SetFgColor(color)
 				}
 			} else { // building is under construction
-				color := 2
+				color := cw.DARK_GREEN
+				if CURRENT_TURN/10 % 2 == 0 {
+					color = cw.GREEN
+				}
 				cw.SetFgColor(color)
 			}
 			if areGlobalCoordsOnScreen(bx+x, by+y, vx, vy) {
