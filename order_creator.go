@@ -1,8 +1,7 @@
 package main
 
 func issueDefaultOrderToUnit(p *pawn, m *gameMap, x, y int) {
-	cx, cy := p.getCenter()
-	if x == cx && y == cy {
+	if p.isOccupyingCoords(x, y) {
 		p.reportOrderCompletion(p.getCurrentOrderDescription() + " order untouched")
 		return
 	}
@@ -20,9 +19,18 @@ func issueDefaultOrderToUnit(p *pawn, m *gameMap, x, y int) {
 		}
 	}
 	if p.canMove() {
-		p.setOrder(&order{orderType: order_move, x: x, y: y})
+		if p.faction.cursor.currentCursorMode == CURSOR_AMOVE {
+			p.setOrder(&order{orderType: order_attack_move, x: x, y: y})
+		} else {
+			p.setOrder(&order{orderType: order_move, x: x, y: y})
+		}
 	}  else if p.canConstructUnits() {
-		p.nanolatherInfo.defaultOrderForUnitBuilt = &order{orderType: order_move, x: x, y: y}
-		p.reportOrderCompletion("rally point set")
+		if p.faction.cursor.currentCursorMode == CURSOR_AMOVE {
+			p.nanolatherInfo.defaultOrderForUnitBuilt = &order{orderType: order_attack_move, x: x, y: y}
+			p.reportOrderCompletion("default engage location set")
+		} else {
+			p.nanolatherInfo.defaultOrderForUnitBuilt = &order{orderType: order_move, x: x, y: y}
+			p.reportOrderCompletion("rally point set")
+		}
 	}
 }

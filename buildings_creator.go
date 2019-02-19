@@ -1,8 +1,8 @@
 package main
 
-func createBuilding(name string, x, y int, f *faction) *pawn {
+func createBuilding(codename string, x, y int, f *faction) *pawn {
 	var b *pawn
-	switch name {
+	switch codename {
 
 	case "metalmaker":
 		colors := []int{
@@ -42,7 +42,56 @@ func createBuilding(name string, x, y int, f *faction) *pawn {
 		b = &pawn{name: "Metal Extractor",
 			buildingInfo:              &building{w: 3, h: 3, appearance: app, canBeBuiltOnMetalOnly: true},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 60, costM: 100, costE: 500},
-			res:                       &pawnResourceInformation{energyReqForConditionalMetalIncome: 15, isMetalExtractor: true},
+			res:                       &pawnResourceInformation{energyReqForConditionalMetalIncome: 9, isMetalExtractor: true},
+		}
+
+	case "geo":
+		colors := []int{
+			7, 13, 13, 7,
+			-1, 8, 8, -1,
+			-1, 8, 8, -1,
+			7, 13, 13, 7}
+		app := &buildingAppearance{chars: "" +
+			"=^^=" +
+			"{00}" +
+			"{00}" +
+			"=VV=", colors: colors}
+		b = &pawn{name: "Geothermal Powerplant",
+			buildingInfo:              &building{w: 4, h: 4, appearance: app, canBeBuiltOnThermalOnly: true},
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 60, costM: 350, costE: 1500},
+			res:                       &pawnResourceInformation{energyIncome: 250},
+		}
+
+	case "mstorage":
+		colors := []int{
+			-1, 7, -1,
+			7, -1, 7,
+			-1, 7, -1,
+		}
+		app := &buildingAppearance{chars: "" +
+			"=0=" +
+			"0$0" +
+			"=0=", colors: colors}
+		b = &pawn{name: "Metal Storage", maxHitpoints: 100, isHeavy: true, eachTickToRegen: 10,
+			buildingInfo:              &building{w: 3, h: 3, appearance: app},
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 60, costM: 100, costE: 800},
+			res:                       &pawnResourceInformation{metalStorage: 250},
+		}
+
+	case "estorage":
+		colors := []int{
+			-1, 7, -1,
+			7, -1, 7,
+			-1, 7, -1,
+		}
+		app := &buildingAppearance{chars: "" +
+			"=|=" +
+			"-0-" +
+			"=|=", colors: colors}
+		b = &pawn{name: "Energy Storage",
+			buildingInfo:              &building{w: 3, h: 3, appearance: app},
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 60, costM: 200, costE: 400},
+			res:                       &pawnResourceInformation{energyStorage: 250},
 		}
 
 	case "quark": // cheating building, useful for debugging
@@ -197,12 +246,13 @@ func createBuilding(name string, x, y int, f *faction) *pawn {
 		}
 	}
 	if b.maxHitpoints == 0 {
-		b.maxHitpoints = 1
+		b.maxHitpoints = 25
 	}
 	b.hitpoints = b.maxHitpoints
 	b.x = x
 	b.y = y
 	b.faction = f
+	b.codename = codename
 	if b.nanolatherInfo != nil && b.res == nil {
 		b.res = &pawnResourceInformation{} // adds zero-value resource info struct for spendings usage.
 	}

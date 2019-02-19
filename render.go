@@ -44,9 +44,9 @@ func r_renderScreenForFaction(f *faction, g *gameMap) {
 	renderMapInViewport(g, vx, vy)
 	renderFactionStats(f)
 	renderInfoOnCursor(f, g)
-	r_renderCursor(f)
 	r_renderUIOutline(f)
 	renderPawnsInViewport(g, vx, vy)
+	r_renderCursor(f)
 	renderLog(false)
 	flushView()
 }
@@ -119,7 +119,10 @@ func renderBuildingsInViewport(p *pawn, g *gameMap, vx, vy int) {
 					cw.SetFgColor(color)
 				}
 			} else { // building is under construction
-				color := 2
+				color := cw.DARK_GREEN
+				if CURRENT_TURN/10 % 2 == 0 {
+					color = cw.GREEN
+				}
 				cw.SetFgColor(color)
 			}
 			if areGlobalCoordsOnScreen(bx+x, by+y, vx, vy) {
@@ -172,21 +175,6 @@ func renderInfoOnCursor(f *faction, g *gameMap) {
 		}
 		routines.DrawSidebarInfoMenu(title, color, SIDEBAR_X, SIDEBAR_FLOOR_2, SIDEBAR_W, details)
 	}
-}
-
-func r_renderPossibleOrdersForPawn(p *pawn) {
-	orders := make([]string, 0)
-	if p.canConstructBuildings() {
-		orders = append(orders, "(B)uild")
-	}
-	if p.canConstructUnits() {
-		orders = append(orders, "(C)onstruct units")
-	}
-	if p.hasWeapons() {
-		orders = append(orders, "(A)ttack-move")
-	}
-	routines.DrawSidebarInfoMenu("Orders for: "+p.name, p.faction.getFactionColor(),
-		SIDEBAR_X, SIDEBAR_FLOOR_3, SIDEBAR_W, orders)
 }
 
 func flushView() {

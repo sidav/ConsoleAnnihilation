@@ -5,6 +5,7 @@ import "fmt"
 type pawn struct {
 	// pawn is a building or a unit.
 	name                      string
+	codename 				  string // for inner usage
 	unitInfo                  *unit
 	buildingInfo              *building
 	faction                   *faction
@@ -17,6 +18,8 @@ type pawn struct {
 	weapons                   []*pawnWeaponInformation
 	nextTurnToAct             int
 	isCommander               bool
+
+	repeatConstructionQueue  bool // for factories
 	// armor info:
 	hitpoints, maxHitpoints int
 	isLight, isHeavy        bool // these are not mutually excluding lol. Trust me, I'm a programmer
@@ -51,7 +54,7 @@ func (p *pawn) getCoords() (int, int) {
 
 func (p *pawn) setOrder(o *order) {
 	p.order = o
-	log.appendMessage(fmt.Sprintf("Order for %d, %d received!", o.x, o.y))
+	log.appendMessage(fmt.Sprintf("%s order for %d, %d confirmed!", p.getCurrentOrderImperative(), o.x, o.y))
 }
 
 func (p *pawn) isOccupyingCoords(x, y int) bool {
@@ -108,6 +111,8 @@ func (p *pawn) getCurrentOrderDescription() string {
 		return "MOVING"
 	case order_attack:
 		return "ASSAULTING"
+	case order_attack_move:
+		return "MOVING WHILE ENGAGING"
 	case order_build:
 		return fmt.Sprintf("NANOLATHING (%d%% ready)",
 			p.order.buildingToConstruct.currentConstructionStatus.getCompletionPercent())
@@ -120,5 +125,27 @@ func (p *pawn) getCurrentOrderDescription() string {
 		}
 	default:
 		return "DOING SOMETHING"
+	}
+}
+
+func (p *pawn) getCurrentOrderImperative() string {
+	if p.order == nil {
+		return "STAND BY"
+	}
+	switch p.order.orderType {
+	case order_hold:
+		return "STAND BY"
+	case order_move:
+		return "MOVE"
+	case order_attack:
+		return "ASSAULT"
+	case order_attack_move:
+		return "ATTACK MOVE"
+	case order_build:
+		return fmt.Sprintf("BUILD")
+	case order_construct:
+		return "CONSTRUCT"
+	default:
+		return "BLAH BLAH BLAH"
 	}
 }

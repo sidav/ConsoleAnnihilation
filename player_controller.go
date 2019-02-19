@@ -43,6 +43,11 @@ func plr_selectPawn(f *faction, m *gameMap) bool { // true if pawn was selected
 			} else {
 				reRenderNeeded = false
 			}
+		case ".": // end turn without unpausing the game
+			if IS_PAUSED {
+				PLR_LOOP = false
+				return false 
+			}
 		case "SPACE", " ":
 			IS_PAUSED = !IS_PAUSED
 			if IS_PAUSED {
@@ -84,6 +89,16 @@ func plr_selectPawn(f *faction, m *gameMap) bool { // true if pawn was selected
 			GAME_IS_RUNNING = false
 			PLR_LOOP = false
 			return false
+
+		case "DELETE": // cheat
+			for _, p := range CURRENT_MAP.pawns {
+				if p.faction == f && p.isCommander {
+					p.res.metalIncome += 10
+					p.res.energyIncome += 50
+					return false
+				}
+			}
+
 		default:
 			plr_moveCursor(m, f, keyPressed)
 		}
@@ -93,10 +108,9 @@ func plr_selectPawn(f *faction, m *gameMap) bool { // true if pawn was selected
 func plr_selectOrder(f *faction, m *gameMap) {
 	selectedPawn := f.cursor.snappedPawn //m.getUnitAtCoordinates(cx, cy)
 	log.appendMessage(selectedPawn.name + " is awaiting orders.")
-
+	f.cursor.currentCursorMode = CURSOR_MOVE
 	for {
 		cx, cy := f.cursor.getCoords()
-		f.cursor.currentCursorMode = CURSOR_MOVE
 		r_renderScreenForFaction(f, m)
 		r_renderPossibleOrdersForPawn(selectedPawn)
 		flushView()
@@ -106,6 +120,12 @@ func plr_selectOrder(f *faction, m *gameMap) {
 		case "ENTER", "RETURN":
 			issueDefaultOrderToUnit(selectedPawn, m, cx, cy)
 			return
+		case "a": // attack-move
+			if selectedPawn.hasWeapons() || selectedPawn.canConstructUnits() {
+				f.cursor.currentCursorMode = CURSOR_AMOVE
+			}
+		case "m": // move
+				f.cursor.currentCursorMode = CURSOR_MOVE
 		case "b": // build
 			if selectedPawn.canConstructBuildings() {
 				code := plr_selectBuidingToConstruct(selectedPawn)
@@ -117,6 +137,10 @@ func plr_selectOrder(f *faction, m *gameMap) {
 		case "c": // construct units
 			if selectedPawn.canConstructUnits() {
 				plr_selectUnitsToConstruct(selectedPawn)
+			}
+		case "r": // repeat construction queue
+			if selectedPawn.canConstructUnits() {
+				selectedPawn.repeatConstructionQueue = !selectedPawn.repeatConstructionQueue
 			}
 		case "ESCAPE":
 			return
@@ -197,6 +221,7 @@ func plr_selectBuildingSite(p *pawn, b *pawn, m *gameMap) {
 		f.cursor.w = b.buildingInfo.w
 		f.cursor.h = b.buildingInfo.h
 		f.cursor.buildOnMetalOnly = b.buildingInfo.canBeBuiltOnMetalOnly
+		f.cursor.buildOnThermalOnly = b.buildingInfo.canBeBuiltOnThermalOnly
 		r_renderScreenForFaction(f, m)
 		flushView()
 

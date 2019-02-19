@@ -9,6 +9,8 @@ func r_renderCursor(f *faction) {
 		renderSelectCursor(f)
 	case CURSOR_MOVE:
 		renderMoveCursor(f)
+	case CURSOR_AMOVE:
+		renderAttackMoveCursor(f)
 	case CURSOR_BUILD:
 		renderBuildCursor(c)
 	}
@@ -56,10 +58,33 @@ func renderMoveCursor(f *faction) {
 	cw.SetFgColor(cw.GREEN)
 	if c.snappedPawn != nil && c.snappedPawn.faction != f {
 		cw.SetFgColor(cw.DARK_RED)
+		cw.PutChar('}', x-1, y)
+		cw.PutChar('{', x+1, y)
+		cw.PutChar('-', x-2, y)
+		cw.PutChar('-', x+2, y)
+	} else {
+		cw.PutChar('>', x-1, y)
+		cw.PutChar('<', x+1, y)
 	}
 
-	cw.PutChar('>', x-1, y)
-	cw.PutChar('<', x+1, y)
+	//cw.PutChar('\\', x-1, y-1)
+	//cw.PutChar('/', x+1, y-1)
+	//cw.PutChar('/', x-1, y+1)
+	//cw.PutChar('\\', x+1, y+1)
+
+	flushView()
+}
+
+func renderAttackMoveCursor(f *faction) {
+	x := VIEWPORT_W / 2
+	y := VIEWPORT_H / 2
+	// cw.SetFgColorRGB(128, 255, 128)
+	cw.SetFgColor(cw.DARK_RED)
+	cw.PutChar('}', x-1, y)
+	cw.PutChar('{', x+1, y)
+	cw.SetFgColor(cw.GREEN)
+	cw.PutChar('v', x, y-1)
+	cw.PutChar('^', x, y+1)
 
 	//cw.PutChar('\\', x-1, y-1)
 	//cw.PutChar('/', x+1, y-1)
@@ -76,10 +101,12 @@ func renderBuildCursor(c *cursor) {
 	// TODO: optimize it with getPawnsInRect()
 	for i := 0; i < c.w; i++ {
 		for j := 0; j < c.h; j++ {
-			if c.buildOnMetalOnly && CURRENT_MAP.getNumberOfMetalDepositsInRect(c.x-c.w/2, c.y-c.h/2, c.w, c.h) == 0 {
+			if (c.buildOnMetalOnly && CURRENT_MAP.getNumberOfMetalDepositsInRect(c.x-c.w/2, c.y-c.h/2, c.w, c.h) == 0) ||
+				(c.buildOnThermalOnly && CURRENT_MAP.getNumberOfThermalDepositsInRect(c.x-c.w/2, c.y-c.h/2, c.w, c.h) == 0) {
 				cw.SetBgColor(cw.RED)
 			} else {
-				if CURRENT_MAP.getPawnAtCoordinates(c.x+i-c.w/2, c.y+j-c.h/2) == nil {
+				if CURRENT_MAP.getPawnAtCoordinates(c.x+i-c.w/2, c.y+j-c.h/2) == nil &&
+					areCoordsValid(c.x+i-c.w/2, c.y+j-c.h/2){
 					cw.SetBgColor(cw.GREEN)
 				} else {
 					cw.SetBgColor(cw.RED)

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"SomeTBSGame/routines"
 	"TCellConsoleWrapper"
 	"time"
 )
@@ -26,9 +25,11 @@ func (u *pawn) executeOrders(m *gameMap) {
 
 	switch order.orderType {
 	case order_move:
-		u.doMoveOrder(m)
+		u.doMoveOrder()
 	case order_attack:
 		u.doAttackOrder()
+	case order_attack_move:
+		u.doAttackMoveOrder()
 	case order_build:
 		u.doBuildOrder(m)
 	case order_construct:
@@ -39,15 +40,26 @@ func (u *pawn) executeOrders(m *gameMap) {
 
 }
 
-func (u *pawn) doMoveOrder(m *gameMap) { // TODO: rewrite
+func (u *pawn) doMoveOrder() { // TODO: rewrite
 	order := u.order
 
 	ox, oy := order.x, order.y
 	ux, uy := u.getCoords()
+	var vx, vy int
 
-	vector := routines.CreateVectorByStartAndEndInt(ux, uy, ox, oy)
-	vector.TransformIntoUnitVector()
-	vx, vy := vector.GetRoundedCoords()
+	//vector := routines.CreateVectorByStartAndEndInt(ux, uy, ox, oy)
+	//vector.TransformIntoUnitVector()
+	//vx, vy := vector.GetRoundedCoords()
+	path := CURRENT_MAP.getPathFromTo(ux, uy, ox, oy)
+	if path != nil {
+		vx, vy = path.GetNextStepVector()
+	}
+
+	if vx == 0 && vy == 0 && (ux != ox || uy != oy) { // path stops not at the target
+		u.reportOrderCompletion("Can't find route to target. Arrived to closest position.") // can be dangerous if order is not move
+		u.order = nil
+		return
+	}
 
 	if u.coll_canMoveByVector(vx, vy) {
 
@@ -77,7 +89,7 @@ func (p *pawn) doAttackOrder() { // Only moves the unit to a firing position. Th
 	if getSqDistanceBetween(ux, uy, targetX, targetY) > p.getMaxRadiusToFire()*p.getMaxRadiusToFire() {
 		order.x = targetX
 		order.y = targetY
-		p.doMoveOrder(CURRENT_MAP)
+		p.doMoveOrder()
 		return
 	}
 }
@@ -123,6 +135,15 @@ func (p *pawn) openFireIfPossible() { // does the firing, does NOT necessary mea
 	}
 }
 
+func (p *pawn) doAttackMoveOrder() {
+	if p.isTimeToAct() {
+		p.openFireIfPossible()
+	}
+	if p.isTimeToAct() {
+		p.doMoveOrder()
+	}
+}
+
 func (u *pawn) doBuildOrder(m *gameMap) { // only moves to location and/or sets the spendings. Building itself is in doAllNanolathes()
 	order := u.order
 	tBld := order.buildingToConstruct
@@ -149,7 +170,7 @@ func (u *pawn) doBuildOrder(m *gameMap) { // only moves to location and/or sets 
 		u.res.energySpending = u.nanolatherInfo.builderCoeff * tBld.currentConstructionStatus.costE / tBld.currentConstructionStatus.maxConstructionAmount
 	} else { // out of range, move to the construction site
 		order.x, order.y = tBld.getCenter()
-		u.doMoveOrder(m)
+		u.doMoveOrder()
 		log.appendMessage(u.name + " MOVES TO BUILD")
 		return
 	}
@@ -227,6 +248,9 @@ func doAllNanolathes(m *gameMap) { // does the building itself
 					uCnst.order.cloneFrom(u.nanolatherInfo.defaultOrderForUnitBuilt)
 					m.addPawn(uCnst)
 					u.order.constructingQueue = u.order.constructingQueue[1:]
+					if u.repeatConstructionQueue {
+						u.order.constructingQueue = append(u.order.constructingQueue, createUnit(uCnst.codename, 0, 0, u.faction, false))
+					}
 					u.reportOrderCompletion("Nanolathe completed")
 				}
 			}

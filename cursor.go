@@ -11,12 +11,12 @@ const (
 )
 
 type cursor struct {
-	x, y                      int
-	snappedPawn               *pawn
-	currentCursorMode         CURSOR_MODE_ENUM
-	w, h                      int // Used for certain modes only.
-	buildOnMetalOnly 		  bool // for build mode only
-	lastSelectedIdlePawnIndex int // for selecting the next idle unit
+	x, y                                 int
+	snappedPawn                          *pawn
+	currentCursorMode                    CURSOR_MODE_ENUM
+	w, h                                 int  // Used for certain modes only.
+	buildOnMetalOnly, buildOnThermalOnly bool // for build mode only
+	lastSelectedIdlePawnIndex            int  // for selecting the next idle unit
 }
 
 func (c *cursor) getCoords() (int, int) {
