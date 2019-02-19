@@ -1,5 +1,7 @@
 package main
 
+import "astar/astar"
+
 const (
 	mapW = 70
 	mapH = 20
@@ -122,6 +124,28 @@ func (g *gameMap) canBuildingBeBuiltAt(b *pawn, cx, cy int) bool {
 		return false
 	}
 	return true
+}
+
+func (g *gameMap) createCostMapForPathfinding() *[][]int {
+	width, height := len(g.tileMap), len((g.tileMap)[0])
+
+	costmap := make([][]int, width)
+	for j := range costmap {
+		costmap[j] = make([]int, height)
+	}
+	for i:=0; i<width; i++ {
+		for j:=0; j<height; j++ {
+			// TODO: optimize by iterating through pawns separately
+			if !(g.tileMap[i][j].isPassable) || g.getPawnAtCoordinates(i, j) != nil {
+				costmap[i][j] = -1
+			}
+		}
+	}
+	return &costmap
+}
+
+func (g *gameMap) getPathFromTo(fx, fy, tx, ty int) *astar.Cell {
+	return astar.FindPath(g.createCostMapForPathfinding(), fx, fy, tx, ty)
 }
 
 func (g *gameMap) init() {

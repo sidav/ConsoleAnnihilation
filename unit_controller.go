@@ -1,7 +1,6 @@
 package main
 
 import (
-	"SomeTBSGame/routines"
 	"TCellConsoleWrapper"
 	"time"
 )
@@ -44,10 +43,15 @@ func (u *pawn) doMoveOrder(m *gameMap) { // TODO: rewrite
 
 	ox, oy := order.x, order.y
 	ux, uy := u.getCoords()
+	var vx, vy int
 
-	vector := routines.CreateVectorByStartAndEndInt(ux, uy, ox, oy)
-	vector.TransformIntoUnitVector()
-	vx, vy := vector.GetRoundedCoords()
+	//vector := routines.CreateVectorByStartAndEndInt(ux, uy, ox, oy)
+	//vector.TransformIntoUnitVector()
+	//vx, vy := vector.GetRoundedCoords()
+	path := m.getPathFromTo(ux, uy, ox, oy)
+	if path != nil {
+		vx, vy = path.GetNextStepVector()
+	}
 
 	if u.coll_canMoveByVector(vx, vy) {
 

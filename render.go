@@ -44,9 +44,9 @@ func r_renderScreenForFaction(f *faction, g *gameMap) {
 	renderMapInViewport(g, vx, vy)
 	renderFactionStats(f)
 	renderInfoOnCursor(f, g)
-	r_renderCursor(f)
 	r_renderUIOutline(f)
 	renderPawnsInViewport(g, vx, vy)
+	r_renderCursor(f)
 	renderLog(false)
 	flushView()
 }
