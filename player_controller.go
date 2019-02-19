@@ -43,6 +43,11 @@ func plr_selectPawn(f *faction, m *gameMap) bool { // true if pawn was selected
 			} else {
 				reRenderNeeded = false
 			}
+		case ".": // end turn without unpausing the game
+			if IS_PAUSED {
+				PLR_LOOP = false
+				return false 
+			}
 		case "SPACE", " ":
 			IS_PAUSED = !IS_PAUSED
 			if IS_PAUSED {
@@ -84,6 +89,16 @@ func plr_selectPawn(f *faction, m *gameMap) bool { // true if pawn was selected
 			GAME_IS_RUNNING = false
 			PLR_LOOP = false
 			return false
+
+		case "DELETE": // cheat
+			for _, p := range CURRENT_MAP.pawns {
+				if p.faction == f && p.isCommander {
+					p.res.metalIncome += 10
+					p.res.energyIncome += 50
+					return false
+				}
+			}
+
 		default:
 			plr_moveCursor(m, f, keyPressed)
 		}
