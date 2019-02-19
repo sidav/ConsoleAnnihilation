@@ -53,6 +53,12 @@ func (u *pawn) doMoveOrder(m *gameMap) { // TODO: rewrite
 		vx, vy = path.GetNextStepVector()
 	}
 
+	if vx == 0 && vy == 0 && (ux != ox || uy != oy) { // path stops not at the target
+		u.reportOrderCompletion("Can't find route to target. Arrived to closest position.") // can be dangerous if order is not move
+		u.order = nil
+		return
+	}
+
 	if u.coll_canMoveByVector(vx, vy) {
 
 		u.x += vx

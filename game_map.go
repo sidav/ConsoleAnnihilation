@@ -8,9 +8,9 @@ const (
 )
 
 type gameMap struct {
-	tileMap [mapW][mapH] *tile
+	tileMap  [mapW][mapH]*tile
 	factions []*faction
-	pawns []*pawn
+	pawns    []*pawn
 }
 
 func (g *gameMap) addPawn(p *pawn) {
@@ -24,7 +24,7 @@ func (g *gameMap) addBuilding(b *pawn, asAlreadyConstructed bool) {
 	}
 
 	if b.nanolatherInfo != nil && len(b.nanolatherInfo.allowedUnits) > 0 { // sets default rally point for build units.
-		b.nanolatherInfo.defaultOrderForUnitBuilt = &order{orderType: order_move, x: b.x + b.buildingInfo.w / 2, y: b.y + b.buildingInfo.h + 1}
+		b.nanolatherInfo.defaultOrderForUnitBuilt = &order{orderType: order_move, x: b.x + b.buildingInfo.w/2, y: b.y + b.buildingInfo.h + 1}
 	}
 
 	g.addPawn(b)
@@ -100,8 +100,8 @@ func (g *gameMap) getBuildingAtCoordinates(x, y int) *pawn {
 
 func (g *gameMap) getNumberOfMetalDepositsInRect(x, y, w, h int) int {
 	total := 0
-	for i:=0; i<w;i++ {
-		for j:=0;j<h;j++{
+	for i := 0; i < w; i++ {
+		for j := 0; j < h; j++ {
 			if areCoordsValid(x+i, y+j) {
 				total += g.tileMap[x+i][y+j].metalAmount
 			}
@@ -133,8 +133,8 @@ func (g *gameMap) createCostMapForPathfinding() *[][]int {
 	for j := range costmap {
 		costmap[j] = make([]int, height)
 	}
-	for i:=0; i<width; i++ {
-		for j:=0; j<height; j++ {
+	for i := 0; i < width; i++ {
+		for j := 0; j < height; j++ {
 			// TODO: optimize by iterating through pawns separately
 			if !(g.tileMap[i][j].isPassable) || g.getPawnAtCoordinates(i, j) != nil {
 				costmap[i][j] = -1
@@ -145,14 +145,14 @@ func (g *gameMap) createCostMapForPathfinding() *[][]int {
 }
 
 func (g *gameMap) getPathFromTo(fx, fy, tx, ty int) *astar.Cell {
-	return astar.FindPath(g.createCostMapForPathfinding(), fx, fy, tx, ty)
+	return astar.FindPath(g.createCostMapForPathfinding(), fx, fy, tx, ty, true, true)
 }
 
 func (g *gameMap) init() {
 	g.pawns = make([]*pawn, 0)
 	g.factions = make([]*faction, 0)
-	for i:=0; i < mapW; i++ {
-		for j:=0; j < mapH; j++ {
+	for i := 0; i < mapW; i++ {
+		for j := 0; j < mapH; j++ {
 			g.tileMap[i][j] = &tile{appearance: &ccell{char: '.', r: 64, g: 128, b: 64, color: 3}, isPassable: true}
 		}
 	}
@@ -168,7 +168,6 @@ func (g *gameMap) init() {
 	g.tileMap[11][15] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, metalAmount: 1, isPassable: true}
 	g.tileMap[12][16] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, metalAmount: 1, isPassable: true}
 
-
 	g.factions = append(g.factions, createFaction("The Core Corporation", 0, true))
 	g.addPawn(createUnit("protocommander", 3, 9, g.factions[0], true))
 	g.factions[0].cursor.x = 3
@@ -181,16 +180,16 @@ func (g *gameMap) init() {
 
 	g.factions = append(g.factions, createFaction("The rogue Arm AI", 1, false))
 	// g.addPawn(createUnit("armcommander", mapW-10, 5, g.factions[1], true))
-	g.addBuilding(createBuilding("armhq", mapW-5, 9, g.factions[1]), true )
+	g.addBuilding(createBuilding("armhq", mapW-5, 9, g.factions[1]), true)
 	// g.addPawn(createUnit("ak", mapW-1, 4, g.factions[1], true))
-	g.addBuilding(createBuilding("lturret", mapW-10, 1, g.factions[1]), true )
+	g.addBuilding(createBuilding("lturret", mapW-10, 1, g.factions[1]), true)
 	g.addBuilding(createBuilding("lturret", mapW-10, 4, g.factions[1]), true)
 	g.addBuilding(createBuilding("guardian", mapW-7, 3, g.factions[1]), true)
-	g.addBuilding(createBuilding("lturret", mapW-10, 8, g.factions[1]), true )
+	g.addBuilding(createBuilding("lturret", mapW-10, 8, g.factions[1]), true)
 	g.addBuilding(createBuilding("lturret", mapW-10, 12, g.factions[1]), true)
-	g.addBuilding(createBuilding("lturret", mapW-10, 16, g.factions[1]), true )
+	g.addBuilding(createBuilding("lturret", mapW-10, 16, g.factions[1]), true)
 	g.addBuilding(createBuilding("guardian", mapW-7, 14, g.factions[1]), true)
-	g.addBuilding(createBuilding("lturret", mapW-10, 19, g.factions[1]), true )
+	g.addBuilding(createBuilding("lturret", mapW-10, 19, g.factions[1]), true)
 
 	for _, f := range g.factions {
 		f.recalculateFactionEconomy(g)
