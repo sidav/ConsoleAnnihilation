@@ -14,7 +14,7 @@ func renderFactionStats(f *faction) {
 	// cw.SetFgColorRGB(fr, fg, fb)
 	if IS_PAUSED {
 		cw.SetFgColor(f.getFactionColor())
-		cw.PutString(f.name + ": ", statsx, 0)
+		cw.PutString(f.name+": ", statsx, 0)
 		cw.SetFgColor(cw.YELLOW)
 		cw.PutString(fmt.Sprintf("turn %d (PAUSED)", CURRENT_TURN/10+1), statsx+len(f.name)+2, 0)
 	} else {
@@ -81,6 +81,24 @@ func renderLog(flush bool) {
 	}
 }
 
+func r_renderAttackRadius(p *pawn) {
+	if len(p.weapons) > 0 {
+		// (p.x, p.y, p.weapons[0].attackRadius, false, CURRENT_FACTION_SEEING_THE_SCREEN.cursor.x-VIEWPORT_W/2, CURRENT_FACTION_SEEING_THE_SCREEN.cursor.y-VIEWPORT_H/2)
+		vx, vy := CURRENT_FACTION_SEEING_THE_SCREEN.cursor.x-VIEWPORT_W/2, CURRENT_FACTION_SEEING_THE_SCREEN.cursor.y-VIEWPORT_H/2
+		line := routines.GetCircle(p.x, p.y, p.weapons[0].attackRadius)
+		for _, point := range *line {
+			x, y := point.X, point.Y
+			cw.SetFgColor(cw.BLACK)
+			if areCoordsInRect(x-vx, y-vy, 0, 0, VIEWPORT_W, VIEWPORT_H) && areCoordsValid(x, y) {
+				tileApp := CURRENT_MAP.tileMap[x][y].appearance
+				cw.SetBgColor(tileApp.color)
+				cw.PutChar(tileApp.char, x-vx, y-vy)
+			}
+		}
+		cw.SetBgColor(cw.BLACK)
+	}
+}
+
 func renderOrderLine(p *pawn) {
 	var ordr *order
 	if p.order != nil {
@@ -131,6 +149,23 @@ func renderLine(fromx, fromy, tox, toy int, flush bool, vx, vy int) {
 			cw.PutChar(char, viewx, viewy)
 		}
 		// }
+	}
+	if flush {
+		cw.Flush_console()
+	}
+}
+
+func renderCircle(fromx, fromy, radius int, flush bool, vx, vy int) {
+	if radius == 0 {
+		return
+	} else {
+		line := routines.GetCircle(fromx, fromy, radius)
+		for _, point := range *line {
+			x, y := point.X, point.Y
+			if areCoordsInRect(x-vx, y-vy, 0, 0, VIEWPORT_W, VIEWPORT_H) {
+				cw.PutChar('X', x-vx, y-vy)
+			}
+		}
 	}
 	if flush {
 		cw.Flush_console()

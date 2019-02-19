@@ -33,6 +33,8 @@ func main() {
 	cw.Init_console()
 	defer cw.Close_console()
 
+	log = &LOG{}
+
 	CURRENT_MAP = &gameMap{}
 	CURRENT_MAP.init()
 
@@ -43,8 +45,6 @@ func main() {
 	//for key:=""; key != "ESCAPE"; {
 	//	key = cw.ReadKey()
 	//}
-
-	log = &LOG{}
 
 	showBriefing()
 

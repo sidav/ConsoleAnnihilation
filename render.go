@@ -37,16 +37,26 @@ func r_updateBoundsIfNeccessary() {
 
 func r_renderScreenForFaction(f *faction, g *gameMap) {
 	r_updateBoundsIfNeccessary()
-	r_renderMapAroundCursor(g, f.cursor.x, f.cursor.y)
+	cx, cy := f.cursor.x, f.cursor.y
+	cw.Clear_console()
+	vx := cx - VIEWPORT_W/2
+	vy := cy - VIEWPORT_H/2
+	renderMapInViewport(g, vx, vy)
 	renderFactionStats(f)
 	renderInfoOnCursor(f, g)
 	r_renderCursor(f)
 	r_renderUIOutline(f)
+	renderPawnsInViewport(g, vx, vy)
+	renderLog(false)
 	flushView()
 }
 
 func r_renderUIOutline(f *faction) {
-	cw.SetFgColor(f.getFactionColor())
+	if IS_PAUSED {
+		cw.SetBgColor(f.getFactionColor())
+	} else {
+		cw.SetFgColor(f.getFactionColor())
+	}
 	for y := 0; y < VIEWPORT_H; y++ {
 		cw.PutChar('|', VIEWPORT_W, y)
 	}
@@ -55,19 +65,11 @@ func r_renderUIOutline(f *faction) {
 	}
 	cw.PutChar('+', VIEWPORT_W, VIEWPORT_H)
 	if IS_PAUSED {
+		cw.SetBgColor(cw.BLACK)
 		cw.SetFgColor(cw.YELLOW)
 		cw.PutString("TACTICAL PAUSE", VIEWPORT_W / 2 - 7, VIEWPORT_H)
 	}
 	cw.SetBgColor(cw.BLACK)
-}
-
-func r_renderMapAroundCursor(g *gameMap, cx, cy int) {
-	cw.Clear_console()
-	vx := cx - VIEWPORT_W/2
-	vy := cy - VIEWPORT_H/2
-	renderMapInViewport(g, vx, vy)
-	renderPawnsInViewport(g, vx, vy)
-	renderLog(false)
 }
 
 func renderMapInViewport(g *gameMap, vx, vy int) {
@@ -153,6 +155,7 @@ func renderInfoOnCursor(f *faction, g *gameMap) {
 				res = sp.res
 			}
 		}
+		r_renderAttackRadius(sp)
 	}
 
 	if len(details) > 0 {

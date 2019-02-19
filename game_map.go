@@ -65,6 +65,17 @@ func (g *gameMap) getPawnsInRadiusFrom(x, y, radius int) []*pawn {
 	return arr
 }
 
+func (g *gameMap) getPawnsInRect(x, y, w, h int) []*pawn {
+	var arr []*pawn
+	for _, p := range g.pawns {
+		px, py := p.getCenter()
+		if (px >= x) && (px < x+w) && (py >= y) && (py < y+h) { // TODO: pawns bigger than one cell
+			arr = append(arr, p)
+		}
+	}
+	return arr
+}
+
 func (g *gameMap) getEnemyPawnsInRadiusFrom(x, y, radius int, f *faction) []*pawn {
 	var arr []*pawn
 	for _, p := range g.pawns {
@@ -89,7 +100,9 @@ func (g *gameMap) getNumberOfMetalDepositsInRect(x, y, w, h int) int {
 	total := 0
 	for i:=0; i<w;i++ {
 		for j:=0;j<h;j++{
-			total += g.tileMap[x+i][y+j].metalAmount
+			if areCoordsValid(x+i, y+j) {
+				total += g.tileMap[x+i][y+j].metalAmount
+			}
 		}
 	}
 	return total
@@ -97,6 +110,18 @@ func (g *gameMap) getNumberOfMetalDepositsInRect(x, y, w, h int) int {
 
 func (g *gameMap) getNumberOfMetalDepositsUnderBuilding(b *pawn) int {
 	return g.getNumberOfMetalDepositsInRect(b.x, b.y, b.buildingInfo.w, b.buildingInfo.h)
+}
+
+func (g *gameMap) canBuildingBeBuiltAt(b *pawn, cx, cy int) bool {
+	b.x = cx - b.buildingInfo.w/2
+	b.y = cy - b.buildingInfo.h/2
+	if b.buildingInfo.canBeBuiltOnMetalOnly && g.getNumberOfMetalDepositsUnderBuilding(b) == 0 {
+		return false
+	}
+	if len(g.getPawnsInRect(b.x, b.y, b.buildingInfo.w, b.buildingInfo.h)) > 0 {
+		return false
+	}
+	return true
 }
 
 func (g *gameMap) init() {
@@ -115,6 +140,9 @@ func (g *gameMap) init() {
 	g.tileMap[13][2] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, metalAmount: 1, isPassable: true}
 	g.tileMap[14][3] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, metalAmount: 1, isPassable: true}
 	g.tileMap[13][1] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, metalAmount: 1, isPassable: true}
+	g.tileMap[12][15] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, metalAmount: 1, isPassable: true}
+	g.tileMap[11][15] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, metalAmount: 1, isPassable: true}
+	g.tileMap[12][16] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, metalAmount: 1, isPassable: true}
 
 
 	g.factions = append(g.factions, createFaction("The Core Corporation", 0, true))
