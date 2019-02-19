@@ -19,14 +19,18 @@ func plr_control(f *faction, m *gameMap) {
 	PLR_LOOP = true
 	snapCursorToPawn(f, m)
 	for PLR_LOOP {
-		if plr_selectPawn(f, m) {
-			// plr_selectOrder(f, m)
-			plr_selectOrder(f, m)
+		selection := plr_selectPawn(f, m)
+		if selection != nil {
+			if len(*selection) == 1 {
+				plr_selectOrder(selection, f, m)
+			} else if len(*selection) > 1 {
+				plr_selectOrderForMultiSelect(selection, f)
+			}
 		}
 	}
 }
 
-func plr_selectPawn(f *faction, m *gameMap) bool { // true if pawn was selected
+func plr_selectPawn(f *faction, m *gameMap) *[]*pawn { // returns a pointer to an array of selected pawns.
 	f.cursor.currentCursorMode = CURSOR_SELECT
 	for {
 		if reRenderNeeded {
@@ -40,14 +44,14 @@ func plr_selectPawn(f *faction, m *gameMap) bool { // true if pawn was selected
 			if !IS_PAUSED && isTimeToAutoEndTurn() {
 				last_time = time.Now()
 				PLR_LOOP = false // end turn
-				return false
+				return nil
 			} else {
 				reRenderNeeded = false
 			}
 		case ".": // end turn without unpausing the game
 			if IS_PAUSED {
 				PLR_LOOP = false
-				return false 
+				return nil 
 			}
 		case "SPACE", " ":
 			IS_PAUSED = !IS_PAUSED
@@ -74,29 +78,29 @@ func plr_selectPawn(f *faction, m *gameMap) bool { // true if pawn was selected
 		case "ENTER", "RETURN":
 			u := f.cursor.snappedPawn //m.getUnitAtCoordinates(cx, cy)
 			if u == nil {
-				plr_bandboxSelection(f) // select multiple units
-				return false
+				return plr_bandboxSelection(f) // select multiple units
 			}
 			if u.faction.factionNumber != f.factionNumber {
 				log.appendMessage("Enemy units can't be selected, Commander.")
-				return false
+				return nil
 			}
-			return true
+			return &[]*pawn {f.cursor.snappedPawn}
 		case "TAB":
 			trySelectNextIdlePawn(f)
 		case "C":
-			return trySnapCursorToCommander(f)
+			trySnapCursorToCommander(f)
+			return &[]*pawn {f.cursor.snappedPawn}
 		case "ESCAPE":
 			GAME_IS_RUNNING = false
 			PLR_LOOP = false
-			return false
+			return nil
 
 		case "DELETE": // cheat
 			for _, p := range CURRENT_MAP.pawns {
 				if p.faction == f && p.isCommander {
 					p.res.metalIncome += 10
 					p.res.energyIncome += 50
-					return false
+					return nil
 				}
 			}
 
@@ -128,7 +132,7 @@ func plr_bandboxSelection(f *faction) *[]*pawn {
 				fromy = toy
 				toy = t
 			}
-			unitsInSelection := CURRENT_MAP.getPawnsInRect(fromx, fromy, tox-fromx, toy-fromy)
+			unitsInSelection := CURRENT_MAP.getPawnsInRect(fromx, fromy, tox-fromx+1, toy-fromy+1)
 			unitsToReturn := make([]*pawn, 0)
 			for _, p := range unitsInSelection {
 				// select only the pawns if current faction which are capable to move AND attack and are not commanders.
@@ -144,8 +148,8 @@ func plr_bandboxSelection(f *faction) *[]*pawn {
 	}
 }
 
-func plr_selectOrder(f *faction, m *gameMap) {
-	selectedPawn := f.cursor.snappedPawn //m.getUnitAtCoordinates(cx, cy)
+func plr_selectOrder(selection *[]*pawn, f *faction, m *gameMap) {
+	selectedPawn := (*selection)[0] //m.getUnitAtCoordinates(cx, cy)
 	log.appendMessage(selectedPawn.name + " is awaiting orders.")
 	f.cursor.currentCursorMode = CURSOR_MOVE
 	for {
@@ -188,6 +192,35 @@ func plr_selectOrder(f *faction, m *gameMap) {
 		}
 	}
 }
+
+func plr_selectOrderForMultiSelect(selection *[]*pawn, f *faction) {
+	log.appendMessage(fmt.Sprintf("%d units are awaiting orders.", len(*selection)))
+	f.cursor.currentCursorMode = CURSOR_MOVE
+	for {
+		cx, cy := f.cursor.getCoords()
+		r_renderScreenForFaction(f, CURRENT_MAP)
+		// r_renderPossibleOrdersForPawn(selectedPawn) TODO: DO THAT THING PLEASE
+		flushView()
+
+		keyPressed := cw.ReadKey()
+		switch keyPressed {
+		case "ENTER", "RETURN":
+			for _, p := range *selection {
+			issueDefaultOrderToUnit(p, CURRENT_MAP, cx, cy)
+			}
+			return
+		case "a": // attack-move
+			f.cursor.currentCursorMode = CURSOR_AMOVE
+		case "m": // move
+			f.cursor.currentCursorMode = CURSOR_MOVE
+		case "ESCAPE":
+			return
+		default:
+			plr_moveCursor(f, keyPressed)
+		}
+	}
+}
+
 
 func plr_selectUnitsToConstruct(p *pawn) {
 	availableUnitCodes := p.nanolatherInfo.allowedUnits
