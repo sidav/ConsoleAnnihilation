@@ -136,7 +136,9 @@ func (p *pawn) openFireIfPossible() { // does the firing, does NOT necessary mea
 }
 
 func (p *pawn) doAttackMoveOrder() {
-	p.openFireIfPossible()
+	if p.isTimeToAct() {
+		p.openFireIfPossible()
+	}
 	if p.isTimeToAct() {
 		p.doMoveOrder()
 	}
