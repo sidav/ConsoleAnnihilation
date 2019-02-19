@@ -184,8 +184,15 @@ func r_renderPossibleOrdersForPawn(p *pawn) {
 	}
 	if p.canConstructUnits() {
 		orders = append(orders, "(C)onstruct units")
+		if p.faction.cursor.currentCursorMode == CURSOR_AMOVE {
+			orders = append(orders, "Default order: move")
+			orders = append(orders, "(a): set to attack-move")
+		} else {
+			orders = append(orders, "Default order: attack-move")
+			orders = append(orders, "(m): set to move")
+		}
 	}
-	if p.faction.cursor.currentCursorMode == CURSOR_AMOVE {
+	if p.faction.cursor.currentCursorMode == CURSOR_AMOVE && p.canMove() {
 		orders = append(orders, "(M)ove")
 	} else {
 		if p.hasWeapons() {

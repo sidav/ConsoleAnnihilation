@@ -55,7 +55,7 @@ func createBuilding(name string, x, y int, f *faction) *pawn {
 			"=0=" +
 			"0$0" +
 			"=0=", colors: colors}
-		b = &pawn{name: "Metal Storage",
+		b = &pawn{name: "Metal Storage", maxHitpoints: 100, isHeavy: true, eachTickToRegen: 10,
 			buildingInfo:              &building{w: 3, h: 3, appearance: app},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 60, costM: 100, costE: 800},
 			res:                       &pawnResourceInformation{metalStorage: 250},
@@ -229,7 +229,7 @@ func createBuilding(name string, x, y int, f *faction) *pawn {
 		}
 	}
 	if b.maxHitpoints == 0 {
-		b.maxHitpoints = 1
+		b.maxHitpoints = 25
 	}
 	b.hitpoints = b.maxHitpoints
 	b.x = x

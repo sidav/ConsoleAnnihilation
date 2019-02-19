@@ -25,7 +25,12 @@ func issueDefaultOrderToUnit(p *pawn, m *gameMap, x, y int) {
 			p.setOrder(&order{orderType: order_move, x: x, y: y})
 		}
 	}  else if p.canConstructUnits() {
-		p.nanolatherInfo.defaultOrderForUnitBuilt = &order{orderType: order_move, x: x, y: y}
-		p.reportOrderCompletion("rally point set")
+		if p.faction.cursor.currentCursorMode == CURSOR_AMOVE {
+			p.nanolatherInfo.defaultOrderForUnitBuilt = &order{orderType: order_attack_move, x: x, y: y}
+			p.reportOrderCompletion("default engage location set")
+		} else {
+			p.setOrder(&order{orderType: order_move, x: x, y: y})
+			p.reportOrderCompletion("rally point set")
+		}
 	}
 }

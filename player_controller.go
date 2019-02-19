@@ -106,13 +106,11 @@ func plr_selectOrder(f *faction, m *gameMap) {
 			issueDefaultOrderToUnit(selectedPawn, m, cx, cy)
 			return
 		case "a": // attack-move
-			if selectedPawn.hasWeapons() {
+			if selectedPawn.hasWeapons() || selectedPawn.canConstructUnits() {
 				f.cursor.currentCursorMode = CURSOR_AMOVE
 			}
 		case "m": // move
-			if selectedPawn.hasWeapons() {
 				f.cursor.currentCursorMode = CURSOR_MOVE
-			}
 		case "b": // build
 			if selectedPawn.canConstructBuildings() {
 				code := plr_selectBuidingToConstruct(selectedPawn)
