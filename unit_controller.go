@@ -25,9 +25,11 @@ func (u *pawn) executeOrders(m *gameMap) {
 
 	switch order.orderType {
 	case order_move:
-		u.doMoveOrder(m)
+		u.doMoveOrder()
 	case order_attack:
 		u.doAttackOrder()
+	case order_attack_move:
+		u.doAttackMoveOrder()
 	case order_build:
 		u.doBuildOrder(m)
 	case order_construct:
@@ -38,7 +40,7 @@ func (u *pawn) executeOrders(m *gameMap) {
 
 }
 
-func (u *pawn) doMoveOrder(m *gameMap) { // TODO: rewrite
+func (u *pawn) doMoveOrder() { // TODO: rewrite
 	order := u.order
 
 	ox, oy := order.x, order.y
@@ -48,7 +50,7 @@ func (u *pawn) doMoveOrder(m *gameMap) { // TODO: rewrite
 	//vector := routines.CreateVectorByStartAndEndInt(ux, uy, ox, oy)
 	//vector.TransformIntoUnitVector()
 	//vx, vy := vector.GetRoundedCoords()
-	path := m.getPathFromTo(ux, uy, ox, oy)
+	path := CURRENT_MAP.getPathFromTo(ux, uy, ox, oy)
 	if path != nil {
 		vx, vy = path.GetNextStepVector()
 	}
@@ -87,7 +89,7 @@ func (p *pawn) doAttackOrder() { // Only moves the unit to a firing position. Th
 	if getSqDistanceBetween(ux, uy, targetX, targetY) > p.getMaxRadiusToFire()*p.getMaxRadiusToFire() {
 		order.x = targetX
 		order.y = targetY
-		p.doMoveOrder(CURRENT_MAP)
+		p.doMoveOrder()
 		return
 	}
 }
@@ -133,6 +135,13 @@ func (p *pawn) openFireIfPossible() { // does the firing, does NOT necessary mea
 	}
 }
 
+func (p *pawn) doAttackMoveOrder() {
+	p.openFireIfPossible()
+	if p.isTimeToAct() {
+		p.doMoveOrder()
+	}
+}
+
 func (u *pawn) doBuildOrder(m *gameMap) { // only moves to location and/or sets the spendings. Building itself is in doAllNanolathes()
 	order := u.order
 	tBld := order.buildingToConstruct
@@ -159,7 +168,7 @@ func (u *pawn) doBuildOrder(m *gameMap) { // only moves to location and/or sets 
 		u.res.energySpending = u.nanolatherInfo.builderCoeff * tBld.currentConstructionStatus.costE / tBld.currentConstructionStatus.maxConstructionAmount
 	} else { // out of range, move to the construction site
 		order.x, order.y = tBld.getCenter()
-		u.doMoveOrder(m)
+		u.doMoveOrder()
 		log.appendMessage(u.name + " MOVES TO BUILD")
 		return
 	}
