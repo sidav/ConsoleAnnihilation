@@ -1,8 +1,7 @@
 package main
 
 func issueDefaultOrderToUnit(p *pawn, m *gameMap, x, y int) {
-	cx, cy := p.getCenter()
-	if x == cx && y == cy {
+	if p.isOccupyingCoords(x, y) {
 		p.reportOrderCompletion(p.getCurrentOrderDescription() + " order untouched")
 		return
 	}
