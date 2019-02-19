@@ -3,6 +3,7 @@ package main
 import (
 	"SomeTBSGame/routines"
 	cw "TCellConsoleWrapper"
+	"fmt"
 	"time"
 )
 
@@ -105,7 +106,7 @@ func plr_selectPawn(f *faction, m *gameMap) bool { // true if pawn was selected
 	}
 }
 
-func plr_bandboxSelection(f *faction) {
+func plr_bandboxSelection(f *faction) *[]*pawn {
 	f.cursor.currentCursorMode = CURSOR_MULTISELECT
 	f.cursor.xorig, f.cursor.yorig = f.cursor.getCoords()
 	for {
@@ -113,9 +114,30 @@ func plr_bandboxSelection(f *faction) {
 		keyPressed := cw.ReadKey()
 		switch keyPressed {
 		case "ESCAPE":
-			return
+			return nil
 		case "ENTER":
-			return
+			fromx, fromy := f.cursor.xorig, f.cursor.yorig
+			tox, toy := f.cursor.getCoords()
+			if fromx > tox {
+				t := fromx
+				fromx = tox
+				tox = t
+			}
+			if fromy > toy {
+				t := fromy
+				fromy = toy
+				toy = t
+			}
+			unitsInSelection := CURRENT_MAP.getPawnsInRect(fromx, fromy, tox-fromx, toy-fromy)
+			unitsToReturn := make([]*pawn, 0)
+			for _, p := range unitsInSelection {
+				// select only the pawns if current faction which are capable to move AND attack and are not commanders.
+				if p.faction!= nil && p.faction == f && p.hasWeapons() && p.canMove() && !p.isCommander {
+					unitsToReturn = append(unitsToReturn, p)
+				}
+			}
+			log.appendMessage(fmt.Sprintf("%d units selected from %d", len(unitsToReturn), len(unitsInSelection)))
+			return &unitsToReturn
 		default:
 			plr_moveCursor(f, keyPressed)
 		}
