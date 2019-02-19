@@ -73,7 +73,7 @@ func plr_selectPawn(f *faction, m *gameMap) bool { // true if pawn was selected
 		case "ENTER", "RETURN":
 			u := f.cursor.snappedPawn //m.getUnitAtCoordinates(cx, cy)
 			if u == nil {
-				// log.appendMessage("SELECTED NIL")
+				plr_bandboxSelection(f) // select multiple units
 				return false
 			}
 			if u.faction.factionNumber != f.factionNumber {
@@ -100,7 +100,24 @@ func plr_selectPawn(f *faction, m *gameMap) bool { // true if pawn was selected
 			}
 
 		default:
-			plr_moveCursor(m, f, keyPressed)
+			plr_moveCursor(f, keyPressed)
+		}
+	}
+}
+
+func plr_bandboxSelection(f *faction) {
+	f.cursor.currentCursorMode = CURSOR_MULTISELECT
+	f.cursor.xorig, f.cursor.yorig = f.cursor.getCoords()
+	for {
+		r_renderScreenForFaction(f, CURRENT_MAP)
+		keyPressed := cw.ReadKey()
+		switch keyPressed {
+		case "ESCAPE":
+			return
+		case "ENTER":
+			return
+		default:
+			plr_moveCursor(f, keyPressed)
 		}
 	}
 }
@@ -145,7 +162,7 @@ func plr_selectOrder(f *faction, m *gameMap) {
 		case "ESCAPE":
 			return
 		default:
-			plr_moveCursor(m, f, keyPressed)
+			plr_moveCursor(f, keyPressed)
 		}
 	}
 }
@@ -240,12 +257,12 @@ func plr_selectBuildingSite(p *pawn, b *pawn, m *gameMap) {
 			log.appendMessage("Construction cancelled: " + b.name)
 			return
 		default:
-			plr_moveCursor(m, f, keyPressed)
+			plr_moveCursor(f, keyPressed)
 		}
 	}
 }
 
-func plr_moveCursor(g *gameMap, f *faction, keyPressed string) {
+func plr_moveCursor(f *faction, keyPressed string) {
 	vx, vy := plr_keyToDirection(keyPressed)
 	if vx == 0 && vy == 0 {
 		return
@@ -267,7 +284,7 @@ func plr_moveCursor(g *gameMap, f *faction, keyPressed string) {
 		f.cursor.snappedPawn = nil
 	}
 	if f.cursor.currentCursorMode != CURSOR_BUILD {
-		snapCursorToPawn(f, g)
+		snapCursorToPawn(f, CURRENT_MAP)
 	}
 }
 
