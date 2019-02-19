@@ -133,6 +133,9 @@ func (g *gameMap) getNumberOfThermalDepositsUnderBuilding(b *pawn) int {
 func (g *gameMap) canBuildingBeBuiltAt(b *pawn, cx, cy int) bool {
 	b.x = cx - b.buildingInfo.w/2
 	b.y = cy - b.buildingInfo.h/2
+	if b.x < 0 || b.y < 0 || b.x+b.buildingInfo.w > mapW || b.y+b.buildingInfo.h > mapH {
+		return false
+	}
 	if b.buildingInfo.canBeBuiltOnMetalOnly && g.getNumberOfMetalDepositsUnderBuilding(b) == 0 {
 		return false
 	}

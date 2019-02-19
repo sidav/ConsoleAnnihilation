@@ -105,7 +105,8 @@ func renderBuildCursor(c *cursor) {
 				(c.buildOnThermalOnly && CURRENT_MAP.getNumberOfThermalDepositsInRect(c.x-c.w/2, c.y-c.h/2, c.w, c.h) == 0) {
 				cw.SetBgColor(cw.RED)
 			} else {
-				if CURRENT_MAP.getPawnAtCoordinates(c.x+i-c.w/2, c.y+j-c.h/2) == nil {
+				if CURRENT_MAP.getPawnAtCoordinates(c.x+i-c.w/2, c.y+j-c.h/2) == nil &&
+					areCoordsValid(c.x+i-c.w/2, c.y+j-c.h/2){
 					cw.SetBgColor(cw.GREEN)
 				} else {
 					cw.SetBgColor(cw.RED)
