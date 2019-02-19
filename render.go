@@ -185,8 +185,12 @@ func r_renderPossibleOrdersForPawn(p *pawn) {
 	if p.canConstructUnits() {
 		orders = append(orders, "(C)onstruct units")
 	}
-	if p.hasWeapons() {
-		orders = append(orders, "(A)ttack-move")
+	if p.faction.cursor.currentCursorMode == CURSOR_AMOVE {
+		orders = append(orders, "(M)ove")
+	} else {
+		if p.hasWeapons() {
+			orders = append(orders, "(A)ttack-move")
+		}
 	}
 	routines.DrawSidebarInfoMenu("Orders for: "+p.name, p.faction.getFactionColor(),
 		SIDEBAR_X, SIDEBAR_FLOOR_3, SIDEBAR_W, orders)

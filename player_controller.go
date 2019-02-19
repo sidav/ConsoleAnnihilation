@@ -93,10 +93,9 @@ func plr_selectPawn(f *faction, m *gameMap) bool { // true if pawn was selected
 func plr_selectOrder(f *faction, m *gameMap) {
 	selectedPawn := f.cursor.snappedPawn //m.getUnitAtCoordinates(cx, cy)
 	log.appendMessage(selectedPawn.name + " is awaiting orders.")
-
+	f.cursor.currentCursorMode = CURSOR_MOVE
 	for {
 		cx, cy := f.cursor.getCoords()
-		f.cursor.currentCursorMode = CURSOR_MOVE
 		r_renderScreenForFaction(f, m)
 		r_renderPossibleOrdersForPawn(selectedPawn)
 		flushView()
@@ -106,6 +105,14 @@ func plr_selectOrder(f *faction, m *gameMap) {
 		case "ENTER", "RETURN":
 			issueDefaultOrderToUnit(selectedPawn, m, cx, cy)
 			return
+		case "a": // attack-move
+			if selectedPawn.hasWeapons() {
+				f.cursor.currentCursorMode = CURSOR_AMOVE
+			}
+		case "m": // move
+			if selectedPawn.hasWeapons() {
+				f.cursor.currentCursorMode = CURSOR_MOVE
+			}
 		case "b": // build
 			if selectedPawn.canConstructBuildings() {
 				code := plr_selectBuidingToConstruct(selectedPawn)

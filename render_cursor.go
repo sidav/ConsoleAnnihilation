@@ -9,6 +9,8 @@ func r_renderCursor(f *faction) {
 		renderSelectCursor(f)
 	case CURSOR_MOVE:
 		renderMoveCursor(f)
+	case CURSOR_AMOVE:
+		renderAttackMoveCursor(f)
 	case CURSOR_BUILD:
 		renderBuildCursor(c)
 	}
@@ -56,10 +58,33 @@ func renderMoveCursor(f *faction) {
 	cw.SetFgColor(cw.GREEN)
 	if c.snappedPawn != nil && c.snappedPawn.faction != f {
 		cw.SetFgColor(cw.DARK_RED)
+		cw.PutChar('}', x-1, y)
+		cw.PutChar('{', x+1, y)
+		cw.PutChar('-', x-2, y)
+		cw.PutChar('-', x+2, y)
+	} else {
+		cw.PutChar('>', x-1, y)
+		cw.PutChar('<', x+1, y)
 	}
 
-	cw.PutChar('>', x-1, y)
-	cw.PutChar('<', x+1, y)
+	//cw.PutChar('\\', x-1, y-1)
+	//cw.PutChar('/', x+1, y-1)
+	//cw.PutChar('/', x-1, y+1)
+	//cw.PutChar('\\', x+1, y+1)
+
+	flushView()
+}
+
+func renderAttackMoveCursor(f *faction) {
+	x := VIEWPORT_W / 2
+	y := VIEWPORT_H / 2
+	// cw.SetFgColorRGB(128, 255, 128)
+	cw.SetFgColor(cw.DARK_RED)
+	cw.PutChar('}', x-1, y)
+	cw.PutChar('{', x+1, y)
+	cw.SetFgColor(cw.GREEN)
+	cw.PutChar('v', x, y-1)
+	cw.PutChar('^', x, y+1)
 
 	//cw.PutChar('\\', x-1, y-1)
 	//cw.PutChar('/', x+1, y-1)
