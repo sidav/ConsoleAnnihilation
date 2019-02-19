@@ -49,6 +49,37 @@ func renderFactionStats(f *faction) {
 	}
 }
 
+func r_renderPossibleOrdersForPawn(p *pawn) {
+	orders := make([]string, 0)
+	if p.canConstructBuildings() {
+		orders = append(orders, "(B)uild")
+	}
+	if p.canConstructUnits() {
+		orders = append(orders, "(C)onstruct units")
+		if p.repeatConstructionQueue {
+			orders = append(orders, "(R)epeat queue: ENABLED")
+		} else {
+			orders = append(orders, "(R)epeat queue: DISABLED")
+		}
+		if p.faction.cursor.currentCursorMode == CURSOR_AMOVE {
+			orders = append(orders, "Default order: attack-move")
+			orders = append(orders, "(m): set to move")
+		} else {
+			orders = append(orders, "Default order: move")
+			orders = append(orders, "(a): set to attack-move")
+		}
+	}
+	if p.faction.cursor.currentCursorMode == CURSOR_AMOVE && p.canMove() {
+		orders = append(orders, "(M)ove")
+	} else {
+		if p.hasWeapons() {
+			orders = append(orders, "(A)ttack-move")
+		}
+	}
+	routines.DrawSidebarInfoMenu("Orders for: "+p.name, p.faction.getFactionColor(),
+		SIDEBAR_X, SIDEBAR_FLOOR_3, SIDEBAR_W, orders)
+}
+
 func renderStatusbar(name string, curvalue, maxvalue, x, y, width, barColor int) {
 	barTitle := name
 	cw.PutString(barTitle, x, y)
