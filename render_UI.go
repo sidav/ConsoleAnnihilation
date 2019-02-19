@@ -80,6 +80,24 @@ func r_renderPossibleOrdersForPawn(p *pawn) {
 		SIDEBAR_X, SIDEBAR_FLOOR_3, SIDEBAR_W, orders)
 }
 
+func r_renderPossibleOrdersForMultiselection(f *faction, selection *[]*pawn) {
+	orders := make([]string, 0)
+	selectedUnitsCounter := make(map[string]int)
+	for _, p := range *selection {
+		selectedUnitsCounter[p.name]++
+	}
+	for name, count := range selectedUnitsCounter {
+		orders = append(orders, fmt.Sprintf("%dx %s", count, name))
+	}
+	if f.cursor.currentCursorMode == CURSOR_AMOVE {
+		orders = append(orders, "(M)ove")
+	} else {
+		orders = append(orders, "(A)ttack-move")
+	}
+	routines.DrawSidebarInfoMenu(fmt.Sprintf("ORDERS FOR %d UNITS", len(*selection)), f.getFactionColor(),
+		SIDEBAR_X, SIDEBAR_FLOOR_3, SIDEBAR_W, orders)
+}
+
 func renderStatusbar(name string, curvalue, maxvalue, x, y, width, barColor int) {
 	barTitle := name
 	cw.PutString(barTitle, x, y)

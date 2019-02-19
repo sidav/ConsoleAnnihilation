@@ -199,7 +199,7 @@ func plr_selectOrderForMultiSelect(selection *[]*pawn, f *faction) {
 	for {
 		cx, cy := f.cursor.getCoords()
 		r_renderScreenForFaction(f, CURRENT_MAP)
-		// r_renderPossibleOrdersForPawn(selectedPawn) TODO: DO THAT THING PLEASE
+		r_renderPossibleOrdersForMultiselection(f, selection)
 		flushView()
 
 		keyPressed := cw.ReadKey()
