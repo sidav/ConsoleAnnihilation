@@ -42,7 +42,39 @@ func createBuilding(name string, x, y int, f *faction) *pawn {
 		b = &pawn{name: "Metal Extractor",
 			buildingInfo:              &building{w: 3, h: 3, appearance: app, canBeBuiltOnMetalOnly: true},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 60, costM: 100, costE: 500},
-			res:                       &pawnResourceInformation{energyReqForConditionalMetalIncome: 15, isMetalExtractor: true},
+			res:                       &pawnResourceInformation{energyReqForConditionalMetalIncome: 9, isMetalExtractor: true},
+		}
+
+	case "mstorage":
+		colors := []int{
+			-1, 7, -1,
+			7, -1, 7,
+			-1, 7, -1,
+		}
+		app := &buildingAppearance{chars: "" +
+			"=0=" +
+			"0$0" +
+			"=0=", colors: colors}
+		b = &pawn{name: "Metal Storage",
+			buildingInfo:              &building{w: 3, h: 3, appearance: app},
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 60, costM: 100, costE: 800},
+			res:                       &pawnResourceInformation{metalStorage: 250},
+		}
+
+	case "estorage":
+		colors := []int{
+			-1, 7, -1,
+			7, -1, 7,
+			-1, 7, -1,
+		}
+		app := &buildingAppearance{chars: "" +
+			"=|=" +
+			"-0-" +
+			"=|=", colors: colors}
+		b = &pawn{name: "Energy Storage",
+			buildingInfo:              &building{w: 3, h: 3, appearance: app},
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 60, costM: 200, costE: 400},
+			res:                       &pawnResourceInformation{energyStorage: 250},
 		}
 
 	case "quark": // cheating building, useful for debugging

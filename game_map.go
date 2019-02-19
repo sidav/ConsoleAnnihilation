@@ -161,12 +161,17 @@ func (g *gameMap) init() {
 	g.tileMap[2][2] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, metalAmount: 1, isPassable: true}
 	g.tileMap[3][2] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, metalAmount: 1, isPassable: true}
 	g.tileMap[2][3] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, metalAmount: 1, isPassable: true}
+	g.tileMap[3][3] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, metalAmount: 1, isPassable: true}
 	g.tileMap[13][2] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, metalAmount: 1, isPassable: true}
 	g.tileMap[14][3] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, metalAmount: 1, isPassable: true}
 	g.tileMap[13][1] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, metalAmount: 1, isPassable: true}
+	g.tileMap[14][2] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, metalAmount: 1, isPassable: true}
+	g.tileMap[15][3] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, metalAmount: 1, isPassable: true}
 	g.tileMap[12][15] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, metalAmount: 1, isPassable: true}
 	g.tileMap[11][15] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, metalAmount: 1, isPassable: true}
 	g.tileMap[12][16] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, metalAmount: 1, isPassable: true}
+	g.tileMap[13][15] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, metalAmount: 1, isPassable: true}
+	g.tileMap[13][14] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, metalAmount: 1, isPassable: true}
 
 	g.factions = append(g.factions, createFaction("The Core Corporation", 0, true))
 	g.addPawn(createUnit("protocommander", 3, 9, g.factions[0], true))
