@@ -3,6 +3,7 @@ package main
 import (
 	"SomeTBSGame/routines"
 	"fmt"
+	"sort"
 )
 import cw "TCellConsoleWrapper"
 
@@ -86,8 +87,15 @@ func r_renderPossibleOrdersForMultiselection(f *faction, selection *[]*pawn) {
 	for _, p := range *selection {
 		selectedUnitsCounter[p.name]++
 	}
-	for name, count := range selectedUnitsCounter {
-		orders = append(orders, fmt.Sprintf("%dx %s", count, name))
+	// sort the map because of dumbass Go developers thinking that they know your needs better than you do
+	keys := make([]string, 0, len(selectedUnitsCounter))
+	for k := range selectedUnitsCounter {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
+	for _, key := range keys {
+		orders = append(orders, fmt.Sprintf("%dx %s", selectedUnitsCounter[key], key))
 	}
 	if f.cursor.currentCursorMode == CURSOR_AMOVE {
 		orders = append(orders, "(M)ove")
