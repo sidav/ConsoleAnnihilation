@@ -19,12 +19,15 @@ type faction struct {
 	economy                                *factionEconomy
 	factionNumber                          int
 	name                                   string
-	playerControlled                       bool // used as a stub for now
+	playerControlled, aiControlled         bool // used as a stub for now
 	seenTiles, tilesInSight, radarCoverage [][] bool
 }
 
-func createFaction(name string, n int, playerControlled bool) *faction { // temporary
-	fctn := &faction{playerControlled: playerControlled, name: name, factionNumber: n, economy: &factionEconomy{currentMetal: 99999, currentEnergy: 99999}, cursor: &cursor{}}
+func createFaction(name string, n int, playerControlled, aiControlled bool) *faction { // temporary
+	fctn := &faction{
+		playerControlled: playerControlled, aiControlled: aiControlled, name: name, factionNumber: n,
+		economy: &factionEconomy{currentMetal: 99999, currentEnergy: 99999}, cursor: &cursor{},
+	}
 	fctn.seenTiles = make([][]bool, mapW)
 	for i := range fctn.seenTiles {
 		fctn.seenTiles[i] = make([]bool, mapH)

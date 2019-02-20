@@ -50,6 +50,8 @@ func main() {
 				CURRENT_FACTION_SEEING_THE_SCREEN = f
 				renderFactionStats(f)
 				plr_control(f, CURRENT_MAP)
+			} else if f.aiControlled {
+				ai_controlFaction(f)
 			}
 		}
 		for i := 0; i < 10; i++ {
