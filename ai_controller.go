@@ -1,10 +1,18 @@
 package main
 
-import "SomeTBSGame/routines"
+import (
+	"SomeTBSGame/routines"
+	"strconv"
+)
 
 const (
 	AI_WRITE_DEBUG_TO_LOG = true
-	AI_EACH_TURN_TO_CONTROL = 10
+)
+
+var (
+	AI_CONTROL_PERIOD = 100
+	AI_MIN_PERIOD           = 10
+	AI_PERIOD_DECREMENT     = 5
 )
 
 func ai_write(text string) {
@@ -14,8 +22,12 @@ func ai_write(text string) {
 }
 
 func ai_controlFaction(f *faction) {
-	if CURRENT_TURN/10%AI_EACH_TURN_TO_CONTROL != 0 {
+	if CURRENT_TURN/10%AI_CONTROL_PERIOD != 0 {
 		return
+	}
+	if AI_CONTROL_PERIOD -AI_PERIOD_DECREMENT >= AI_MIN_PERIOD{
+		AI_CONTROL_PERIOD -= AI_PERIOD_DECREMENT
+		ai_write("PERIOD changed to " + strconv.Itoa(AI_CONTROL_PERIOD))
 	}
 	ai_write("assuming direct control over " + f.name)
 	for _, p := range CURRENT_MAP.pawns {
