@@ -141,6 +141,7 @@ func createBuilding(codename string, x, y int, f *faction) *pawn {
 			"\\=/", colors: colors}
 		b = &pawn{name: "Tech 1 KBot Lab",
 			buildingInfo:              &building{w: 3, h: 3, appearance: app},
+			nanolatherInfo:            &nanolatherInformation{builderCoeff: 1, allowedUnits: []string{"armpeewee", "armhammer"}},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 100, costM: 100, costE: 500},
 		}
 
