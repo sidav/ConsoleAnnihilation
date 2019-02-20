@@ -83,6 +83,7 @@ func (p *pawn) doAttackOrder() { // Only moves the unit to a firing position. Th
 	if order.targetPawn.hitpoints <= 0 {
 		p.reportOrderCompletion("target destroyed. Now standing by")
 		p.order = nil
+		return 
 	}
 	targetX, targetY := order.targetPawn.getCenter()
 
