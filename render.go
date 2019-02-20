@@ -207,11 +207,11 @@ func renderCharByGlobalCoords(c rune, x, y int) { // TODO: use it everywhere
 }
 
 func areGlobalCoordsOnScreen(gx, gy, vx, vy int) bool {
-	return areCoordsInRect(gx, gy, vx, vy, VIEWPORT_W, VIEWPORT_H)
+	return routines.AreCoordsInRect(gx, gy, vx, vy, VIEWPORT_W, VIEWPORT_H)
 }
 
 func areGlobalCoordsOnScreenForFaction(gx, gy int, f *faction) bool {
 	vx := f.cursor.x - VIEWPORT_W/2
 	vy := f.cursor.y - VIEWPORT_H/2
-	return areCoordsInRect(gx, gy, vx, vy, VIEWPORT_W, VIEWPORT_H)
+	return routines.AreCoordsInRect(gx, gy, vx, vy, VIEWPORT_W, VIEWPORT_H)
 }

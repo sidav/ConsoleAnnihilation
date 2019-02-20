@@ -1,5 +1,7 @@
 package main
 
+import "SomeTBSGame/routines"
+
 func (f *faction) recalculateSeenTiles() {
 	for i := 0; i < mapW; i++ {
 		for j := 0; j < mapH; j++ {
@@ -17,11 +19,11 @@ func (f *faction) recalculateSeenTiles() {
 			for x := px - radiusToIterate; x <= px+radiusToIterate; x++ {
 				for y := py - radiusToIterate; y <= py+radiusToIterate; y++ {
 					if areCoordsValid(x, y) {
-						if areCoordsInRange(px, py, x, y, p.sightRadius) {
+						if routines.AreCoordsInRange(px, py, x, y, p.sightRadius) {
 							f.seenTiles[x][y] = true
 							f.tilesInSight[x][y] = true
 						}
-						if p.radarRadius > 0 && areCoordsInRange(px, py, x, y, p.radarRadius) {
+						if p.radarRadius > 0 && routines.AreCoordsInRange(px, py, x, y, p.radarRadius) {
 							f.radarCoverage[x][y] = true
 						}
 					}

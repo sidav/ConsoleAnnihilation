@@ -1,6 +1,9 @@
 package main
 
-import "astar/astar"
+import (
+	"SomeTBSGame/routines"
+	"astar/astar"
+)
 
 const (
 	mapW = 70
@@ -60,7 +63,7 @@ func (g *gameMap) getPawnsInRadiusFrom(x, y, radius int) []*pawn {
 	var arr []*pawn
 	for _, p := range g.pawns {
 		px, py := p.getCenter()
-		if getSqDistanceBetween(x, y, px, py) <= radius*radius {
+		if routines.GetSqDistanceBetween(x, y, px, py) <= radius*radius {
 			arr = append(arr, p)
 		}
 	}
@@ -82,7 +85,7 @@ func (g *gameMap) getEnemyPawnsInRadiusFrom(x, y, radius int, f *faction) []*paw
 	var arr []*pawn
 	for _, p := range g.pawns {
 		px, py := p.getCenter()
-		if p.faction != f && getSqDistanceBetween(x, y, px, py) <= radius*radius {
+		if p.faction != f && routines.GetSqDistanceBetween(x, y, px, py) <= radius*radius {
 			arr = append(arr, p)
 		}
 	}

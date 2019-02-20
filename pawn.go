@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"SomeTBSGame/routines"
+	"fmt"
+)
 
 type pawn struct {
 	// pawn is a building or a unit.
@@ -60,7 +63,7 @@ func (p *pawn) setOrder(o *order) {
 
 func (p *pawn) isOccupyingCoords(x, y int) bool {
 	if p.isBuilding() {
-		return areCoordsInRect(x, y, p.x, p.y, p.buildingInfo.w, p.buildingInfo.h)
+		return routines.AreCoordsInRect(x, y, p.x, p.y, p.buildingInfo.w, p.buildingInfo.h)
 	} else {
 		return x == p.x && y == p.y
 	}
