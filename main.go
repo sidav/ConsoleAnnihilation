@@ -3,6 +3,7 @@ package main
 import (
 	"SomeTBSGame/routines"
 	cw "TCellConsoleWrapper"
+	"strconv"
 	"time"
 )
 
@@ -39,6 +40,7 @@ func main() {
 	showBriefing()
 
 	for GAME_IS_RUNNING {
+		startTime := time.Now()
 		for _, f := range CURRENT_MAP.factions {
 			f.recalculateSeenTiles()
 			if !GAME_IS_RUNNING {
@@ -75,6 +77,8 @@ func main() {
 			f.recalculateFactionEconomy(CURRENT_MAP)
 		}
 		doAllNanolathes(CURRENT_MAP)
+		timeForTurn := int(time.Since(startTime) / time.Millisecond)
+		log.appendMessage("Time for turn: " + strconv.Itoa(timeForTurn) + "ms") // TODO: make it removable
 	}
 
 }

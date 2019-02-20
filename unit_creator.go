@@ -49,10 +49,10 @@ func createUnit(codename string, x, y int, f *faction, alreadyConstructed bool) 
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 25, costM: 650, costE: 1200},
 		}
 	case "weasel":
-		newUnit = &pawn{name: "Weasel", maxHitpoints: 55, isLight: true, sightRadius: 12,
-			moveInfo:                  &pawnMovementInformation{ticksForMoveSingleCell: 10, movesOnLand: true},
+		newUnit = &pawn{name: "Weasel", maxHitpoints: 20, isLight: true, sightRadius: 12, eachTickToRegen: 30,
+			moveInfo:                  &pawnMovementInformation{ticksForMoveSingleCell: 6, movesOnLand: true},
 			unitInfo:                  &unit{appearance: ccell{char: 'w'}},
-			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 10, costM: 250, costE: 500},
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 10, costM: 150, costE: 650},
 			weapons: []*pawnWeaponInformation{
 				{attackDelay: 7, attackEnergyCost: 1, attackRadius: 4, attacksLand: true, canBeFiredOnMove: true,
 					hitscan: &WeaponHitscan{baseDamage:2},

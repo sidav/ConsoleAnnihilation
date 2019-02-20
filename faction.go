@@ -20,11 +20,24 @@ type faction struct {
 	factionNumber                          int
 	name                                   string
 	playerControlled                       bool // used as a stub for now
-	seenTiles, tilesInSight, radarCoverage [mapW][mapH] bool
+	seenTiles, tilesInSight, radarCoverage [][] bool
 }
 
 func createFaction(name string, n int, playerControlled bool) *faction { // temporary
-	return &faction{playerControlled: playerControlled, name: name, factionNumber: n, economy: &factionEconomy{currentMetal: 99999, currentEnergy: 99999}, cursor: &cursor{}}
+	fctn := &faction{playerControlled: playerControlled, name: name, factionNumber: n, economy: &factionEconomy{currentMetal: 99999, currentEnergy: 99999}, cursor: &cursor{}}
+	fctn.seenTiles = make([][]bool, mapW)
+	for i := range fctn.seenTiles {
+		fctn.seenTiles[i] = make([]bool, mapH)
+	}
+	fctn.tilesInSight = make([][]bool, mapW)
+	for i := range fctn.tilesInSight {
+		fctn.tilesInSight[i] = make([]bool, mapH)
+	}
+	fctn.radarCoverage = make([][]bool, mapW)
+	for i := range fctn.radarCoverage {
+		fctn.radarCoverage[i] = make([]bool, mapH)
+	}
+	return fctn
 }
 
 func (f *faction) getFactionColor() int {
