@@ -2,7 +2,6 @@ package main
 
 import (
 	"TCellConsoleWrapper"
-	"time"
 )
 
 func (p *pawn) isTimeToAct() bool {
@@ -83,7 +82,7 @@ func (p *pawn) doAttackOrder() { // Only moves the unit to a firing position. Th
 	if order.targetPawn.hitpoints <= 0 {
 		p.reportOrderCompletion("target destroyed. Now standing by")
 		p.order = nil
-		return 
+		return
 	}
 	targetX, targetY := order.targetPawn.getCenter()
 
@@ -127,9 +126,9 @@ func (p *pawn) openFireIfPossible() { // does the firing, does NOT necessary mea
 			// draw the pew pew laser TODO: move this crap somewhere already 
 			if areGlobalCoordsOnScreenForFaction(p.x, p.y, CURRENT_FACTION_SEEING_THE_SCREEN) || areGlobalCoordsOnScreenForFaction(target.x, target.y, CURRENT_FACTION_SEEING_THE_SCREEN) {
 				tcell_wrapper.SetFgColor(tcell_wrapper.RED)
-				renderLine(p.x, p.y, target.x, target.y, true, CURRENT_FACTION_SEEING_THE_SCREEN.cursor.x-VIEWPORT_W/2, CURRENT_FACTION_SEEING_THE_SCREEN.cursor.y-VIEWPORT_H/2)
-				// tcell_wrapper.Flush_console()
-				time.Sleep(250 * time.Millisecond)
+				cx, cy := target.getCenter()
+				renderLine(p.x, p.y, cx, cy, false, CURRENT_FACTION_SEEING_THE_SCREEN.cursor.x-VIEWPORT_W/2, CURRENT_FACTION_SEEING_THE_SCREEN.cursor.y-VIEWPORT_H/2)
+				FIRE_WAS_OPENED_ON_SCREEN_THIS_TURN = true
 			}
 			dealDamageToTarget(p, wpn, target)
 		}

@@ -3,6 +3,7 @@ package main
 import (
 	"SomeTBSGame/routines"
 	cw "TCellConsoleWrapper"
+	"time"
 )
 
 func areCoordsValid(x, y int) bool {
@@ -27,6 +28,7 @@ var (
 	CURRENT_TURN    = 0
 	CURRENT_MAP     *gameMap
 	CURRENT_FACTION_SEEING_THE_SCREEN *faction // for various rendering crap
+	FIRE_WAS_OPENED_ON_SCREEN_THIS_TURN bool // for killing pewpews overrender.
 )
 
 func main() {
@@ -71,6 +73,11 @@ func main() {
 				}
 				u.executeOrders(CURRENT_MAP)
 				u.openFireIfPossible()
+			}
+			if FIRE_WAS_OPENED_ON_SCREEN_THIS_TURN {
+				cw.Flush_console()
+				FIRE_WAS_OPENED_ON_SCREEN_THIS_TURN = false
+				time.Sleep(200*time.Millisecond)
 			}
 			CURRENT_TURN += 1
 		}
