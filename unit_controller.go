@@ -1,6 +1,7 @@
 package main
 
 import (
+	"SomeTBSGame/routines"
 	"TCellConsoleWrapper"
 )
 
@@ -86,7 +87,7 @@ func (p *pawn) doAttackOrder() { // Only moves the unit to a firing position. Th
 	}
 	targetX, targetY := order.targetPawn.getCenter()
 
-	if getSqDistanceBetween(ux, uy, targetX, targetY) > p.getMaxRadiusToFire()*p.getMaxRadiusToFire() {
+	if routines.GetSqDistanceBetween(ux, uy, targetX, targetY) > p.getMaxRadiusToFire()*p.getMaxRadiusToFire() {
 		order.x = targetX
 		order.y = targetY
 		p.doMoveOrder()
@@ -109,7 +110,7 @@ func (p *pawn) openFireIfPossible() { // does the firing, does NOT necessary mea
 		}
 		var target *pawn
 		radius := wpn.attackRadius
-		if pawnInOrder != nil && areCoordsInRange(p.x, p.y, pawnInOrder.x, pawnInOrder.y, radius) {
+		if pawnInOrder != nil && routines.AreCoordsInRange(p.x, p.y, pawnInOrder.x, pawnInOrder.y, radius) {
 			target = pawnInOrder
 		} else {
 			potential_targets := CURRENT_MAP.getEnemyPawnsInRadiusFrom(p.x, p.y, radius, p.faction)
@@ -152,7 +153,7 @@ func (u *pawn) doBuildOrder(m *gameMap) { // only moves to location and/or sets 
 
 	building_w := tBld.buildingInfo.w + 1
 	building_h := tBld.buildingInfo.h + 1
-	sqdistance := getSqDistanceBetween(ox, oy, ux, uy) //(ox-ux)*(ox-ux) + (oy-uy)*(oy-uy)
+	sqdistance := routines.GetSqDistanceBetween(ox, oy, ux, uy) //(ox-ux)*(ox-ux) + (oy-uy)*(oy-uy)
 
 	if tBld == nil {
 		log.appendMessage(u.name + " NIL BUILD")

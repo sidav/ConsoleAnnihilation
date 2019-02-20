@@ -146,7 +146,7 @@ func r_renderAttackRadius(p *pawn) {
 		for _, point := range *line {
 			x, y := point.X, point.Y
 			cw.SetFgColor(cw.BLACK)
-			if areCoordsInRect(x-vx, y-vy, 0, 0, VIEWPORT_W, VIEWPORT_H) && areCoordsValid(x, y) {
+			if routines.AreCoordsInRect(x-vx, y-vy, 0, 0, VIEWPORT_W, VIEWPORT_H) && areCoordsValid(x, y) {
 				tileApp := CURRENT_MAP.tileMap[x][y].appearance
 				cw.SetBgColor(tileApp.color)
 				cw.PutChar(tileApp.char, x-vx, y-vy)
@@ -202,7 +202,7 @@ func renderLine(fromx, fromy, tox, toy int, flush bool, vx, vy int) {
 			char = 'X'
 		}
 		viewx, viewy := line[i].X-vx, line[i].Y-vy
-		if areCoordsInRect(viewx, viewy, 0, 0, VIEWPORT_W, VIEWPORT_H) {
+		if routines.AreCoordsInRect(viewx, viewy, 0, 0, VIEWPORT_W, VIEWPORT_H) {
 			cw.PutChar(char, viewx, viewy)
 		}
 		// }
@@ -219,7 +219,7 @@ func renderCircle(fromx, fromy, radius int, flush bool, vx, vy int) {
 		line := routines.GetCircle(fromx, fromy, radius)
 		for _, point := range *line {
 			x, y := point.X, point.Y
-			if areCoordsInRect(x-vx, y-vy, 0, 0, VIEWPORT_W, VIEWPORT_H) {
+			if routines.AreCoordsInRect(x-vx, y-vy, 0, 0, VIEWPORT_W, VIEWPORT_H) {
 				cw.PutChar('X', x-vx, y-vy)
 			}
 		}

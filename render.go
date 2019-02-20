@@ -41,11 +41,11 @@ func r_renderScreenForFaction(f *faction, g *gameMap) {
 	cw.Clear_console()
 	vx := cx - VIEWPORT_W/2
 	vy := cy - VIEWPORT_H/2
-	renderMapInViewport(g, vx, vy)
+	renderMapInViewport(f, g, vx, vy)
 	renderFactionStats(f)
 	renderInfoOnCursor(f, g)
 	r_renderUIOutline(f)
-	renderPawnsInViewport(g, vx, vy)
+	renderPawnsInViewport(f, g, vx, vy)
 	r_renderCursor(f)
 	renderLog(false)
 	flushView()
@@ -72,31 +72,44 @@ func r_renderUIOutline(f *faction) {
 	cw.SetBgColor(cw.BLACK)
 }
 
-func renderMapInViewport(g *gameMap, vx, vy int) {
+func renderMapInViewport(f *faction, g *gameMap, vx, vy int) {
 	for x := vx; x < vx+VIEWPORT_W; x++ {
 		for y := vy; y < vy+VIEWPORT_H; y++ {
 			if areCoordsValid(x, y) {
-				tileApp := g.tileMap[x][y].appearance
-				r_setFgColorByCcell(tileApp)
-				cw.PutChar(tileApp.char, x-vx, y-vy)
+				if f.seenTiles[x][y] {
+					tileApp := g.tileMap[x][y].appearance
+					if f.tilesInSight[x][y] {
+						r_setFgColorByCcell(tileApp)
+					} else {
+						cw.SetFgColor(cw.DARK_BLUE)
+					}
+					cw.PutChar(tileApp.char, x-vx, y-vy)
+				} else {
+					cw.PutChar(' ', x-vx, y-vy)
+				}
 			}
 		}
 	}
 }
 
-func renderPawnsInViewport(g *gameMap, vx, vy int) {
+func renderPawnsInViewport(f *faction, g *gameMap, vx, vy int) {
 	for _, p := range g.pawns {
+		cx, cy := p.getCenter()
+		if f.radarCoverage[cx][cy] {
+			cw.SetFgColor(cw.RED)
+			renderCharByGlobalCoords('?', cx,cy)
+		}
 		if p.isBuilding() {
-			renderBuildingsInViewport(p, g, vx, vy)
+			renderBuildingsInViewport(f, p, g, vx, vy)
 		} else {
-			renderUnitsInViewport(p, g, vx, vy)
+			renderUnitsInViewport(f, p, g, vx, vy)
 		}
 	}
 }
 
-func renderUnitsInViewport(p *pawn, g *gameMap, vx, vy int) {
+func renderUnitsInViewport(f *faction, p *pawn, g *gameMap, vx, vy int) {
 	u := p.unitInfo
-	if areGlobalCoordsOnScreen(p.x, p.y, vx, vy) {
+	if areGlobalCoordsOnScreen(p.x, p.y, vx, vy) && f.tilesInSight[p.x][p.y]{
 		tileApp := u.appearance
 		// r, g, b := getFactionRGB(u.faction.factionNumber)
 		// cw.SetFgColorRGB(r, g, b)
@@ -105,7 +118,7 @@ func renderUnitsInViewport(p *pawn, g *gameMap, vx, vy int) {
 	}
 }
 
-func renderBuildingsInViewport(p *pawn, g *gameMap, vx, vy int) {
+func renderBuildingsInViewport(f *faction, p *pawn, g *gameMap, vx, vy int) {
 	b := p.buildingInfo
 	app := b.appearance
 	bx, by := p.getCoords()
@@ -113,10 +126,14 @@ func renderBuildingsInViewport(p *pawn, g *gameMap, vx, vy int) {
 		for y := 0; y < b.h; y++ {
 			if p.currentConstructionStatus == nil {
 				color := app.colors[x+b.w*y]
-				if color == -1 {
-					cw.SetFgColor(p.faction.getFactionColor())
+				if f.tilesInSight[bx+x][by+y] {
+					if color == -1 {
+						cw.SetFgColor(p.faction.getFactionColor())
+					} else {
+						cw.SetFgColor(color)
+					}
 				} else {
-					cw.SetFgColor(color)
+					cw.SetFgColor(cw.DARK_BLUE)
 				}
 			} else { // building is under construction
 				color := cw.DARK_GREEN
@@ -125,7 +142,7 @@ func renderBuildingsInViewport(p *pawn, g *gameMap, vx, vy int) {
 				}
 				cw.SetFgColor(color)
 			}
-			if areGlobalCoordsOnScreen(bx+x, by+y, vx, vy) {
+			if areGlobalCoordsOnScreen(bx+x, by+y, vx, vy) && f.seenTiles[bx+x][by+y] {
 				cw.PutChar(int32(app.chars[x+b.w*y]), bx+x-vx, by+y-vy)
 			}
 		}
@@ -190,11 +207,11 @@ func renderCharByGlobalCoords(c rune, x, y int) { // TODO: use it everywhere
 }
 
 func areGlobalCoordsOnScreen(gx, gy, vx, vy int) bool {
-	return areCoordsInRect(gx, gy, vx, vy, VIEWPORT_W, VIEWPORT_H)
+	return routines.AreCoordsInRect(gx, gy, vx, vy, VIEWPORT_W, VIEWPORT_H)
 }
 
 func areGlobalCoordsOnScreenForFaction(gx, gy int, f *faction) bool {
 	vx := f.cursor.x - VIEWPORT_W/2
 	vy := f.cursor.y - VIEWPORT_H/2
-	return areCoordsInRect(gx, gy, vx, vy, VIEWPORT_W, VIEWPORT_H)
+	return routines.AreCoordsInRect(gx, gy, vx, vy, VIEWPORT_W, VIEWPORT_H)
 }
