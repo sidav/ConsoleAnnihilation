@@ -157,6 +157,7 @@ func plr_selectOrder(selection *[]*pawn, f *faction, m *gameMap) {
 	for {
 		cx, cy := f.cursor.getCoords()
 		r_renderScreenForFaction(f, m)
+		r_renderSelectedPawns(f, selection)
 		r_renderPossibleOrdersForPawn(selectedPawn)
 		flushView()
 
@@ -201,6 +202,7 @@ func plr_selectOrderForMultiSelect(selection *[]*pawn, f *faction) {
 	for {
 		cx, cy := f.cursor.getCoords()
 		r_renderScreenForFaction(f, CURRENT_MAP)
+		r_renderSelectedPawns(f, selection)
 		r_renderPossibleOrdersForMultiselection(f, selection)
 		flushView()
 
