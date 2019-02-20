@@ -206,7 +206,7 @@ func (g *gameMap) init() {
 	g.addPawn(createUnit("flash", 4, 6, g.factions[0], true))
 	g.addPawn(createUnit("flash", 5, 5, g.factions[0], true))
 	g.addPawn(createUnit("flash", 5, 6, g.factions[0], true))
-	// g.addPawn(createUnit("weasel", 5, 6, g.factions[0], true))
+	g.addPawn(createUnit("weasel", 7, 7, g.factions[0], true))
 
 
 	g.factions = append(g.factions, createFaction("The rogue Arm AI", 1, false))

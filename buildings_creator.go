@@ -253,6 +253,9 @@ func createBuilding(codename string, x, y int, f *faction) *pawn {
 	b.y = y
 	b.faction = f
 	b.codename = codename
+	if b.sightRadius == 0 {
+		b.sightRadius = 1
+	}
 	if b.nanolatherInfo != nil && b.res == nil {
 		b.res = &pawnResourceInformation{} // adds zero-value resource info struct for spendings usage.
 	}

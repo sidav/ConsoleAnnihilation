@@ -15,15 +15,16 @@ func getFactionRGB(fn int) (uint8, uint8, uint8) {
 }
 
 type faction struct {
-	cursor                                                                      *cursor // cursor position
-	economy *factionEconomy
-	factionNumber                                                               int
-	name                                                                        string
-	playerControlled                                                            bool // used as a stub for now
+	cursor                  *cursor // cursor position
+	economy                 *factionEconomy
+	factionNumber           int
+	name                    string
+	playerControlled        bool // used as a stub for now
+	seenTiles, tilesInSight [mapW][mapH] bool
 }
 
-func createFaction(name string, n int, playerControlled bool) *faction{ // temporary
-	return &faction{playerControlled: playerControlled, name: name, factionNumber:n, economy: &factionEconomy{currentMetal:99999, currentEnergy:99999}, cursor: &cursor{}}
+func createFaction(name string, n int, playerControlled bool) *faction { // temporary
+	return &faction{playerControlled: playerControlled, name: name, factionNumber: n, economy: &factionEconomy{currentMetal: 99999, currentEnergy: 99999}, cursor: &cursor{}}
 }
 
 func (f *faction) getFactionColor() int {
@@ -55,7 +56,6 @@ func (f *faction) getFactionColor() int {
 	}
 	return 7
 }
-
 
 /////////////////////////////////////////////////////////////////
 // My attempt to make Total Annihilation-like economy system.
@@ -127,5 +127,5 @@ func (f *faction) isSpendingAllowedWithBalance(metalInc, metalDec, energyInc, en
 	eco := f.economy
 	ms := eco.currentMetal
 	es := eco.currentEnergy
-	return (ms + metalInc >= metalDec) && (es+energyInc >= energyDec)
+	return (ms+metalInc >= metalDec) && (es+energyInc >= energyDec)
 }

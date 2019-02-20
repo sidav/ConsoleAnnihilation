@@ -52,6 +52,7 @@ func main() {
 
 	for GAME_IS_RUNNING {
 		for _, f := range CURRENT_MAP.factions {
+			f.recalculateSeenTiles()
 			if !GAME_IS_RUNNING {
 				return
 			}
