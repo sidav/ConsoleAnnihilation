@@ -94,6 +94,11 @@ func renderMapInViewport(f *faction, g *gameMap, vx, vy int) {
 
 func renderPawnsInViewport(f *faction, g *gameMap, vx, vy int) {
 	for _, p := range g.pawns {
+		cx, cy := p.getCenter()
+		if f.radarCoverage[cx][cy] {
+			cw.SetFgColor(cw.RED)
+			renderCharByGlobalCoords('?', cx,cy)
+		}
 		if p.isBuilding() {
 			renderBuildingsInViewport(f, p, g, vx, vy)
 		} else {

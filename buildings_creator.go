@@ -198,7 +198,21 @@ func createBuilding(codename string, x, y int, f *faction) *pawn {
 			"\\\\//", colors: colors}
 		b = &pawn{name: "Tech 1 Vehicle Factory", buildingInfo: &building{w: 4, h: 3, appearance: app},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 100, costM: 100, costE: 500},
-			nanolatherInfo:            &nanolatherInformation{builderCoeff: 1, allowedUnits: []string{"flash"}},
+			nanolatherInfo:            &nanolatherInformation{builderCoeff: 1, allowedUnits: []string{"weasel", "flash"}},
+		}
+
+	case "radar":
+		colors := []int{
+			7, -1, 7,
+			-1, 5, 5,
+			7, -1, 7}
+		app := &buildingAppearance{chars: "" +
+			"=-=" +
+			"|(-" +
+			"=-=", colors: colors}
+		b = &pawn{name: "Radar station", maxHitpoints: 25, isLight: true, radarRadius: 30,
+			buildingInfo:              &building{w: 3, h: 3, appearance: app},
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 100, costM: 250, costE: 450},
 		}
 
 	case "lturret":

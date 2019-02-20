@@ -15,12 +15,12 @@ func getFactionRGB(fn int) (uint8, uint8, uint8) {
 }
 
 type faction struct {
-	cursor                  *cursor // cursor position
-	economy                 *factionEconomy
-	factionNumber           int
-	name                    string
-	playerControlled        bool // used as a stub for now
-	seenTiles, tilesInSight [mapW][mapH] bool
+	cursor                                 *cursor // cursor position
+	economy                                *factionEconomy
+	factionNumber                          int
+	name                                   string
+	playerControlled                       bool // used as a stub for now
+	seenTiles, tilesInSight, radarCoverage [mapW][mapH] bool
 }
 
 func createFaction(name string, n int, playerControlled bool) *faction { // temporary

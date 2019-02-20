@@ -18,7 +18,7 @@ type pawn struct {
 	weapons                   []*pawnWeaponInformation
 	nextTurnToAct             int
 	isCommander               bool
-	sightRadius               int
+	sightRadius, radarRadius  int
 
 	repeatConstructionQueue bool // for factories
 	// armor info:
