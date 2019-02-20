@@ -103,6 +103,8 @@ func plr_selectPawn(f *faction, m *gameMap) *[]*pawn { // returns a pointer to a
 					return nil
 				}
 			}
+		case "INSERT": // cheat
+			CHEAT_IGNORE_FOW = !CHEAT_IGNORE_FOW
 
 		default:
 			plr_moveCursor(f, keyPressed)

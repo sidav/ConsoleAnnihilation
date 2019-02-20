@@ -76,9 +76,9 @@ func renderMapInViewport(f *faction, g *gameMap, vx, vy int) {
 	for x := vx; x < vx+VIEWPORT_W; x++ {
 		for y := vy; y < vy+VIEWPORT_H; y++ {
 			if areCoordsValid(x, y) {
-				if f.seenTiles[x][y] {
+				if f.wereCoordsSeen(x, y) {
 					tileApp := g.tileMap[x][y].appearance
-					if f.tilesInSight[x][y] {
+					if f.areCoordsInSight(x, y) {
 						r_setFgColorByCcell(tileApp)
 					} else {
 						cw.SetFgColor(cw.DARK_BLUE)
@@ -95,7 +95,7 @@ func renderMapInViewport(f *faction, g *gameMap, vx, vy int) {
 func renderPawnsInViewport(f *faction, g *gameMap, vx, vy int) {
 	for _, p := range g.pawns {
 		cx, cy := p.getCenter()
-		if f.radarCoverage[cx][cy] {
+		if f.areCoordsInRadarRadius(cx, cy) {
 			cw.SetFgColor(cw.RED)
 			renderCharByGlobalCoords('?', cx,cy)
 		}
@@ -109,7 +109,7 @@ func renderPawnsInViewport(f *faction, g *gameMap, vx, vy int) {
 
 func renderUnitsInViewport(f *faction, p *pawn, g *gameMap, vx, vy int) {
 	u := p.unitInfo
-	if areGlobalCoordsOnScreen(p.x, p.y, vx, vy) && f.tilesInSight[p.x][p.y]{
+	if areGlobalCoordsOnScreen(p.x, p.y, vx, vy) && f.areCoordsInSight(p.x, p.y){
 		tileApp := u.appearance
 		// r, g, b := getFactionRGB(u.faction.factionNumber)
 		// cw.SetFgColorRGB(r, g, b)
@@ -126,7 +126,7 @@ func renderBuildingsInViewport(f *faction, p *pawn, g *gameMap, vx, vy int) {
 		for y := 0; y < b.h; y++ {
 			if p.currentConstructionStatus == nil {
 				color := app.colors[x+b.w*y]
-				if f.tilesInSight[bx+x][by+y] {
+				if f.areCoordsInSight(bx+x,by+y) {
 					if color == -1 {
 						cw.SetFgColor(p.faction.getFactionColor())
 					} else {
@@ -142,7 +142,7 @@ func renderBuildingsInViewport(f *faction, p *pawn, g *gameMap, vx, vy int) {
 				}
 				cw.SetFgColor(color)
 			}
-			if areGlobalCoordsOnScreen(bx+x, by+y, vx, vy) && f.seenTiles[bx+x][by+y] {
+			if areGlobalCoordsOnScreen(bx+x, by+y, vx, vy) && f.wereCoordsSeen(bx+x, by+y) {
 				cw.PutChar(int32(app.chars[x+b.w*y]), bx+x-vx, by+y-vy)
 			}
 		}

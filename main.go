@@ -18,6 +18,7 @@ var (
 	CURRENT_MAP     *gameMap
 	CURRENT_FACTION_SEEING_THE_SCREEN *faction // for various rendering crap
 	FIRE_WAS_OPENED_ON_SCREEN_THIS_TURN bool // for killing pewpews overrender.
+	CHEAT_IGNORE_FOW bool
 )
 
 func main() {
