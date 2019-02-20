@@ -51,6 +51,7 @@ func main() {
 				CURRENT_FACTION_SEEING_THE_SCREEN = f
 				renderFactionStats(f)
 				plr_control(f, CURRENT_MAP)
+				log.appendMessage("DEBUG: TOTAL FLUSHES: "+strconv.Itoa(cw.GetNumberOfRecentFlushes()))
 			} else if f.aiControlled {
 				ai_controlFaction(f)
 			}
@@ -81,7 +82,7 @@ func main() {
 		}
 		doAllNanolathes(CURRENT_MAP)
 		timeForTurn := int(time.Since(startTime) / time.Millisecond)
-		log.appendMessage("Time for turn: " + strconv.Itoa(timeForTurn) + "ms") // TODO: make it removable
+		log.appendMessage("DEBUG: Time for turn: " + strconv.Itoa(timeForTurn) + "ms") // TODO: make it removable
 	}
 
 }
