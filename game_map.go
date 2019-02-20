@@ -5,13 +5,13 @@ import (
 	"astar/astar"
 )
 
-const (
-	mapW = 70
-	mapH = 20
+var (
+	mapW int
+	mapH int
 )
 
 type gameMap struct {
-	tileMap  [mapW][mapH]*tile
+	tileMap  [][]*tile
 	factions []*faction
 	pawns    []*pawn
 }
@@ -171,61 +171,4 @@ func (g *gameMap) createCostMapForPathfinding() *[][]int {
 
 func (g *gameMap) getPathFromTo(fx, fy, tx, ty int) *astar.Cell {
 	return astar.FindPath(g.createCostMapForPathfinding(), fx, fy, tx, ty, true, true)
-}
-
-func (g *gameMap) init() {
-	g.pawns = make([]*pawn, 0)
-	g.factions = make([]*faction, 0)
-	for i := 0; i < mapW; i++ {
-		for j := 0; j < mapH; j++ {
-			g.tileMap[i][j] = &tile{appearance: &ccell{char: '.', r: 64, g: 128, b: 64, color: 3}, isPassable: true}
-		}
-	}
-
-	// place metal deposits
-	g.tileMap[2][2] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, metalAmount: 1, isPassable: true}
-	g.tileMap[3][2] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, metalAmount: 1, isPassable: true}
-	g.tileMap[2][3] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, metalAmount: 1, isPassable: true}
-	g.tileMap[3][3] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, metalAmount: 1, isPassable: true}
-	g.tileMap[13][2] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, metalAmount: 1, isPassable: true}
-	g.tileMap[14][3] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, metalAmount: 1, isPassable: true}
-	g.tileMap[13][1] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, metalAmount: 1, isPassable: true}
-	g.tileMap[14][2] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, metalAmount: 1, isPassable: true}
-	g.tileMap[15][3] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, metalAmount: 1, isPassable: true}
-	g.tileMap[12][15] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, metalAmount: 1, isPassable: true}
-	g.tileMap[11][15] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, metalAmount: 1, isPassable: true}
-	g.tileMap[12][16] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, metalAmount: 1, isPassable: true}
-	g.tileMap[13][15] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, metalAmount: 1, isPassable: true}
-	g.tileMap[13][14] = &tile{appearance: &ccell{char: ';', r: 64, g: 64, b: 128, color: 8}, metalAmount: 1, isPassable: true}
-	g.tileMap[3][15] = &tile{appearance: &ccell{char: '$', r: 64, g: 64, b: 128, color: 8}, thermalAmount: 1, isPassable: true}
-	g.tileMap[4][14] = &tile{appearance: &ccell{char: '$', r: 64, g: 64, b: 128, color: 8}, thermalAmount: 1, isPassable: true}
-
-	g.factions = append(g.factions, createFaction("The Core Corporation", 0, true))
-	g.addPawn(createUnit("protocommander", 3, 9, g.factions[0], true))
-	g.factions[0].cursor.x = 3
-	g.factions[0].cursor.y = 9
-
-	g.addPawn(createUnit("flash", 4, 5, g.factions[0], true))
-	g.addPawn(createUnit("flash", 4, 6, g.factions[0], true))
-	g.addPawn(createUnit("flash", 5, 5, g.factions[0], true))
-	g.addPawn(createUnit("flash", 5, 6, g.factions[0], true))
-	g.addPawn(createUnit("weasel", 7, 7, g.factions[0], true))
-
-
-	g.factions = append(g.factions, createFaction("The rogue Arm AI", 1, false))
-	// g.addPawn(createUnit("armcommander", mapW-10, 5, g.factions[1], true))
-	g.addBuilding(createBuilding("armhq", mapW-5, 9, g.factions[1]), true)
-	g.addBuilding(createBuilding("mstorage", 20, 10, g.factions[1]), true)
-	g.addBuilding(createBuilding("lturret", mapW-10, 1, g.factions[1]), true)
-	g.addBuilding(createBuilding("lturret", mapW-10, 4, g.factions[1]), true)
-	g.addBuilding(createBuilding("guardian", mapW-7, 3, g.factions[1]), true)
-	g.addBuilding(createBuilding("lturret", mapW-10, 8, g.factions[1]), true)
-	g.addBuilding(createBuilding("lturret", mapW-10, 12, g.factions[1]), true)
-	g.addBuilding(createBuilding("lturret", mapW-10, 16, g.factions[1]), true)
-	g.addBuilding(createBuilding("guardian", mapW-7, 14, g.factions[1]), true)
-	g.addBuilding(createBuilding("lturret", mapW-10, 19, g.factions[1]), true)
-
-	for _, f := range g.factions {
-		f.recalculateFactionEconomy(g)
-	}
 }

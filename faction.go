@@ -25,17 +25,17 @@ type faction struct {
 
 func createFaction(name string, n int, playerControlled bool) *faction { // temporary
 	fctn := &faction{playerControlled: playerControlled, name: name, factionNumber: n, economy: &factionEconomy{currentMetal: 99999, currentEnergy: 99999}, cursor: &cursor{}}
-	fctn.seenTiles = make([][]bool, mapH)
+	fctn.seenTiles = make([][]bool, mapW)
 	for i := range fctn.seenTiles {
-		fctn.seenTiles[i] = make([]bool, mapW)
+		fctn.seenTiles[i] = make([]bool, mapH)
 	}
-	fctn.tilesInSight = make([][]bool, mapH)
+	fctn.tilesInSight = make([][]bool, mapW)
 	for i := range fctn.tilesInSight {
-		fctn.tilesInSight[i] = make([]bool, mapW)
+		fctn.tilesInSight[i] = make([]bool, mapH)
 	}
-	fctn.radarCoverage = make([][]bool, mapH)
+	fctn.radarCoverage = make([][]bool, mapW)
 	for i := range fctn.radarCoverage {
-		fctn.radarCoverage[i] = make([]bool, mapW)
+		fctn.radarCoverage[i] = make([]bool, mapH)
 	}
 	return fctn
 }
