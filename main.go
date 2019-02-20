@@ -62,7 +62,7 @@ func main() {
 					CURRENT_MAP.removePawn(u)
 					continue
 				}
-				if u.eachTickToRegen > 0 && CURRENT_TURN % u.eachTickToRegen == 0 && u.hitpoints < u.maxHitpoints {
+				if u.regenPeriod > 0 && CURRENT_TURN % u.regenPeriod == 0 && u.hitpoints < u.maxHitpoints {
 					u.hitpoints++
 				}
 				u.executeOrders(CURRENT_MAP)
@@ -71,7 +71,7 @@ func main() {
 			if FIRE_WAS_OPENED_ON_SCREEN_THIS_TURN {
 				cw.Flush_console()
 				FIRE_WAS_OPENED_ON_SCREEN_THIS_TURN = false
-				time.Sleep(time.Duration(endTurnEachMs / 4)*time.Millisecond)
+				time.Sleep(time.Duration(endTurnPeriod/ 4)*time.Millisecond)
 			}
 			CURRENT_TURN += 1
 		}

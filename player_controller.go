@@ -11,7 +11,7 @@ var (
 	PLR_LOOP       = true
 	IS_PAUSED      = true
 	reRenderNeeded = true
-	endTurnEachMs  = 700
+	endTurnPeriod  = 700
 	last_time      time.Time
 )
 
@@ -61,16 +61,16 @@ func plr_selectPawn(f *faction, m *gameMap) *[]*pawn { // returns a pointer to a
 				log.appendMessage("Switched to real-time mode.")
 			}
 		case "=":
-			if endTurnEachMs > 100 {
-				endTurnEachMs -= 100
-				log.appendMessagef("Game speed increased to %d", 10-(endTurnEachMs/100))
+			if endTurnPeriod > 100 {
+				endTurnPeriod -= 100
+				log.appendMessagef("Game speed increased to %d", 10-(endTurnPeriod/100))
 			} else {
 				log.appendMessage("Can't increase game speed any further.")
 			}
 		case "-":
-			if endTurnEachMs < 2000 {
-				endTurnEachMs += 100
-				log.appendMessagef("Game speed decreased to %d", 10-(endTurnEachMs/100))
+			if endTurnPeriod < 2000 {
+				endTurnPeriod += 100
+				log.appendMessagef("Game speed decreased to %d", 10-(endTurnPeriod/100))
 			} else {
 				log.appendMessage("Can't decrease game speed any further.")
 			}
@@ -407,5 +407,5 @@ func plr_keyToDirection(keyPressed string) (int, int) {
 }
 
 func isTimeToAutoEndTurn() bool {
-	return time.Since(last_time) >= time.Duration(endTurnEachMs)*time.Millisecond
+	return time.Since(last_time) >= time.Duration(endTurnPeriod)*time.Millisecond
 }

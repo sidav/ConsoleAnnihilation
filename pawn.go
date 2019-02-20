@@ -27,7 +27,7 @@ type pawn struct {
 	// armor info:
 	hitpoints, maxHitpoints int
 	isLight, isHeavy        bool // these are not mutually excluding lol. Trust me, I'm a programmer
-	eachTickToRegen         int  // if != 0 then the pawn will regen 1 hp each Nth tick.
+	regenPeriod             int  // if != 0 then the pawn will regen 1 hp each Nth tick.
 }
 
 func (p *pawn) hasWeapons() bool {
@@ -93,8 +93,8 @@ func (p *pawn) getArmorDescriptionString() string {
 	if p.isHeavy {
 		armorInfo += ", heavy"
 	}
-	if p.eachTickToRegen > 0 {
-		regenPerTurnMult10 := 100 / (p.eachTickToRegen)
+	if p.regenPeriod > 0 {
+		regenPerTurnMult10 := 100 / (p.regenPeriod)
 		armorInfo += fmt.Sprintf(", regen %d.%d", regenPerTurnMult10/10, regenPerTurnMult10%10)
 	}
 	return armorInfo

@@ -72,7 +72,7 @@ func createBuilding(codename string, x, y int, f *faction) *pawn {
 			"=0=" +
 			"0$0" +
 			"=0=", colors: colors}
-		b = &pawn{name: "Metal Storage", maxHitpoints: 100, isHeavy: true, eachTickToRegen: 10,
+		b = &pawn{name: "Metal Storage", maxHitpoints: 100, isHeavy: true, regenPeriod: 10,
 			buildingInfo:              &building{w: 3, h: 3, appearance: app},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 60, costM: 100, costE: 800},
 			res:                       &pawnResourceInformation{metalStorage: 250},
@@ -118,7 +118,7 @@ func createBuilding(codename string, x, y int, f *faction) *pawn {
 			"=^^=" +
 			"<HQ>" +
 			"=VV=", colors: colors}
-		b = &pawn{name: "Arm proxy HQ", maxHitpoints: 300, isHeavy: true, isCommander: true, eachTickToRegen: 10,
+		b = &pawn{name: "Arm proxy HQ", maxHitpoints: 300, isHeavy: true, isCommander: true, regenPeriod: 10,
 			buildingInfo:              &building{w: 4, h: 3, appearance: app},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 40, costM: 100, costE: 1200},
 			res:                       &pawnResourceInformation{metalIncome: 100, energyIncome: 1000},
@@ -220,7 +220,7 @@ func createBuilding(codename string, x, y int, f *faction) *pawn {
 	case "lturret":
 		colors := []int{-1}
 		app := &buildingAppearance{chars: "T", colors: colors}
-		b = &pawn{name: "Light Laser Turret", maxHitpoints: 90, isHeavy: true, eachTickToRegen: 70,
+		b = &pawn{name: "Light Laser Turret", maxHitpoints: 90, isHeavy: true, regenPeriod: 70,
 			buildingInfo:              &building{w: 1, h: 1, appearance: app},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 100, costM: 250, costE: 900},
 			weapons: []*pawnWeaponInformation{
