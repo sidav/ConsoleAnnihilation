@@ -77,7 +77,7 @@ func main() {
 			if FIRE_WAS_OPENED_ON_SCREEN_THIS_TURN {
 				cw.Flush_console()
 				FIRE_WAS_OPENED_ON_SCREEN_THIS_TURN = false
-				time.Sleep(200*time.Millisecond)
+				time.Sleep(time.Duration(endTurnEachMs / 4)*time.Millisecond)
 			}
 			CURRENT_TURN += 1
 		}
