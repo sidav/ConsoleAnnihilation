@@ -1,6 +1,9 @@
 package main
 
-import cw "TCellConsoleWrapper"
+import (
+	cw "TCellConsoleWrapper"
+	"fmt"
+)
 
 func r_renderCursor(f *faction) {
 	c := f.cursor
@@ -142,10 +145,13 @@ func renderBuildCursor(c *cursor) {
 	y := VIEWPORT_H / 2
 
 	// TODO: optimize it with getPawnsInRect()
+	totalMetalUnderCursor := CURRENT_MAP.getNumberOfMetalDepositsInRect(c.x-c.w/2, c.y-c.h/2, c.w, c.h)
+	totalThermalUnderCursor := CURRENT_MAP.getNumberOfThermalDepositsInRect(c.x-c.w/2, c.y-c.h/2, c.w, c.h)
+
 	for i := 0; i < c.w; i++ {
 		for j := 0; j < c.h; j++ {
-			if (c.buildOnMetalOnly && CURRENT_MAP.getNumberOfMetalDepositsInRect(c.x-c.w/2, c.y-c.h/2, c.w, c.h) == 0) ||
-				(c.buildOnThermalOnly && CURRENT_MAP.getNumberOfThermalDepositsInRect(c.x-c.w/2, c.y-c.h/2, c.w, c.h) == 0) {
+			if (c.buildOnMetalOnly && totalMetalUnderCursor == 0) ||
+				(c.buildOnThermalOnly && totalThermalUnderCursor == 0) {
 				cw.SetBgColor(cw.RED)
 			} else {
 				if CURRENT_MAP.getPawnAtCoordinates(c.x+i-c.w/2, c.y+j-c.h/2) == nil &&
@@ -157,6 +163,18 @@ func renderBuildCursor(c *cursor) {
 			}
 			cw.PutChar(' ', x+i-c.w/2, y+j-c.h/2)
 		}
+	}
+	resInfoString := ""
+	if totalMetalUnderCursor > 0 {
+		resInfoString += fmt.Sprintf(" %dx METAL ", totalMetalUnderCursor)
+	}
+	if totalThermalUnderCursor > 0 {
+		resInfoString += fmt.Sprintf(" %dx THERMAL ", totalThermalUnderCursor)
+	}
+	if len(resInfoString) > 0 {
+		cw.SetBgColor(cw.DARK_GRAY)
+		cw.SetFgColor(cw.WHITE)
+		cw.PutString(resInfoString, x-c.w/2+c.w, y-c.h/2+c.h)
 	}
 	cw.SetBgColor(cw.BLACK)
 }
