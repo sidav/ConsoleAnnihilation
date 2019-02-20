@@ -7,6 +7,8 @@ func r_renderCursor(f *faction) {
 	switch c.currentCursorMode {
 	case CURSOR_SELECT:
 		renderSelectCursor(f)
+	case CURSOR_MULTISELECT:
+		renderBandboxCursor(f)
 	case CURSOR_MOVE:
 		renderMoveCursor(f)
 	case CURSOR_AMOVE:
@@ -39,6 +41,47 @@ func renderSelectCursor(f *faction) {
 		for cy := 0; cy < h; cy++ {
 			cw.PutChar('[', x-w/2-1, cy-h/2+y)
 			cw.PutChar(']', x+w/2+offset, cy-h/2+y)
+		}
+	}
+
+	// outcommented for non-SDL console
+	//cw.PutChar(16*13+10, x-1, y-1)
+	//cw.PutChar(16*11+15, x+1, y-1)
+	//cw.PutChar(16*12, x-1, y+1)
+	//cw.PutChar(16*13+9, x+1, y+1)
+	flushView()
+}
+
+func renderBandboxCursor(f *faction) {
+	cw.SetFgColor(cw.WHITE)
+	fromx, fromy := f.cursor.xorig, f.cursor.yorig
+	tox, toy := f.cursor.getCoords()
+	if fromx > tox {
+		t := fromx
+		fromx = tox
+		tox = t
+	}
+	if fromy > toy {
+		t := fromy
+		fromy = toy
+		toy = t
+	}
+	for i := fromx-1; i <= tox+1; i++ {
+		for j := fromy-1; j <= toy+1; j++ {
+			if i == fromx-1 || i == tox+1 {
+				renderCharByGlobalCoords('|', i, j)
+				continue
+			}
+			if j == fromy-1 || j == toy+1 {
+				renderCharByGlobalCoords('-', i, j)
+				continue
+			}
+			//if areCoordsValid(i, j) {
+			//	cw.SetBgColor(CURRENT_MAP.tileMap[i][j].appearance.color)
+			//	cw.SetFgColor(cw.BLACK)
+			//	renderCharByGlobalCoords(CURRENT_MAP.tileMap[i][j].appearance.char, i, j)
+			//	cw.SetBgColor(cw.BLACK)
+			//}
 		}
 	}
 

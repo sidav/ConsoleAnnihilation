@@ -181,6 +181,14 @@ func flushView() {
 	cw.Flush_console()
 }
 
+func renderCharByGlobalCoords(c rune, x, y int) { // TODO: use it everywhere
+	vx := CURRENT_FACTION_SEEING_THE_SCREEN.cursor.x - VIEWPORT_W/2
+	vy := CURRENT_FACTION_SEEING_THE_SCREEN.cursor.y - VIEWPORT_H/2
+	if areGlobalCoordsOnScreenForFaction(x, y, CURRENT_FACTION_SEEING_THE_SCREEN) {
+		cw.PutChar(c, x-vx, y-vy)
+	}
+}
+
 func areGlobalCoordsOnScreen(gx, gy, vx, vy int) bool {
 	return areCoordsInRect(gx, gy, vx, vy, VIEWPORT_W, VIEWPORT_H)
 }

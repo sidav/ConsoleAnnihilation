@@ -3,6 +3,7 @@ package main
 import (
 	"SomeTBSGame/routines"
 	"fmt"
+	"sort"
 )
 import cw "TCellConsoleWrapper"
 
@@ -77,6 +78,31 @@ func r_renderPossibleOrdersForPawn(p *pawn) {
 		}
 	}
 	routines.DrawSidebarInfoMenu("Orders for: "+p.name, p.faction.getFactionColor(),
+		SIDEBAR_X, SIDEBAR_FLOOR_3, SIDEBAR_W, orders)
+}
+
+func r_renderPossibleOrdersForMultiselection(f *faction, selection *[]*pawn) {
+	orders := make([]string, 0)
+	selectedUnitsCounter := make(map[string]int)
+	for _, p := range *selection {
+		selectedUnitsCounter[p.name]++
+	}
+	// sort the map because of dumbass Go developers thinking that they know your needs better than you do
+	keys := make([]string, 0, len(selectedUnitsCounter))
+	for k := range selectedUnitsCounter {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
+	for _, key := range keys {
+		orders = append(orders, fmt.Sprintf("%dx %s", selectedUnitsCounter[key], key))
+	}
+	if f.cursor.currentCursorMode == CURSOR_AMOVE {
+		orders = append(orders, "(M)ove")
+	} else {
+		orders = append(orders, "(A)ttack-move")
+	}
+	routines.DrawSidebarInfoMenu(fmt.Sprintf("ORDERS FOR %d UNITS", len(*selection)), f.getFactionColor(),
 		SIDEBAR_X, SIDEBAR_FLOOR_3, SIDEBAR_W, orders)
 }
 
