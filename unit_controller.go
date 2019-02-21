@@ -95,31 +95,32 @@ func (p *pawn) doAttackOrder() { // Only moves the unit to a firing position. Th
 	}
 }
 
-func (p *pawn) openFireIfPossible() { // does the firing, does NOT necessary mean execution of attack order (but can be)
-	if p.currentConstructionStatus != nil || !p.hasWeapons() || p.order != nil && p.order.orderType == order_build {
+func (attacker *pawn) openFireIfPossible() { // does the firing, does NOT necessary mean execution of attack order (but can be)
+	if attacker.currentConstructionStatus != nil || !attacker.hasWeapons() || attacker.order != nil && attacker.order.orderType == order_build {
 		return
 	}
 	var pawnInOrder *pawn
-	if p.order != nil && p.order.targetPawn != nil {
-		pawnInOrder = p.order.targetPawn
+	if attacker.order != nil && attacker.order.targetPawn != nil {
+		pawnInOrder = attacker.order.targetPawn
 	}
-	for _, wpn := range p.weapons {
-		if p.faction.economy.currentEnergy < wpn.attackEnergyCost {
+	attackerCenterX, attackerCenterY := attacker.getCenter()
+	for _, wpn := range attacker.weapons {
+		if attacker.faction.economy.currentEnergy < wpn.attackEnergyCost {
 			continue
 		}
-		if (wpn.canBeFiredOnMove && wpn.nextTurnToFire > CURRENT_TURN) || (!wpn.canBeFiredOnMove && !p.isTimeToAct()) {
-			// log.appendMessage(fmt.Sprintf("Skipping fire: TtA:%b CBFoM:%b TRN: %b", p.isTimeToAct() ,wpn.canBeFiredOnMove, wpn.nextTurnToFire > CURRENT_TURN))
+		if (wpn.canBeFiredOnMove && wpn.nextTurnToFire > CURRENT_TURN) || (!wpn.canBeFiredOnMove && !attacker.isTimeToAct()) {
+			// log.appendMessage(fmt.Sprintf("Skipping fire: TtA:%b CBFoM:%b TRN: %b", attacker.isTimeToAct() ,wpn.canBeFiredOnMove, wpn.nextTurnToFire > CURRENT_TURN))
 			continue
 		}
 		var target *pawn
 		radius := wpn.attackRadius
-		if pawnInOrder != nil && routines.AreCoordsInRange(p.x, p.y, pawnInOrder.x, pawnInOrder.y, radius) {
+		if pawnInOrder != nil && routines.AreCoordsInRange(attackerCenterX, attackerCenterY, pawnInOrder.x, pawnInOrder.y, radius) {
 			target = pawnInOrder
 		} else {
-			potential_targets := CURRENT_MAP.getEnemyPawnsInRadiusFrom(p.x, p.y, radius, p.faction)
+			potential_targets := CURRENT_MAP.getEnemyPawnsInRadiusFrom(attackerCenterX, attackerCenterY, radius, attacker.faction)
 			for _, potentialTarget := range potential_targets {
 				ptx, pty := potentialTarget.getCoords()
-				if p.faction.areCoordsInSight(ptx, pty) || p.faction.areCoordsInRadarRadius(ptx, pty) {
+				if attacker.faction.areCoordsInSight(ptx, pty) || attacker.faction.areCoordsInRadarRadius(ptx, pty) {
 					target = potentialTarget
 				}
 			}
@@ -128,17 +129,17 @@ func (p *pawn) openFireIfPossible() { // does the firing, does NOT necessary mea
 			if wpn.canBeFiredOnMove {
 				wpn.nextTurnToFire = CURRENT_TURN + wpn.attackDelay
 			} else {
-				p.nextTurnToAct = CURRENT_TURN + wpn.attackDelay
+				attacker.nextTurnToAct = CURRENT_TURN + wpn.attackDelay
 			}
 			// draw the pew pew laser TODO: move this crap somewhere already
-			if areGlobalCoordsOnScreenForFaction(p.x, p.y, CURRENT_FACTION_SEEING_THE_SCREEN) || areGlobalCoordsOnScreenForFaction(target.x, target.y, CURRENT_FACTION_SEEING_THE_SCREEN) {
+			if areGlobalCoordsOnScreenForFaction(attackerCenterX, attackerCenterY, CURRENT_FACTION_SEEING_THE_SCREEN) || areGlobalCoordsOnScreenForFaction(target.x, target.y, CURRENT_FACTION_SEEING_THE_SCREEN) {
 				tcell_wrapper.SetFgColor(tcell_wrapper.RED)
 				cx, cy := target.getCenter()
-				renderLine(p.x, p.y, cx, cy, false, CURRENT_FACTION_SEEING_THE_SCREEN.cursor.x-VIEWPORT_W/2, CURRENT_FACTION_SEEING_THE_SCREEN.cursor.y-VIEWPORT_H/2)
+				renderLine(attackerCenterX, attackerCenterY, cx, cy, false, CURRENT_FACTION_SEEING_THE_SCREEN.cursor.x-VIEWPORT_W/2, CURRENT_FACTION_SEEING_THE_SCREEN.cursor.y-VIEWPORT_H/2)
 				FIRE_WAS_OPENED_ON_SCREEN_THIS_TURN = true
 			}
-			dealDamageToTarget(p, wpn, target)
-			p.faction.economy.currentEnergy -= wpn.attackEnergyCost
+			dealDamageToTarget(attacker, wpn, target)
+			attacker.faction.economy.currentEnergy -= wpn.attackEnergyCost
 		}
 	}
 }

@@ -142,7 +142,8 @@ func r_renderAttackRadius(p *pawn) {
 	if len(p.weapons) > 0 {
 		// (p.x, p.y, p.weapons[0].attackRadius, false, CURRENT_FACTION_SEEING_THE_SCREEN.cursor.x-VIEWPORT_W/2, CURRENT_FACTION_SEEING_THE_SCREEN.cursor.y-VIEWPORT_H/2)
 		vx, vy := CURRENT_FACTION_SEEING_THE_SCREEN.cursor.x-VIEWPORT_W/2, CURRENT_FACTION_SEEING_THE_SCREEN.cursor.y-VIEWPORT_H/2
-		line := routines.GetCircle(p.x, p.y, p.weapons[0].attackRadius)
+		px, py := p.getCenter()
+		line := routines.GetCircle(px, py, p.weapons[0].attackRadius)
 		for _, point := range *line {
 			x, y := point.X, point.Y
 			cw.SetFgColor(cw.BLACK)
