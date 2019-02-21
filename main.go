@@ -12,14 +12,18 @@ func areCoordsValid(x, y int) bool {
 }
 
 var (
-	GAME_IS_RUNNING = true
-	log             *LOG
-	CURRENT_TURN    = 1
-	CURRENT_MAP     *gameMap
-	CURRENT_FACTION_SEEING_THE_SCREEN *faction // for various rendering crap
+	GAME_IS_RUNNING                      = true
+	log                                 *LOG
+	CURRENT_TICK                        = 1
+	CURRENT_MAP                         *gameMap
+	CURRENT_FACTION_SEEING_THE_SCREEN   *faction // for various rendering crap
 	FIRE_WAS_OPENED_ON_SCREEN_THIS_TURN bool // for killing pewpews overrender.
-	CHEAT_IGNORE_FOW bool
+	CHEAT_IGNORE_FOW                    bool
 )
+
+func getCurrentTurn() int {
+	return CURRENT_TICK/ 10 + 1
+}
 
 func main() {
 	cw.Init_console()
@@ -63,7 +67,7 @@ func main() {
 					CURRENT_MAP.removePawn(u)
 					continue
 				}
-				if u.regenPeriod > 0 && CURRENT_TURN % u.regenPeriod == 0 && u.hitpoints < u.maxHitpoints {
+				if u.regenPeriod > 0 && CURRENT_TICK% u.regenPeriod == 0 && u.hitpoints < u.maxHitpoints {
 					u.hitpoints++
 				}
 				u.executeOrders(CURRENT_MAP)
@@ -74,7 +78,7 @@ func main() {
 				FIRE_WAS_OPENED_ON_SCREEN_THIS_TURN = false
 				time.Sleep(time.Duration(endTurnPeriod/ 4)*time.Millisecond)
 			}
-			CURRENT_TURN += 1
+			CURRENT_TICK += 1
 		}
 
 		for _, f := range CURRENT_MAP.factions {

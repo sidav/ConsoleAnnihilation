@@ -19,7 +19,7 @@ type pawn struct {
 	currentConstructionStatus *constructionInformation
 	moveInfo                  *pawnMovementInformation
 	weapons                   []*pawnWeaponInformation
-	nextTurnToAct             int
+	nextTickToAct             int
 	isCommander               bool
 	sightRadius, radarRadius  int
 

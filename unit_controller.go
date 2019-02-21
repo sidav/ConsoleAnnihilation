@@ -6,7 +6,7 @@ import (
 )
 
 func (p *pawn) isTimeToAct() bool {
-	return p.nextTurnToAct <= CURRENT_TURN
+	return p.nextTickToAct <= CURRENT_TICK
 }
 
 func (u *pawn) executeOrders(m *gameMap) {
@@ -66,7 +66,7 @@ func (u *pawn) doMoveOrder() { // TODO: rewrite
 		u.x += vx
 		u.y += vy
 
-		u.nextTurnToAct = CURRENT_TURN + u.moveInfo.ticksForMoveSingleCell
+		u.nextTickToAct = CURRENT_TICK + u.moveInfo.ticksForMoveSingleCell
 
 		if u.x == ox && u.y == oy {
 			u.reportOrderCompletion("Arrived")
@@ -108,8 +108,8 @@ func (attacker *pawn) openFireIfPossible() { // does the firing, does NOT necess
 		if attacker.faction.economy.currentEnergy < wpn.attackEnergyCost {
 			continue
 		}
-		if (wpn.canBeFiredOnMove && wpn.nextTurnToFire > CURRENT_TURN) || (!wpn.canBeFiredOnMove && !attacker.isTimeToAct()) {
-			// log.appendMessage(fmt.Sprintf("Skipping fire: TtA:%b CBFoM:%b TRN: %b", attacker.isTimeToAct() ,wpn.canBeFiredOnMove, wpn.nextTurnToFire > CURRENT_TURN))
+		if (wpn.canBeFiredOnMove && wpn.nextTurnToFire > CURRENT_TICK) || (!wpn.canBeFiredOnMove && !attacker.isTimeToAct()) {
+			// log.appendMessage(fmt.Sprintf("Skipping fire: TtA:%b CBFoM:%b TRN: %b", attacker.isTimeToAct() ,wpn.canBeFiredOnMove, wpn.nextTurnToFire > CURRENT_TICK))
 			continue
 		}
 		var target *pawn
@@ -127,9 +127,9 @@ func (attacker *pawn) openFireIfPossible() { // does the firing, does NOT necess
 		}
 		if target != nil {
 			if wpn.canBeFiredOnMove {
-				wpn.nextTurnToFire = CURRENT_TURN + wpn.attackDelay
+				wpn.nextTurnToFire = CURRENT_TICK + wpn.attackDelay
 			} else {
-				attacker.nextTurnToAct = CURRENT_TURN + wpn.attackDelay
+				attacker.nextTickToAct = CURRENT_TICK + wpn.attackDelay
 			}
 			// draw the pew pew laser TODO: move this crap somewhere already
 			if areGlobalCoordsOnScreenForFaction(attackerCenterX, attackerCenterY, CURRENT_FACTION_SEEING_THE_SCREEN) || areGlobalCoordsOnScreenForFaction(target.x, target.y, CURRENT_FACTION_SEEING_THE_SCREEN) {

@@ -157,7 +157,7 @@ func renderBuilding(f *faction, p *pawn, g *gameMap, vx, vy int, inverse bool) {
 				}
 			} else { // building is under construction
 				colorToRender = cw.DARK_GREEN
-				if CURRENT_TURN/10 % 2 == 0 {
+				if getCurrentTurn() % 2 == 0 {
 					colorToRender = cw.GREEN
 				}
 			}

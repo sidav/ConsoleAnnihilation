@@ -10,15 +10,15 @@ const (
 )
 
 var (
-	// in ticks, not turns
-	AI_RECALCULATE_PERIODS_EACH = 500
-	AI_CONTROL_PERIOD           = 500
-	AI_MIN_CONTROL_PERIOD       = 100
-	AI_CONTROL_PERIOD_DECREMENT = 50
+	// in turns, not ticks
+	AI_RECALCULATE_PERIODS_EACH = 50
+	AI_CONTROL_PERIOD           = 50
+	AI_MIN_CONTROL_PERIOD       = 10
+	AI_CONTROL_PERIOD_DECREMENT = 3
 
 	AI_MAX_CONSTRUCTION_ORDERS_AT_A_TIME  = 0
 	ai_construction_orders_this_turn      = 0
-	ai_max_constr_orders_increment_period = 550
+	ai_max_constr_orders_increment_period = AI_RECALCULATE_PERIODS_EACH * 2
 )
 
 func ai_write(text string) {
@@ -30,10 +30,11 @@ func ai_write(text string) {
 func ai_controlFaction(f *faction) {
 	ai_recalculateParamsIfNeccessary()
 
-	if CURRENT_TURN%AI_CONTROL_PERIOD != 0 {
+	if getCurrentTurn()%AI_CONTROL_PERIOD != 0 {
 		return
 	}
 	ai_write("assuming direct control over " + f.name)
+	ai_construction_orders_this_turn = 0
 	for _, p := range CURRENT_MAP.pawns {
 		if p.faction == f {
 			ai_controlPawn(p)
@@ -89,14 +90,14 @@ func ai_decideProduction(variants *[]string, f *faction) *pawn {
 }
 
 func ai_recalculateParamsIfNeccessary() {
-	if CURRENT_TURN%AI_RECALCULATE_PERIODS_EACH == 0 {
+	if getCurrentTurn()%AI_RECALCULATE_PERIODS_EACH == 0 {
 		if AI_CONTROL_PERIOD-AI_CONTROL_PERIOD_DECREMENT >= AI_MIN_CONTROL_PERIOD {
 			AI_CONTROL_PERIOD -= AI_CONTROL_PERIOD_DECREMENT
 			ai_write("CONTROL PERIOD changed to " + strconv.Itoa(AI_CONTROL_PERIOD))
 		}
 	}
 
-	if CURRENT_TURN%ai_max_constr_orders_increment_period == 0 {
+	if getCurrentTurn()%ai_max_constr_orders_increment_period == 0 {
 		AI_MAX_CONSTRUCTION_ORDERS_AT_A_TIME++
 		ai_write("MAX CONSTRUCTION PER TURN changed to " + strconv.Itoa(AI_MAX_CONSTRUCTION_ORDERS_AT_A_TIME))
 	}
