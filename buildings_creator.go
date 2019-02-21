@@ -185,9 +185,9 @@ func createBuilding(codename string, x, y int, f *faction) *pawn {
 			"====" +
 			"|--|" +
 			"\\==/", colors: colors}
-		b = &pawn{name: "Tech 1 Vehicle Factory",
-			buildingInfo:              &building{w: 4, h: 3, appearance: app},
-			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 100, costM: 100, costE: 500},
+		b = &pawn{name: "Tech 1 Vehicle Factory", buildingInfo: &building{w: 4, h: 3, appearance: app},
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 120, costM: 175, costE: 700},
+			nanolatherInfo:            &nanolatherInformation{builderCoeff: 1, allowedUnits: []string{"armjeffy", "armflash"}},
 		}
 
 	case "corevehfactory":
@@ -200,8 +200,8 @@ func createBuilding(codename string, x, y int, f *faction) *pawn {
 			"|/\\|" +
 			"\\\\//", colors: colors}
 		b = &pawn{name: "Tech 1 Vehicle Factory", buildingInfo: &building{w: 4, h: 3, appearance: app},
-			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 100, costM: 100, costE: 500},
-			nanolatherInfo:            &nanolatherInformation{builderCoeff: 1, allowedUnits: []string{"weasel", "flash"}},
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 125, costM: 180, costE: 700},
+			nanolatherInfo:            &nanolatherInformation{builderCoeff: 1, allowedUnits: []string{"coreweasel", "coreraider"}},
 		}
 
 	case "radar":

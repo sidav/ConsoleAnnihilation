@@ -5,7 +5,7 @@ func createUnit(codename string, x, y int, f *faction, alreadyConstructed bool) 
 	var newUnit *pawn
 	switch codename {
 	case "armcommander":
-		newUnit = &pawn{name: "Arm Commander", maxHitpoints: 100, isHeavy: true, isCommander: true,
+		newUnit = &pawn{name: "Arm Commander", maxHitpoints: 200, isHeavy: true, isCommander: true,
 			unitInfo:       &unit{appearance: ccell{char: '@'}},
 			moveInfo:       &pawnMovementInformation{ticksForMoveSingleCell: 10, movesOnLand: true, movesOnSea: true}, regenPeriod: 7, radarRadius: 15,
 			res:            &pawnResourceInformation{metalIncome: 1, energyIncome: 20, metalStorage: 250, energyStorage: 1000},
@@ -17,7 +17,7 @@ func createUnit(codename string, x, y int, f *faction, alreadyConstructed bool) 
 			},
 		}
 	case "corecommander":
-		newUnit = &pawn{name: "Core Commander", maxHitpoints: 100, isHeavy: true, isCommander: true,
+		newUnit = &pawn{name: "Core Commander", maxHitpoints: 200, isHeavy: true, isCommander: true,
 			unitInfo:       &unit{appearance: ccell{char: '@'}},
 			moveInfo:       &pawnMovementInformation{ticksForMoveSingleCell: 10, movesOnLand: true, movesOnSea: true}, regenPeriod: 7, radarRadius: 15,
 			res:            &pawnResourceInformation{metalIncome: 1, energyIncome: 20, metalStorage: 250, energyStorage: 1000},
@@ -29,7 +29,7 @@ func createUnit(codename string, x, y int, f *faction, alreadyConstructed bool) 
 			},
 		}
 	case "protocommander":
-		newUnit = &pawn{name: "Prototype Commander Unit", maxHitpoints: 100, isHeavy: true, isCommander: true, regenPeriod: 7, radarRadius: 15,
+		newUnit = &pawn{name: "Prototype Commander Unit", maxHitpoints: 200, isHeavy: true, isCommander: true, regenPeriod: 7, radarRadius: 15,
 			unitInfo:       &unit{appearance: ccell{char: '@'}},
 			moveInfo:       &pawnMovementInformation{ticksForMoveSingleCell: 10, movesOnLand: true, movesOnSea: true},
 			res:            &pawnResourceInformation{metalIncome: 1, energyIncome: 20, metalStorage: 250, energyStorage: 1000},
@@ -52,18 +52,40 @@ func createUnit(codename string, x, y int, f *faction, alreadyConstructed bool) 
 			},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 25, costM: 650, costE: 1200},
 		}
-	case "weasel":
+	case "coreweasel":
 		newUnit = &pawn{name: "Weasel", maxHitpoints: 20, isLight: true, sightRadius: 12, regenPeriod: 30,
 			moveInfo:                  &pawnMovementInformation{ticksForMoveSingleCell: 6, movesOnLand: true},
 			unitInfo:                  &unit{appearance: ccell{char: 'w'}},
-			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 10, costM: 150, costE: 650},
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 12, costM: 150, costE: 650},
 			weapons: []*pawnWeaponInformation{
 				{attackDelay: 7, attackEnergyCost: 1, attackRadius: 4, attacksLand: true, canBeFiredOnMove: true,
 					hitscan: &WeaponHitscan{baseDamage:2},
 				},
 			},
 		}
-	case "flash":
+	case "armjeffy":
+		newUnit = &pawn{name: "Jeffy", maxHitpoints: 20, isLight: true, sightRadius: 12, regenPeriod: 25,
+			moveInfo:                  &pawnMovementInformation{ticksForMoveSingleCell: 5, movesOnLand: true},
+			unitInfo:                  &unit{appearance: ccell{char: 'j'}},
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 12, costM: 150, costE: 650},
+			weapons: []*pawnWeaponInformation{
+				{attackDelay: 7, attackEnergyCost: 1, attackRadius: 4, attacksLand: true, canBeFiredOnMove: true,
+					hitscan: &WeaponHitscan{baseDamage:2, lightMod:2},
+				},
+			},
+		}
+	case "coreraider":
+		newUnit = &pawn{name: "Raider", maxHitpoints: 55, isLight: true, regenPeriod: 6,
+			moveInfo:                  &pawnMovementInformation{ticksForMoveSingleCell: 7, movesOnLand: true},
+			unitInfo:                  &unit{appearance: ccell{char: 'r'}},
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 12, costM: 350, costE: 600},
+			weapons: []*pawnWeaponInformation{
+				{attackDelay: 13, attackEnergyCost: 1, attackRadius: 4, attacksLand: true, canBeFiredOnMove: true,
+					hitscan: &WeaponHitscan{baseDamage:4},
+				},
+			},
+		}
+	case "armflash":
 		newUnit = &pawn{name: "Flash", maxHitpoints: 55, isLight: true, regenPeriod: 6,
 			moveInfo:                  &pawnMovementInformation{ticksForMoveSingleCell: 7, movesOnLand: true},
 			unitInfo:                  &unit{appearance: ccell{char: 'f'}},
@@ -130,7 +152,7 @@ func createUnit(codename string, x, y int, f *faction, alreadyConstructed bool) 
 			},
 		}
 	default:
-		newUnit = &pawn{name: "UNKNOWN UNIT",
+		newUnit = &pawn{name: "UNKNOWN UNIT " + codename,
 			moveInfo:                  &pawnMovementInformation{ticksForMoveSingleCell: 10, movesOnLand: true},
 			unitInfo:                  &unit{appearance: ccell{char: '?'}},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 10, costM: 250, costE: 500},
