@@ -7,7 +7,7 @@ func createUnit(codename string, x, y int, f *faction, alreadyConstructed bool) 
 	case "armcommander":
 		newUnit = &pawn{name: "Arm Commander", maxHitpoints: 100, isHeavy: true, isCommander: true,
 			unitInfo:       &unit{appearance: ccell{char: '@'}},
-			moveInfo:       &pawnMovementInformation{ticksForMoveSingleCell: 10, movesOnLand: true, movesOnSea: true}, regenPeriod: 7,
+			moveInfo:       &pawnMovementInformation{ticksForMoveSingleCell: 10, movesOnLand: true, movesOnSea: true}, regenPeriod: 7, radarRadius: 15,
 			res:            &pawnResourceInformation{metalIncome: 1, energyIncome: 20, metalStorage: 250, energyStorage: 1000},
 			nanolatherInfo: &nanolatherInformation{builderCoeff: 10, allowedBuildings: []string{}},
 			weapons: []*pawnWeaponInformation{
@@ -19,7 +19,7 @@ func createUnit(codename string, x, y int, f *faction, alreadyConstructed bool) 
 	case "corecommander":
 		newUnit = &pawn{name: "Core Commander", maxHitpoints: 100, isHeavy: true, isCommander: true,
 			unitInfo:       &unit{appearance: ccell{char: '@'}},
-			moveInfo:       &pawnMovementInformation{ticksForMoveSingleCell: 10, movesOnLand: true, movesOnSea: true}, regenPeriod: 7,
+			moveInfo:       &pawnMovementInformation{ticksForMoveSingleCell: 10, movesOnLand: true, movesOnSea: true}, regenPeriod: 7, radarRadius: 15,
 			res:            &pawnResourceInformation{metalIncome: 1, energyIncome: 20, metalStorage: 250, energyStorage: 1000},
 			nanolatherInfo: &nanolatherInformation{builderCoeff: 10, allowedBuildings: []string{"corekbotlab", "solar", "metalmaker", "corevehfactory", "lturret"}},
 			weapons: []*pawnWeaponInformation{
@@ -29,7 +29,7 @@ func createUnit(codename string, x, y int, f *faction, alreadyConstructed bool) 
 			},
 		}
 	case "protocommander":
-		newUnit = &pawn{name: "Prototype Commander Unit", maxHitpoints: 100, isHeavy: true, isCommander: true, regenPeriod: 7,
+		newUnit = &pawn{name: "Prototype Commander Unit", maxHitpoints: 100, isHeavy: true, isCommander: true, regenPeriod: 7, radarRadius: 15,
 			unitInfo:       &unit{appearance: ccell{char: '@'}},
 			moveInfo:       &pawnMovementInformation{ticksForMoveSingleCell: 10, movesOnLand: true, movesOnSea: true},
 			res:            &pawnResourceInformation{metalIncome: 1, energyIncome: 20, metalStorage: 250, energyStorage: 1000},

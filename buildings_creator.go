@@ -36,7 +36,8 @@ func createBuilding(codename string, x, y int, f *faction) *pawn {
 			7, -1, 7,
 			-1, 7, -1,
 		}
-		app := &buildingAppearance{chars: "#|#" +
+		app := &buildingAppearance{chars:
+			"#|#" +
 			"-%-" +
 			"#|#", colors: colors}
 		b = &pawn{name: "Metal Extractor",
@@ -118,7 +119,7 @@ func createBuilding(codename string, x, y int, f *faction) *pawn {
 			"=^^=" +
 			"<HQ>" +
 			"=VV=", colors: colors}
-		b = &pawn{name: "Arm proxy HQ", maxHitpoints: 300, isHeavy: true, isCommander: true, regenPeriod: 10,
+		b = &pawn{name: "Arm proxy HQ", maxHitpoints: 300, isHeavy: true, isCommander: true, regenPeriod: 10, radarRadius: 40,
 			buildingInfo:              &building{w: 4, h: 3, appearance: app},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 40, costM: 100, costE: 1200},
 			res:                       &pawnResourceInformation{metalIncome: 100, energyIncome: 1000},
@@ -215,6 +216,7 @@ func createBuilding(codename string, x, y int, f *faction) *pawn {
 		b = &pawn{name: "Radar station", maxHitpoints: 25, isLight: true, radarRadius: 30,
 			buildingInfo:              &building{w: 3, h: 3, appearance: app},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 100, costM: 250, costE: 450},
+			res: &pawnResourceInformation{energySpending: 15},
 		}
 
 	case "lturret":
