@@ -264,7 +264,7 @@ func createBuilding(codename string, x, y int, f *faction) *pawn {
 			buildingInfo:              &building{w: 3, h: 3, appearance: app},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 100, costM: 450, costE: 1200},
 			weapons: []*pawnWeaponInformation{
-				{attackDelay: 55, attackEnergyCost: 250, attackRadius: 10, attacksLand: true,
+				{attackDelay: 55, attackEnergyCost: 150, attackRadius: 10, attacksLand: true,
 					hitscan: &WeaponHitscan{baseDamage: 5, heavyMod: 15},
 				},
 			},

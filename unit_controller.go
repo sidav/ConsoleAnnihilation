@@ -104,6 +104,9 @@ func (p *pawn) openFireIfPossible() { // does the firing, does NOT necessary mea
 		pawnInOrder = p.order.targetPawn
 	}
 	for _, wpn := range p.weapons {
+		if p.faction.economy.currentEnergy < wpn.attackEnergyCost {
+			continue
+		}
 		if (wpn.canBeFiredOnMove && wpn.nextTurnToFire > CURRENT_TURN) || (!wpn.canBeFiredOnMove && !p.isTimeToAct()) {
 			// log.appendMessage(fmt.Sprintf("Skipping fire: TtA:%b CBFoM:%b TRN: %b", p.isTimeToAct() ,wpn.canBeFiredOnMove, wpn.nextTurnToFire > CURRENT_TURN))
 			continue
@@ -132,6 +135,7 @@ func (p *pawn) openFireIfPossible() { // does the firing, does NOT necessary mea
 				FIRE_WAS_OPENED_ON_SCREEN_THIS_TURN = true
 			}
 			dealDamageToTarget(p, wpn, target)
+			p.faction.economy.currentEnergy -= wpn.attackEnergyCost
 		}
 	}
 }
