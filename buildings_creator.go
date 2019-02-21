@@ -122,7 +122,7 @@ func createBuilding(codename string, x, y int, f *faction) *pawn {
 		b = &pawn{name: "Arm proxy HQ", maxHitpoints: 300, isHeavy: true, isCommander: true, regenPeriod: 10, radarRadius: 40,
 			buildingInfo:              &building{w: 4, h: 3, appearance: app},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 40, costM: 100, costE: 1200},
-			res:                       &pawnResourceInformation{metalIncome: 100, energyIncome: 1000},
+			res:                       &pawnResourceInformation{metalIncome: 100, metalStorage: 1000, energyIncome: 1000, energyStorage: 1000},
 			nanolatherInfo:            &nanolatherInformation{builderCoeff: 1, allowedUnits: []string{"armpeewee", "armhammer"}},
 			weapons: []*pawnWeaponInformation{
 				{attackDelay: 12, attackEnergyCost: 15, attackRadius: 6, attacksLand: true,
