@@ -87,7 +87,7 @@ func (p *pawn) doAttackOrder() { // Only moves the unit to a firing position. Th
 	}
 	targetX, targetY := order.targetPawn.getCenter()
 
-	if routines.AreCoordsInRange(ux, uy, targetX, targetY, p.getMaxRadiusToFire()) {
+	if !routines.AreCoordsInRange(ux, uy, targetX, targetY, p.getMaxRadiusToFire()) {
 		order.x = targetX
 		order.y = targetY
 		p.doMoveOrder()
@@ -130,7 +130,7 @@ func (p *pawn) openFireIfPossible() { // does the firing, does NOT necessary mea
 			} else {
 				p.nextTurnToAct = CURRENT_TURN + wpn.attackDelay
 			}
-			// draw the pew pew laser TODO: move this crap somewhere already 
+			// draw the pew pew laser TODO: move this crap somewhere already
 			if areGlobalCoordsOnScreenForFaction(p.x, p.y, CURRENT_FACTION_SEEING_THE_SCREEN) || areGlobalCoordsOnScreenForFaction(target.x, target.y, CURRENT_FACTION_SEEING_THE_SCREEN) {
 				tcell_wrapper.SetFgColor(tcell_wrapper.RED)
 				cx, cy := target.getCenter()
@@ -171,7 +171,7 @@ func (u *pawn) doBuildOrder(m *gameMap) { // only moves to location and/or sets 
 	if tBld.currentConstructionStatus == nil {
 		u.reportOrderCompletion("Construction is finished by another unit")
 		u.order = nil
-		return 
+		return
 	}
 
 	if sqdistance <= building_w*building_w || sqdistance <= building_h*building_h { // is in building range
