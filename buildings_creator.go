@@ -270,6 +270,15 @@ func createBuilding(codename string, x, y int, f *faction) *pawn {
 			},
 		}
 
+	case "wall":
+		colors := []int{
+			-1}
+		app := &buildingAppearance{chars: "#", colors: colors}
+		b = &pawn{name: "Wall section", maxHitpoints: 140, isHeavy: true, regenPeriod: 9,
+			buildingInfo:              &building{w: 1, h: 1, appearance: app},
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 100, costM: 450, costE: 1200},
+		}
+
 	default:
 		colors := []int{
 			-1, -1,
