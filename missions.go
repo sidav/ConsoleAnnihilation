@@ -41,7 +41,7 @@ func initMapForMission(g *gameMap, missionNumber int) {
 	g.factions = append(g.factions, createFaction("The rogue Arm AI", 1, false, true))
 	// g.addPawn(createUnit("armcommander", mapW-10, 5, g.factions[1], true))
 	g.addBuilding(createBuilding("armhq", mapW-5, 9, g.factions[1]), true)
-	g.addBuilding(createBuilding("armkbotlab", 28, 1, g.factions[1]), true)
+	g.addBuilding(createBuilding("armkbotlab", 33, 1, g.factions[1]), true)
 	g.addBuilding(createBuilding("armkbotlab", mapW-15, mapH-5, g.factions[1]), true)
 	g.addBuilding(createBuilding("mstorage", 20, 10, g.factions[1]), true)
 	g.addBuilding(createBuilding("lturret", mapW-10, 1, g.factions[1]), true)

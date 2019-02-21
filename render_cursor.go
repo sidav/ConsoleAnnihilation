@@ -154,8 +154,8 @@ func renderBuildCursor(c *cursor) {
 				(c.buildOnThermalOnly && totalThermalUnderCursor == 0) {
 				cw.SetBgColor(cw.RED)
 			} else {
-				if CURRENT_MAP.getPawnAtCoordinates(c.x+i-c.w/2, c.y+j-c.h/2) == nil &&
-					areCoordsValid(c.x+i-c.w/2, c.y+j-c.h/2){
+				if areCoordsValid(c.x+i-c.w/2, c.y+j-c.h/2) && CURRENT_MAP.tileMap[c.x+i-c.w/2][c.y+j-c.h/2].isPassable &&
+					CURRENT_MAP.getPawnAtCoordinates(c.x+i-c.w/2, c.y+j-c.h/2) == nil {
 					cw.SetBgColor(cw.GREEN)
 				} else {
 					cw.SetBgColor(cw.RED)
