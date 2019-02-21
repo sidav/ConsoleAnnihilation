@@ -41,11 +41,13 @@ func createUnit(codename string, x, y int, f *faction, alreadyConstructed bool) 
 			},
 		}
 	case "coreck":
-		newUnit = &pawn{name: "Tech 1 Construction KBot",
+		newUnit = &pawn{name: "Tech 1 Construction KBot", maxHitpoints: 25, isLight: true,
 			unitInfo:                  &unit{appearance: ccell{char: 'k'}},
 			moveInfo:                  &pawnMovementInformation{ticksForMoveSingleCell: 15, movesOnLand: true},
 			res:                       &pawnResourceInformation{metalStorage: 25, energyStorage: 50},
-			nanolatherInfo:            &nanolatherInformation{builderCoeff: 5, allowedBuildings: []string{"corekbotlab", "coret2kbotlab", "mstorage", "estorage", "solar", "metalmaker", "quark"}},
+			nanolatherInfo:            &nanolatherInformation{builderCoeff: 5, allowedBuildings: []string{
+				"corekbotlab", "coret2kbotlab", "mstorage", "estorage", "solar", "metalmaker", "railgunturret"},
+			},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 25, costM: 650, costE: 1200},
 		}
 	case "weasel":
