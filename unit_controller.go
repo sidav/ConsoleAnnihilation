@@ -269,5 +269,7 @@ func doAllNanolathes(m *gameMap) { // does the building itself
 }
 
 func (u *pawn) reportOrderCompletion(verb string) {
-	log.appendMessage(u.name + ": " + verb + ".")
+	if u.faction.playerControlled {
+		log.appendMessage(u.name + ": " + verb + ".")
+	}
 }

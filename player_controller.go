@@ -258,7 +258,7 @@ func plr_selectUnitsToConstruct(p *pawn) {
 
 	if indicesQueue != nil {
 		if len(indicesQueue) > 0 {
-			p.order = &order{orderType: order_construct}
+			p.setOrder(&order{orderType: order_construct})
 			for _, i := range indicesQueue {
 				p.order.constructingQueue = append(p.order.constructingQueue,
 					createUnit(availableUnitCodes[i], p.x, p.y, p.faction, false))
@@ -311,7 +311,7 @@ func plr_selectBuildingSite(p *pawn, b *pawn, m *gameMap) {
 			if m.canBuildingBeBuiltAt(b, cx, cy) {
 				b.x = cx - b.buildingInfo.w/2
 				b.y = cy - b.buildingInfo.h/2
-				p.order = &order{orderType: order_build, x: cx, y: cy, buildingToConstruct: b}
+				p.setOrder(&order{orderType: order_build, x: cx, y: cy, buildingToConstruct: b})
 				return
 			} else {
 				log.appendMessage("This building can't be placed here!")

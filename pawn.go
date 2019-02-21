@@ -58,7 +58,9 @@ func (p *pawn) getCoords() (int, int) {
 
 func (p *pawn) setOrder(o *order) {
 	p.order = o
-	log.appendMessage(fmt.Sprintf("%s order for %d, %d confirmed!", p.getCurrentOrderImperative(), o.x, o.y))
+	if p.faction.playerControlled {
+		log.appendMessage(fmt.Sprintf("%s order for %d, %d confirmed!", p.getCurrentOrderImperative(), o.x, o.y))
+	}
 }
 
 func (p *pawn) isOccupyingCoords(x, y int) bool {
