@@ -93,9 +93,9 @@ func (f *faction) recalculateFactionEconomy(g *gameMap) { // move somewhere?
 			}
 
 			// calculate conditional metal income and mathing energy spendings
-			if u.res.energyReqForConditionalMetalIncome > 0 {
+			if u.res.energyDrain > 0 {
 				metalConditionalInc += u.res.metalIncome
-				energyConditionalDec += u.res.energyReqForConditionalMetalIncome
+				energyConditionalDec += u.res.energyDrain
 			} else {
 				metalUnconditionalInc += u.res.metalIncome
 			}

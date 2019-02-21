@@ -14,7 +14,7 @@ func createBuilding(codename string, x, y int, f *faction) *pawn {
 		b = &pawn{name: "Metal Synthesizer",
 			buildingInfo:              &building{w: 2, h: 2, appearance: app},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 35, costM: 10, costE: 500},
-			res:                       &pawnResourceInformation{metalIncome: 1, energyReqForConditionalMetalIncome: 60},
+			res:                       &pawnResourceInformation{metalIncome: 1, energyDrain: 60},
 		}
 
 	case "solar":
@@ -43,7 +43,7 @@ func createBuilding(codename string, x, y int, f *faction) *pawn {
 		b = &pawn{name: "Metal Extractor",
 			buildingInfo:              &building{w: 3, h: 3, appearance: app, canBeBuiltOnMetalOnly: true},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 60, costM: 100, costE: 500},
-			res:                       &pawnResourceInformation{energyReqForConditionalMetalIncome: 9, isMetalExtractor: true},
+			res:                       &pawnResourceInformation{energyDrain: 9, isMetalExtractor: true},
 		}
 
 	case "geo":
@@ -216,7 +216,7 @@ func createBuilding(codename string, x, y int, f *faction) *pawn {
 		b = &pawn{name: "Radar station", maxHitpoints: 25, isLight: true, radarRadius: 30,
 			buildingInfo:              &building{w: 3, h: 3, appearance: app},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 100, costM: 250, costE: 450},
-			res: &pawnResourceInformation{energySpending: 15},
+			res: &pawnResourceInformation{energyDrain: 15},
 		}
 
 	case "lturret":
