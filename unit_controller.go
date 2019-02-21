@@ -87,7 +87,7 @@ func (p *pawn) doAttackOrder() { // Only moves the unit to a firing position. Th
 	}
 	targetX, targetY := order.targetPawn.getCenter()
 
-	if routines.GetSqDistanceBetween(ux, uy, targetX, targetY) > p.getMaxRadiusToFire()*p.getMaxRadiusToFire() {
+	if routines.AreCoordsInRange(ux, uy, targetX, targetY, p.getMaxRadiusToFire()) {
 		order.x = targetX
 		order.y = targetY
 		p.doMoveOrder()
@@ -153,6 +153,7 @@ func (p *pawn) doAttackMoveOrder() {
 }
 
 func (u *pawn) doBuildOrder(m *gameMap) { // only moves to location and/or sets the spendings. Building itself is in doAllNanolathes()
+	// TODO: rewrite the heck out of it. Tip: implement and use doCircleAndRectangleIntersect() with the build radius
 	order := u.order
 	tBld := order.buildingToConstruct
 	ux, uy := u.getCoords()
@@ -160,7 +161,7 @@ func (u *pawn) doBuildOrder(m *gameMap) { // only moves to location and/or sets 
 
 	building_w := tBld.buildingInfo.w + 1
 	building_h := tBld.buildingInfo.h + 1
-	sqdistance := routines.GetSqDistanceBetween(ox, oy, ux, uy) //(ox-ux)*(ox-ux) + (oy-uy)*(oy-uy)
+	sqdistance := (ox-ux)*(ox-ux) + (oy-uy)*(oy-uy)
 
 	if tBld == nil {
 		log.appendMessage(u.name + " NIL BUILD")
