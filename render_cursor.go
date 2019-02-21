@@ -52,7 +52,7 @@ func renderSelectCursor(f *faction) {
 	//cw.PutChar(16*11+15, x+1, y-1)
 	//cw.PutChar(16*12, x-1, y+1)
 	//cw.PutChar(16*13+9, x+1, y+1)
-	flushView()
+	// flushView()
 }
 
 func renderBandboxCursor(f *faction) {
