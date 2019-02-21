@@ -33,7 +33,9 @@ func createUnit(codename string, x, y int, f *faction, alreadyConstructed bool) 
 			unitInfo:       &unit{appearance: ccell{char: '@'}},
 			moveInfo:       &pawnMovementInformation{ticksForMoveSingleCell: 10, movesOnLand: true, movesOnSea: true},
 			res:            &pawnResourceInformation{metalIncome: 1, energyIncome: 20, metalStorage: 250, energyStorage: 1000},
-			nanolatherInfo: &nanolatherInformation{builderCoeff: 10, allowedBuildings: []string{"corekbotlab", "solar", "mextractor", "metalmaker", "corevehfactory", "lturret", "geo", "radar"}},
+			nanolatherInfo: &nanolatherInformation{builderCoeff: 10, allowedBuildings: []string{
+				"corekbotlab", "corevehfactory", "solar", "mextractor", "metalmaker", "lturret", "wall"},
+			},
 			weapons: []*pawnWeaponInformation{
 				{attackDelay: 10, attackEnergyCost: 1, attackRadius: 5, attacksLand: true,
 					hitscan: &WeaponHitscan{baseDamage:5},
@@ -46,7 +48,7 @@ func createUnit(codename string, x, y int, f *faction, alreadyConstructed bool) 
 			moveInfo:                  &pawnMovementInformation{ticksForMoveSingleCell: 15, movesOnLand: true},
 			res:                       &pawnResourceInformation{metalStorage: 25, energyStorage: 50},
 			nanolatherInfo:            &nanolatherInformation{builderCoeff: 5, allowedBuildings: []string{
-				"corekbotlab", "coret2kbotlab", "mstorage", "estorage", "solar", "metalmaker", "railgunturret"},
+				"corekbotlab", "coret2kbotlab", "mstorage", "estorage", "solar", "metalmaker", "railgunturret", "geo", "radar",},
 			},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 25, costM: 650, costE: 1200},
 		}
