@@ -4,4 +4,18 @@ Closest plans:
 - replace a single order var for pawns with an order queue
 - Visual attack animations.
 - Non-hitscan (projectile) weapons
+- Explosions
 - Separate log for each faction
+- Separate AI struct for each ai-controlled faction
+- Map and unit data reading from files
+- Some "relay" resource for order giving?
+- Working buildings animations and/or flickering
+
+Fixes needed:
+- Fix enemy unit orders shown
+- Fix cursor snapping to an enemy in fog of war
+- Remove debug messages
+- Add a bunker with marines (just joking)
+- Add descriptions everywhere
+- Add unit info function
+- Make geothermal powerplants energy output dependent from thermal vents under them  
