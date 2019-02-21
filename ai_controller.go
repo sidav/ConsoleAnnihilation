@@ -10,24 +10,28 @@ const (
 )
 
 var (
-	AI_CONTROL_PERIOD = 100
-	AI_MIN_PERIOD           = 10
-	AI_PERIOD_DECREMENT     = 5
+	// in ticks, not turns
+	AI_RECALCULATE_PERIODS_EACH = 500
+	AI_CONTROL_PERIOD           = 500
+	AI_MIN_CONTROL_PERIOD       = 100
+	AI_CONTROL_PERIOD_DECREMENT = 50
+
+	AI_MAX_CONSTRUCTION_ORDERS_AT_A_TIME  = 0
+	ai_construction_orders_this_turn      = 0
+	ai_max_constr_orders_increment_period = 550
 )
 
 func ai_write(text string) {
 	if AI_WRITE_DEBUG_TO_LOG {
-		log.appendMessage("AI: "+text)
+		log.appendMessage("AI: " + text)
 	}
 }
 
 func ai_controlFaction(f *faction) {
-	if CURRENT_TURN/10%AI_CONTROL_PERIOD != 0 {
+	ai_recalculateParamsIfNeccessary()
+
+	if CURRENT_TURN%AI_CONTROL_PERIOD != 0 {
 		return
-	}
-	if AI_CONTROL_PERIOD -AI_PERIOD_DECREMENT >= AI_MIN_PERIOD{
-		AI_CONTROL_PERIOD -= AI_PERIOD_DECREMENT
-		ai_write("PERIOD changed to " + strconv.Itoa(AI_CONTROL_PERIOD))
 	}
 	ai_write("assuming direct control over " + f.name)
 	for _, p := range CURRENT_MAP.pawns {
@@ -48,10 +52,13 @@ func ai_controlPawn(p *pawn) {
 			return
 		}
 	}
-	if p.canConstructUnits() {
+	if p.canConstructUnits() && ai_construction_orders_this_turn < AI_MAX_CONSTRUCTION_ORDERS_AT_A_TIME {
 		productionVariants := &p.nanolatherInfo.allowedUnits
 		pawnToProduce := ai_decideProduction(productionVariants, p.faction)
-		p.order = &order{orderType: order_construct, constructingQueue: []*pawn{pawnToProduce}}
+		if pawnToProduce != nil {
+			p.order = &order{orderType: order_construct, constructingQueue: []*pawn{pawnToProduce}}
+			ai_construction_orders_this_turn++
+		}
 	}
 }
 
@@ -73,10 +80,24 @@ func ai_decideProduction(variants *[]string, f *faction) *pawn {
 		}
 	}
 	if len(listOfCombatUnits) > 0 {
-		pwn :=  listOfCombatUnits[routines.Random(len(listOfCombatUnits))]
+		pwn := listOfCombatUnits[routines.Random(len(listOfCombatUnits))]
 		ai_write("producing " + pwn.name)
 		return pwn
 	}
 	ai_write("nothing to produce.")
 	return nil
+}
+
+func ai_recalculateParamsIfNeccessary() {
+	if CURRENT_TURN%AI_RECALCULATE_PERIODS_EACH == 0 {
+		if AI_CONTROL_PERIOD-AI_CONTROL_PERIOD_DECREMENT >= AI_MIN_CONTROL_PERIOD {
+			AI_CONTROL_PERIOD -= AI_CONTROL_PERIOD_DECREMENT
+			ai_write("CONTROL PERIOD changed to " + strconv.Itoa(AI_CONTROL_PERIOD))
+		}
+	}
+
+	if CURRENT_TURN%ai_max_constr_orders_increment_period == 0 {
+		AI_MAX_CONSTRUCTION_ORDERS_AT_A_TIME++
+		ai_write("MAX CONSTRUCTION PER TURN changed to " + strconv.Itoa(AI_MAX_CONSTRUCTION_ORDERS_AT_A_TIME))
+	}
 }
