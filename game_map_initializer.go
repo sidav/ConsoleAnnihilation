@@ -39,6 +39,8 @@ func mapinit_getTileByChar(char rune) *tile {
 		return &tile{appearance: &ccell{char: '$', r: 64, g: 64, b: 128, color: cw.DARK_GRAY}, thermalAmount: 1, isPassable: true}
 	case '^':
 		return &tile{appearance: &ccell{char: '^', r: 64, g: 64, b: 128, color: cw.BEIGE}, isPassable: false}
+	case '~':
+		return &tile{appearance: &ccell{char: '~', r: 32, g: 32, b: 128, color: cw.BLUE}, isPassable: false, isNaval: true}
 	}
 	return nil
 }

@@ -7,7 +7,7 @@ func createUnit(codename string, x, y int, f *faction, alreadyConstructed bool) 
 	case "armcommander":
 		newUnit = &pawn{name: "Arm Commander", maxHitpoints: 100, isHeavy: true, isCommander: true,
 			unitInfo:       &unit{appearance: ccell{char: '@'}},
-			moveInfo:       &pawnMovementInformation{ticksForMoveSingleCell: 10, movesOnLand: true, movesOnSea: true}, eachTickToRegen: 7,
+			moveInfo:       &pawnMovementInformation{ticksForMoveSingleCell: 10, movesOnLand: true, movesOnSea: true}, regenPeriod: 7,
 			res:            &pawnResourceInformation{metalIncome: 1, energyIncome: 20, metalStorage: 250, energyStorage: 1000},
 			nanolatherInfo: &nanolatherInformation{builderCoeff: 10, allowedBuildings: []string{}},
 			weapons: []*pawnWeaponInformation{
@@ -19,7 +19,7 @@ func createUnit(codename string, x, y int, f *faction, alreadyConstructed bool) 
 	case "corecommander":
 		newUnit = &pawn{name: "Core Commander", maxHitpoints: 100, isHeavy: true, isCommander: true,
 			unitInfo:       &unit{appearance: ccell{char: '@'}},
-			moveInfo:       &pawnMovementInformation{ticksForMoveSingleCell: 10, movesOnLand: true, movesOnSea: true}, eachTickToRegen: 7,
+			moveInfo:       &pawnMovementInformation{ticksForMoveSingleCell: 10, movesOnLand: true, movesOnSea: true}, regenPeriod: 7,
 			res:            &pawnResourceInformation{metalIncome: 1, energyIncome: 20, metalStorage: 250, energyStorage: 1000},
 			nanolatherInfo: &nanolatherInformation{builderCoeff: 10, allowedBuildings: []string{"corekbotlab", "solar", "metalmaker", "corevehfactory", "lturret"}},
 			weapons: []*pawnWeaponInformation{
@@ -29,7 +29,7 @@ func createUnit(codename string, x, y int, f *faction, alreadyConstructed bool) 
 			},
 		}
 	case "protocommander":
-		newUnit = &pawn{name: "Prototype Commander Unit", maxHitpoints: 100, isHeavy: true, isCommander: true, eachTickToRegen: 7,
+		newUnit = &pawn{name: "Prototype Commander Unit", maxHitpoints: 100, isHeavy: true, isCommander: true, regenPeriod: 7,
 			unitInfo:       &unit{appearance: ccell{char: '@'}},
 			moveInfo:       &pawnMovementInformation{ticksForMoveSingleCell: 10, movesOnLand: true, movesOnSea: true},
 			res:            &pawnResourceInformation{metalIncome: 1, energyIncome: 20, metalStorage: 250, energyStorage: 1000},
@@ -41,15 +41,17 @@ func createUnit(codename string, x, y int, f *faction, alreadyConstructed bool) 
 			},
 		}
 	case "coreck":
-		newUnit = &pawn{name: "Tech 1 Construction KBot",
+		newUnit = &pawn{name: "Tech 1 Construction KBot", maxHitpoints: 25, isLight: true,
 			unitInfo:                  &unit{appearance: ccell{char: 'k'}},
 			moveInfo:                  &pawnMovementInformation{ticksForMoveSingleCell: 15, movesOnLand: true},
 			res:                       &pawnResourceInformation{metalStorage: 25, energyStorage: 50},
-			nanolatherInfo:            &nanolatherInformation{builderCoeff: 5, allowedBuildings: []string{"corekbotlab", "coret2kbotlab", "mstorage", "estorage", "solar", "metalmaker", "quark"}},
+			nanolatherInfo:            &nanolatherInformation{builderCoeff: 5, allowedBuildings: []string{
+				"corekbotlab", "coret2kbotlab", "mstorage", "estorage", "solar", "metalmaker", "railgunturret"},
+			},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 25, costM: 650, costE: 1200},
 		}
 	case "weasel":
-		newUnit = &pawn{name: "Weasel", maxHitpoints: 20, isLight: true, sightRadius: 12, eachTickToRegen: 30,
+		newUnit = &pawn{name: "Weasel", maxHitpoints: 20, isLight: true, sightRadius: 12, regenPeriod: 30,
 			moveInfo:                  &pawnMovementInformation{ticksForMoveSingleCell: 6, movesOnLand: true},
 			unitInfo:                  &unit{appearance: ccell{char: 'w'}},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 10, costM: 150, costE: 650},
@@ -60,7 +62,7 @@ func createUnit(codename string, x, y int, f *faction, alreadyConstructed bool) 
 			},
 		}
 	case "flash":
-		newUnit = &pawn{name: "Flash", maxHitpoints: 55, isLight: true, eachTickToRegen: 6,
+		newUnit = &pawn{name: "Flash", maxHitpoints: 55, isLight: true, regenPeriod: 6,
 			moveInfo:                  &pawnMovementInformation{ticksForMoveSingleCell: 7, movesOnLand: true},
 			unitInfo:                  &unit{appearance: ccell{char: 'f'}},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 12, costM: 350, costE: 600},
@@ -92,6 +94,17 @@ func createUnit(codename string, x, y int, f *faction, alreadyConstructed bool) 
 				},
 			},
 		}
+	case "armpeewee":
+		newUnit = &pawn{name: "P.I.V.-1", maxHitpoints: 35, isLight: true,
+			moveInfo:                  &pawnMovementInformation{ticksForMoveSingleCell: 10, movesOnLand: true},
+			unitInfo:                  &unit{appearance: ccell{char: 'p'}},
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 10, costM: 250, costE: 500},
+			weapons: []*pawnWeaponInformation{
+				{attackDelay: 6, attackEnergyCost: 1, attackRadius: 5, attacksLand: true, canBeFiredOnMove: true,
+					hitscan: &WeaponHitscan{baseDamage:3, lightMod:3},
+				},
+			},
+		}
 	case "thud":
 		newUnit = &pawn{name: "Thud", maxHitpoints: 35, isHeavy: true,
 			moveInfo:                  &pawnMovementInformation{ticksForMoveSingleCell: 16, movesOnLand: true},
@@ -100,6 +113,17 @@ func createUnit(codename string, x, y int, f *faction, alreadyConstructed bool) 
 			weapons: []*pawnWeaponInformation{
 				{attackDelay: 13, attackEnergyCost: 1, attackRadius: 7, attacksLand: true,
 					hitscan: &WeaponHitscan{baseDamage:3, heavyMod:4},
+				},
+			},
+		}
+	case "armhammer":
+		newUnit = &pawn{name: "Hammer", maxHitpoints: 25, isHeavy: true,
+			moveInfo:                  &pawnMovementInformation{ticksForMoveSingleCell: 13, movesOnLand: true},
+			unitInfo:                  &unit{appearance: ccell{char: 'h'}},
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 12, costM: 250, costE: 500},
+			weapons: []*pawnWeaponInformation{
+				{attackDelay: 14, attackEnergyCost: 1, attackRadius: 6, attacksLand: true, canBeFiredOnMove: false,
+					hitscan: &WeaponHitscan{baseDamage:3, heavyMod:3},
 				},
 			},
 		}
