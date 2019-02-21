@@ -96,7 +96,7 @@ func createUnit(codename string, x, y int, f *faction, alreadyConstructed bool) 
 				},
 			},
 		}
-	case "thecan":
+	case "corethecan":
 		newUnit = &pawn{name: "The Can", maxHitpoints: 125, isHeavy: true,
 			moveInfo:                  &pawnMovementInformation{ticksForMoveSingleCell: 10, movesOnLand: true},
 			unitInfo:                  &unit{appearance: ccell{char: 'c'}},
@@ -107,11 +107,11 @@ func createUnit(codename string, x, y int, f *faction, alreadyConstructed bool) 
 				},
 			},
 		}
-	case "ak":
+	case "coreak":
 		newUnit = &pawn{name: "A.K.", maxHitpoints: 30,
 			moveInfo:                  &pawnMovementInformation{ticksForMoveSingleCell: 10, movesOnLand: true},
 			unitInfo:                  &unit{appearance: ccell{char: 'a'}},
-			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 10, costM: 250, costE: 500},
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 9, costM: 75, costE: 500},
 			weapons: []*pawnWeaponInformation{
 				{attackDelay: 7, attackEnergyCost: 1, attackRadius: 5, attacksLand: true, canBeFiredOnMove: true,
 					hitscan: &WeaponHitscan{baseDamage:3},
@@ -122,14 +122,14 @@ func createUnit(codename string, x, y int, f *faction, alreadyConstructed bool) 
 		newUnit = &pawn{name: "P.I.V.-1", maxHitpoints: 35, isLight: true,
 			moveInfo:                  &pawnMovementInformation{ticksForMoveSingleCell: 10, movesOnLand: true},
 			unitInfo:                  &unit{appearance: ccell{char: 'p'}},
-			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 10, costM: 250, costE: 500},
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 9, costM: 75, costE: 500},
 			weapons: []*pawnWeaponInformation{
 				{attackDelay: 6, attackEnergyCost: 1, attackRadius: 5, attacksLand: true, canBeFiredOnMove: true,
 					hitscan: &WeaponHitscan{baseDamage:3, lightMod:3},
 				},
 			},
 		}
-	case "thud":
+	case "corethud":
 		newUnit = &pawn{name: "Thud", maxHitpoints: 35, isHeavy: true,
 			moveInfo:                  &pawnMovementInformation{ticksForMoveSingleCell: 16, movesOnLand: true},
 			unitInfo:                  &unit{appearance: ccell{char: 't'}},
@@ -187,11 +187,11 @@ func getUnitNameAndDescription(code string) (string, string) {
 		}
 	}
 	switch code {
-	case "ak":
+	case "coreak":
 		description += "A basic assault KBot effective against light armor."
-	case "thud":
+	case "corethud":
 		description += "A basic artillery KBot. Effective against heavy armor. Designed to take out buildings. "
-	case "thecan":
+	case "corethecan":
 		description += "Slow and clunky, The Can is designed to take part in front-line assault. Although its " +
 			"armor can sustain significant amount of punishment, this KBot should be supported due to its short range."
 	default:

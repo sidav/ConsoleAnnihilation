@@ -158,7 +158,7 @@ func createBuilding(codename string, x, y int, f *faction) *pawn {
 		b = &pawn{name: "Tech 1 Core KBot Lab",
 			buildingInfo:              &building{w: 3, h: 3, appearance: app},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 100, costM: 100, costE: 500},
-			nanolatherInfo:            &nanolatherInformation{builderCoeff: 1, allowedUnits: []string{"coreck", "ak", "thud"}},
+			nanolatherInfo:            &nanolatherInformation{builderCoeff: 1, allowedUnits: []string{"coreck", "coreak", "corethud"}},
 		}
 
 	case "coret2kbotlab":
@@ -173,7 +173,7 @@ func createBuilding(codename string, x, y int, f *faction) *pawn {
 		b = &pawn{name: "Tech 2 Core KBot Lab",
 			buildingInfo:              &building{w: 3, h: 3, appearance: app},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 150, costM: 450, costE: 1200},
-			nanolatherInfo:            &nanolatherInformation{builderCoeff: 1, allowedUnits: []string{"thecan"}},
+			nanolatherInfo:            &nanolatherInformation{builderCoeff: 1, allowedUnits: []string{"corethecan"}},
 		}
 
 	case "armvehfactory":
