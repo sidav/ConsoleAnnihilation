@@ -294,12 +294,14 @@ func plr_selectBuildingSite(p *pawn, b *pawn, m *gameMap) {
 	log.appendMessage("Select construction site for " + b.name)
 	for {
 		f := p.faction
-		cx, cy := f.cursor.getCoords()
-		f.cursor.currentCursorMode = CURSOR_BUILD
-		f.cursor.w = b.buildingInfo.w
-		f.cursor.h = b.buildingInfo.h
-		f.cursor.buildOnMetalOnly = b.buildingInfo.canBeBuiltOnMetalOnly
-		f.cursor.buildOnThermalOnly = b.buildingInfo.canBeBuiltOnThermalOnly
+		cursor := f.cursor
+		cx, cy := cursor.getCoords()
+		cursor.currentCursorMode = CURSOR_BUILD
+		cursor.w = b.buildingInfo.w
+		cursor.h = b.buildingInfo.h
+		cursor.buildOnMetalOnly = b.buildingInfo.canBeBuiltOnMetalOnly
+		cursor.buildOnThermalOnly = b.buildingInfo.canBeBuiltOnThermalOnly
+		cursor.radius = b.getMaxRadiusToFire()
 		r_renderScreenForFaction(f, m)
 		flushView()
 

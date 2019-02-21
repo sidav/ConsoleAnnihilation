@@ -148,6 +148,11 @@ func renderBuildCursor(c *cursor) {
 	totalMetalUnderCursor := CURRENT_MAP.getNumberOfMetalDepositsInRect(c.x-c.w/2, c.y-c.h/2, c.w, c.h)
 	totalThermalUnderCursor := CURRENT_MAP.getNumberOfThermalDepositsInRect(c.x-c.w/2, c.y-c.h/2, c.w, c.h)
 
+	if c.radius > 0 {
+		cw.SetFgColor(cw.RED)
+		renderCircle(c.x, c.y, c.radius, '.', false)
+	}
+
 	for i := 0; i < c.w; i++ {
 		for j := 0; j < c.h; j++ {
 			if (c.buildOnMetalOnly && totalMetalUnderCursor == 0) ||

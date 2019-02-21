@@ -16,7 +16,7 @@ type cursor struct {
 	xorig, yorig                         int // for bandbox selection
 	snappedPawn                          *pawn
 	currentCursorMode                    CURSOR_MODE_ENUM
-	w, h                                 int  // Used for certain modes only.
+	w, h, radius                         int  // Used for certain modes only.
 	buildOnMetalOnly, buildOnThermalOnly bool // for build mode only
 	lastSelectedIdlePawnIndex            int  // for selecting the next idle unit
 }

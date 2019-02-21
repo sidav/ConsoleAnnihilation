@@ -212,16 +212,14 @@ func renderLine(fromx, fromy, tox, toy int, flush bool, vx, vy int) {
 	}
 }
 
-func renderCircle(fromx, fromy, radius int, flush bool, vx, vy int) {
+func renderCircle(fromx, fromy, radius int, char rune, flush bool) {
 	if radius == 0 {
 		return
 	} else {
 		line := routines.GetCircle(fromx, fromy, radius)
 		for _, point := range *line {
 			x, y := point.X, point.Y
-			if routines.AreCoordsInRect(x-vx, y-vy, 0, 0, VIEWPORT_W, VIEWPORT_H) {
-				cw.PutChar('X', x-vx, y-vy)
-			}
+			renderCharByGlobalCoords(char, x, y)
 		}
 	}
 	if flush {
