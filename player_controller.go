@@ -352,6 +352,9 @@ func plr_moveCursor(f *faction, keyPressed string) {
 }
 
 func snapCursorToPawn(f *faction, g *gameMap) {
+	if !(f.areCoordsInSight(f.cursor.x, f.cursor.y) || f.areCoordsInRadarRadius(f.cursor.x, f.cursor.y) ){
+		return
+	}
 	b := g.getPawnAtCoordinates(f.cursor.x, f.cursor.y)
 	if b == nil {
 		f.cursor.snappedPawn = nil
