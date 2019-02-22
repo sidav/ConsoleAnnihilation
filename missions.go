@@ -30,12 +30,12 @@ func initMapForMission(g *gameMap, missionNumber int) {
 	g.addPawn(createUnit("protocommander", 3, 9, g.factions[0], true))
 	g.factions[0].cursor.x = 3
 	g.factions[0].cursor.y = 9
-
-	g.addPawn(createUnit("coreraider", 4, 5, g.factions[0], true))
-	g.addPawn(createUnit("coreraider", 4, 6, g.factions[0], true))
-	g.addPawn(createUnit("coreraider", 5, 5, g.factions[0], true))
-	g.addPawn(createUnit("coreraider", 5, 6, g.factions[0], true))
-	g.addPawn(createUnit("coreweasel", 7, 7, g.factions[0], true))
+	//
+	//g.addPawn(createUnit("coreraider", 4, 5, g.factions[0], true))
+	//g.addPawn(createUnit("coreraider", 4, 6, g.factions[0], true))
+	//g.addPawn(createUnit("coreraider", 5, 5, g.factions[0], true))
+	//g.addPawn(createUnit("coreraider", 5, 6, g.factions[0], true))
+	//g.addPawn(createUnit("coreweasel", 7, 7, g.factions[0], true))
 
 
 	g.factions = append(g.factions, createFaction("The rogue Arm AI", 1, false, true))

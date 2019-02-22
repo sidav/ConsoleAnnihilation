@@ -110,7 +110,9 @@ func r_drawLoseLogo() {
 
 func r_showTitleScreen() {
 	r_drawWinLogo()
-	str := "Press enter to continue"
+	str := "TOTAL ANNIHILATION: THE PREQUEL"
+	cw.PutString(str, (cw.CONSOLE_WIDTH - len(str))/2, 0)
+	str = "Press enter to continue"
 	cw.PutString(str, (cw.CONSOLE_WIDTH - len(str))/2, cw.CONSOLE_HEIGHT-1)
 	cw.Flush_console()
 	key := ""

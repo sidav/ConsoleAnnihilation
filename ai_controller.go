@@ -12,9 +12,9 @@ const (
 var (
 	// in turns, not ticks
 	AI_RECALCULATE_PERIODS_EACH = 50
-	AI_CONTROL_PERIOD           = 50
+	AI_CONTROL_PERIOD           = 80
 	AI_MIN_CONTROL_PERIOD       = 10
-	AI_CONTROL_PERIOD_DECREMENT = 3
+	AI_CONTROL_PERIOD_DECREMENT = 5
 
 	AI_MAX_CONSTRUCTION_ORDERS_AT_A_TIME  = 0
 	ai_construction_orders_this_turn      = 0
