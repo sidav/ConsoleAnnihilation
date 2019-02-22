@@ -44,7 +44,7 @@ func main() {
 
 	showBriefing()
 
-	for GAME_IS_RUNNING {
+	for {
 		startTime := time.Now()
 		for _, f := range CURRENT_MAP.factions {
 			f.recalculateSeenTiles()

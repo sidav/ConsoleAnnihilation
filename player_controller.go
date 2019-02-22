@@ -91,9 +91,11 @@ func plr_selectPawn(f *faction, m *gameMap) *[]*pawn { // returns a pointer to a
 			trySnapCursorToCommander(f)
 			return &[]*pawn {f.cursor.snappedPawn}
 		case "ESCAPE":
-			GAME_IS_RUNNING = false
-			PLR_LOOP = false
-			return nil
+			if routines.ShowSimpleYNChoiceModalWindow("Are you sure you want to quit?") {
+				GAME_IS_RUNNING = false
+				PLR_LOOP = false
+				return nil
+			}
 
 		case "DELETE": // cheat
 			for _, p := range CURRENT_MAP.pawns {
