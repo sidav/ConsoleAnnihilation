@@ -265,6 +265,16 @@ func renderLine(fromx, fromy, tox, toy int, flush bool, vx, vy int) {
 	}
 }
 
+func renderPawnInfo(p *pawn) {
+	var name, desc string
+	if p.isUnit() {
+		name, desc = getUnitNameAndDescription(p.codename)
+	} else if p.isBuilding() {
+		name, desc = getBuildingNameAndDescription(p.codename)
+	}
+	routines.ShowSimpleInfoWindow(name, desc, 60, 15, p.faction.getFactionColor())
+}
+
 func renderCircle(fromx, fromy, radius int, char rune, flush bool) {
 	if radius == 0 {
 		return

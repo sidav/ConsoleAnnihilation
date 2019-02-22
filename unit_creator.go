@@ -41,6 +41,7 @@ func createUnit(codename string, x, y int, f *faction, alreadyConstructed bool) 
 					hitscan: &WeaponHitscan{baseDamage:5},
 				},
 			},
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 15000, costM: 1567650, costE: 59120150},
 		}
 	case "coreck":
 		newUnit = &pawn{name: "Tech 1 Construction KBot", maxHitpoints: 25, isLight: true,
@@ -189,16 +190,48 @@ func createUnit(codename string, x, y int, f *faction, alreadyConstructed bool) 
 func getUnitNameAndDescription(code string) (string, string) {
 	unit := createUnit(code, 0, 0, nil, false)
 	name := unit.name
-	constr := unit.currentConstructionStatus
-	description := constr.getDescriptionString() + " \\n "
+	var description string
+	if unit.currentConstructionStatus != nil {
+		constr := unit.currentConstructionStatus
+		description += constr.getDescriptionString() + " \\n "
+	}
 	if len(unit.weapons) > 0 {
 		for _, wpn := range unit.weapons {
 			description += wpn.getDescriptionString() + " \\n "
 		}
 	}
 	switch code {
+	case "armcommander":
+		description += "A Commander Unit of the Arm Rebellion."
+	case "corecommander":
+		description += "A Commander Unit of the Core Corporation."
+	case "protocommander":
+		description += "The brain and heart of any modern military operation, Command Unit is a massive bipedal amphibious hulk " +
+			"equipped with anything needed for forward operations base establishment and support - a radar, nanolather, " +
+			"quantum generator, metal synthesizer, and light weaponry. " +
+			"Although the Command Unit is extremely heavily armored and is capable of self-repair, it have to be well protected, " +
+			"because its loss means inevitable defeat. \\n " +
+			"This old prototype lacks some more modern equipment, such as the Disintegrator Gun."
+	case "coreck":
+		description += "An engineering KBot equipped with nanolather. Can build more advanced buildings than Commander do."
+	case "corecv":
+		description += "An engineering vehicle equipped with nanolather. Can build more advanced buildings than Commander do."
+	case "coreweasel":
+		description += "Fast recon vehicle. It has very weak attack, but is equipped with advanced visual sensors array " +
+			"which is providing quite huge vision range."
+	case "armjeffy":
+		description += "Fast recon vehicle. It has very weak attack, but is equipped with advanced visual sensors array " +
+			"which is providing quite huge vision range."
+	case "coreraider":
+		description += "Fast light tank. Its speed and armor regeneration ability makes it useful for hit-and-run tactics."
+	case "armflash":
+		description +=  "Fast light tank. Its speed and armor regeneration ability makes it useful for hit-and-run tactics."
 	case "coreak":
 		description += "A basic assault KBot effective against light armor."
+	case "armpeewee":
+		description += "A cheap and relatively fast basic assault KBot effective against light armor."
+	case "armhammer":
+		description += "A basic artillery KBot. Effective against heavy armor. Designed to take out buildings. "
 	case "corethud":
 		description += "A basic artillery KBot. Effective against heavy armor. Designed to take out buildings. "
 	case "corethecan":

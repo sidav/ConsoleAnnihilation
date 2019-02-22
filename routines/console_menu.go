@@ -46,6 +46,40 @@ func DrawWrappedTextInRect(text string, x, y, w, h int) {
 	}
 }
 
+func ShowSimpleInfoWindow(title, text string, w, h, outlineColor int) {
+	for {
+		x, y := (cw.CONSOLE_WIDTH-w)/2, (cw.CONSOLE_HEIGHT-h)/2
+		// draw background
+		cw.SetBgColor(outlineColor)
+		for i := x; i < x+w; i++ {
+			cw.PutChar(' ', i, y)
+			cw.PutChar(' ', i, y+h)
+		}
+		for j := y; j <= y+h; j++ {
+			cw.PutChar(' ', x, j)
+			cw.PutChar(' ', x+w, j)
+		}
+		cw.SetBgColor(cw.BLACK)
+		for i := x+1; i < x+w-1; i++ {
+			for j := y+1; j < y+h-1; j++ {
+				cw.PutChar(' ', i, j)
+			}
+		}
+		cw.SetBgColor(cw.BEIGE)
+		cw.SetFgColor(cw.BLACK)
+		cw.PutString(title, x+(w-len(title))/2, y+1)
+		cw.SetBgColor(cw.BLACK)
+		cw.SetFgColor(cw.BEIGE)
+		DrawWrappedTextInRect(text, x+1, y+2, w-1, h-2)
+		cw.Flush_console()
+		key := cw.ReadKey()
+		switch key {
+		case "SPACE", "ENTER", "ESCAPE":
+			return
+		}
+	}
+}
+
 func ShowSimpleYNChoiceModalWindow(text string) bool {
 	var w, h int
 	var wrap bool
@@ -56,7 +90,7 @@ func ShowSimpleYNChoiceModalWindow(text string) bool {
 		} else {
 			wrap = true
 			w = cw.CONSOLE_WIDTH/3 + 2
-			h = len(text) / w + 4
+			h = len(text)/w + 4
 		}
 		x, y := (cw.CONSOLE_WIDTH-w)/2, (cw.CONSOLE_HEIGHT-h)/2
 		// draw background

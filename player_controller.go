@@ -90,6 +90,10 @@ func plr_selectPawn(f *faction, m *gameMap) *[]*pawn { // returns a pointer to a
 		case "C":
 			trySnapCursorToCommander(f)
 			return &[]*pawn {f.cursor.snappedPawn}
+		case "?":
+			if f.cursor.snappedPawn != nil {
+				renderPawnInfo(f.cursor.snappedPawn)
+			}
 		case "ESCAPE":
 			if routines.ShowSimpleYNChoiceModalWindow("Are you sure you want to quit?") {
 				GAME_IS_RUNNING = false
