@@ -55,11 +55,6 @@ var (
 	}
 )
 
-func r_showTitleScreen() {
-	r_drawWinLogo()
-
-}
-
 func r_drawWinLogo() {
 	logo := &coreWon
 	cw.Clear_console()
@@ -110,4 +105,44 @@ func r_drawLoseLogo() {
 		}
 	}
 	cw.Flush_console()
+}
+
+
+func r_showTitleScreen() {
+	r_drawWinLogo()
+	str := "Press enter to continue"
+	cw.PutString(str, (cw.CONSOLE_WIDTH - len(str))/2, cw.CONSOLE_HEIGHT-1)
+	cw.Flush_console()
+	key := ""
+	for key != "ESCAPE" && key != "ENTER" {
+		key = cw.ReadKey()
+	}
+}
+
+func r_gamelostScreen() {
+	r_drawLoseLogo()
+	cw.SetFgColor(cw.GREEN)
+	str := "YOU HAVE LOST"
+	cw.PutString(str, (cw.CONSOLE_WIDTH - len(str))/2, 0)
+	str = "THE ARM VERMIN WILL SOON OVERRUN THALASSEAN"
+	cw.PutString(str, (cw.CONSOLE_WIDTH - len(str))/2, cw.CONSOLE_HEIGHT-1)
+	cw.Flush_console()
+	key := ""
+	for key != "ESCAPE" && key != "ENTER" {
+		key = cw.ReadKey()
+	}
+}
+
+func r_gameWonScreen() {
+	r_drawWinLogo()
+	cw.SetFgColor(cw.GREEN)
+	str := "MISSION ACCOMPLISHED"
+	cw.PutString(str, (cw.CONSOLE_WIDTH - len(str))/2, 0)
+	str = "THANKS FOR PLAYING!"
+	cw.PutString(str, (cw.CONSOLE_WIDTH - len(str))/2, cw.CONSOLE_HEIGHT-1)
+	cw.Flush_console()
+	key := ""
+	for key != "ESCAPE" && key != "ENTER" {
+		key = cw.ReadKey()
+	}
 }

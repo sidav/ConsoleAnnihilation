@@ -29,6 +29,8 @@ func main() {
 	cw.Init_console()
 	defer cw.Close_console()
 
+	r_showTitleScreen()
+
 	log = &LOG{}
 
 	CURRENT_MAP = &gameMap{}
@@ -48,6 +50,7 @@ func main() {
 		startTime := time.Now()
 		for _, f := range CURRENT_MAP.factions {
 			f.recalculateSeenTiles()
+			checkWinOrLose()
 			if !GAME_IS_RUNNING {
 				return
 			}
@@ -92,6 +95,7 @@ func main() {
 }
 
 func showBriefing() {
+	cw.Clear_console()
 	text := "Good day, Head Officer #CC-42, and welcome to Thalassean-3. \\n " +
 		"That \"Arm\" rebellion was quite of a " +
 		"surprise for command, and our forces were drawn away from this planet by surprise attack. Our intel suggested " +
@@ -113,6 +117,7 @@ func showBriefing() {
 		"equipment. That means that you are clear to embark right now. \\n " +
 		"You will be dispatched immediately. "
 	routines.DrawWrappedTextInRect(text, 0, 0, CONSOLE_W, CONSOLE_H)
+	cw.Flush_console()
 	key := ""
 	for key != "ESCAPE" && key != "ENTER" {
 		key = cw.ReadKey()

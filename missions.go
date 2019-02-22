@@ -54,3 +54,31 @@ func initMapForMission(g *gameMap, missionNumber int) {
 	g.addBuilding(createBuilding("guardian", mapW-7, 14, g.factions[1]), true)
 	g.addBuilding(createBuilding("lturret", mapW-10, 19, g.factions[1]), true)
 }
+
+func checkWinOrLose() { // TEMPORARY
+	if getCurrentTurn() % 10 != 0 {
+		return
+	}
+	plrAlive := false
+	enemyAlive := false
+	for _, p := range CURRENT_MAP.pawns {
+		if p.isCommander {
+			if p.faction.playerControlled {
+				plrAlive = true
+			}
+			if p.faction.aiControlled {
+				enemyAlive = true
+			}
+		}
+	}
+	if !plrAlive {
+		GAME_IS_RUNNING = false
+		r_gamelostScreen()
+		return
+	}
+	if !enemyAlive {
+		GAME_IS_RUNNING = false
+		r_gameWonScreen()
+		return
+	}
+}
