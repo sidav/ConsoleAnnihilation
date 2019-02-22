@@ -52,7 +52,7 @@ func renderFactionStats(f *faction) {
 
 func renderInfoOnCursor(f *faction, g *gameMap) {
 
-	title := "nothing"
+	title := "Unidentified Object"
 	color := 2
 	details := make([]string, 0)
 	var res *pawnResourceInformation
@@ -63,35 +63,40 @@ func renderInfoOnCursor(f *faction, g *gameMap) {
 		if sp.faction == f {
 			renderOrderLine(sp)
 		}
-
 		color = sp.faction.getFactionColor()
-		title = sp.name
-		if sp.faction != f {
-			if sp.isBuilding() {
-				details = append(details, "(Enemy building)")
+		if CURRENT_FACTION_SEEING_THE_SCREEN.areCoordsInSight(sp.x, sp.y) {
+			title = sp.name
+			if sp.faction != f {
+				if sp.isBuilding() {
+					details = append(details, "(Enemy building)")
+				} else {
+					details = append(details, "(Enemy unit)")
+				}
 			} else {
-				details = append(details, "(Enemy unit)")
+				details = append(details, sp.getCurrentOrderDescription())
+				if sp.res != nil && sp.currentConstructionStatus == nil {
+					res = sp.res
+				}
 			}
+			r_renderAttackRadius(sp)
 		} else {
-			details = append(details, sp.getCurrentOrderDescription())
-			if sp.res != nil && sp.currentConstructionStatus == nil {
-				res = sp.res
-			}
+			details = append(details, "(Enemy on radar)")
 		}
-		r_renderAttackRadius(sp)
 	}
 
 	if len(details) > 0 {
-		details = append(details, sp.getArmorDescriptionString())
-		if sp.hasWeapons() {
-			for _, wpn := range sp.weapons {
-				details = append(details, wpn.getDescriptionString())
+		if CURRENT_FACTION_SEEING_THE_SCREEN.areCoordsInSight(sp.x, sp.y) {
+			details = append(details, sp.getArmorDescriptionString())
+			if sp.hasWeapons() {
+				for _, wpn := range sp.weapons {
+					details = append(details, wpn.getDescriptionString())
+				}
 			}
-		}
-		if res != nil {
-			economyInfo := fmt.Sprintf("METAL: (+%d / -%d) ENERGY: (+%d / -%d)",
-				res.metalIncome, res.metalSpending, res.energyIncome, res.energySpending+res.energyDrain)
-			details = append(details, economyInfo)
+			if res != nil {
+				economyInfo := fmt.Sprintf("METAL: (+%d / -%d) ENERGY: (+%d / -%d)",
+					res.metalIncome, res.metalSpending, res.energyIncome, res.energySpending+res.energyDrain)
+				details = append(details, economyInfo)
+			}
 		}
 		routines.DrawSidebarInfoMenu(title, color, SIDEBAR_X, SIDEBAR_FLOOR_2, SIDEBAR_W, details)
 	}
