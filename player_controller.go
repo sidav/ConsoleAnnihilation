@@ -402,13 +402,13 @@ func trySelectNextIdlePawn(f *faction) {
 
 func plr_keyToDirection(keyPressed string) (int, int) {
 	switch keyPressed {
-	case "2":
+	case "2", "DOWN":
 		return 0, 1
-	case "8":
+	case "8", "UP":
 		return 0, -1
-	case "4":
+	case "4", "LEFT":
 		return -1, 0
-	case "6":
+	case "6", "RIGHT":
 		return 1, 0
 	case "7":
 		return -1, -1
