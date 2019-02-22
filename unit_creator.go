@@ -49,7 +49,7 @@ func createUnit(codename string, x, y int, f *faction, alreadyConstructed bool) 
 			moveInfo:                  &pawnMovementInformation{ticksForMoveSingleCell: 15, movesOnLand: true},
 			res:                       &pawnResourceInformation{metalStorage: 25, energyStorage: 50},
 			nanolatherInfo:            &nanolatherInformation{builderCoeff: 5, allowedBuildings: []string{
-				"corekbotlab", "coret2kbotlab", "mstorage", "estorage", "mextractor", "solar", "metalmaker", "railgunturret", "geo", "radar",},
+				"corekbotlab", "coret2kbotlab", "mstorage", "estorage", "mextractor", "solar", "metalmaker", "lturret", "railgunturret", "geo", "radar",},
 			},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 25, costM: 650, costE: 1200},
 		}
@@ -59,7 +59,7 @@ func createUnit(codename string, x, y int, f *faction, alreadyConstructed bool) 
 			moveInfo:                  &pawnMovementInformation{ticksForMoveSingleCell: 15, movesOnLand: true},
 			res:                       &pawnResourceInformation{metalStorage: 25, energyStorage: 50},
 			nanolatherInfo:            &nanolatherInformation{builderCoeff: 5, allowedBuildings: []string{
-				"corevehfactory", "mstorage", "estorage", "mextractor", "solar", "metalmaker", "railgunturret", "geo", "radar",},
+				"corevehfactory", "mstorage", "estorage", "mextractor", "solar", "metalmaker", "lturret", "railgunturret", "geo", "radar",},
 			},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 25, costM: 650, costE: 1200},
 		}
