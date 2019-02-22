@@ -86,13 +86,17 @@ func (f *faction) recalculateFactionEconomy(g *gameMap) { // move somewhere?
 		if u.faction == f && u.res != nil && u.currentConstructionStatus == nil {
 			eco.maxMetal += u.res.metalStorage
 			eco.maxEnergy += u.res.energyStorage
+			if u.res.isGeothermalPowerplant && u.res.energyIncome == 0 { // energy income from the geothermal needs to be recalculated.
+				u.res.energyIncome = CURRENT_MAP.getNumberOfThermalDepositsUnderBuilding(u)
+			}
+
 			energyInc += u.res.energyIncome // always unconditional
 
 			if u.res.isMetalExtractor && u.res.metalIncome == 0 { // metal income from the extractor needs to be recalculated.
 				u.res.metalIncome = CURRENT_MAP.getNumberOfMetalDepositsUnderBuilding(u)
 			}
 
-			// calculate conditional metal income and mathing energy spendings
+			// calculate conditional metal income and matching energy spendings
 			if u.res.energyDrain > 0 {
 				metalConditionalInc += u.res.metalIncome
 				energyConditionalDec += u.res.energyDrain
@@ -145,3 +149,4 @@ func (f *faction) isSpendingAllowedWithBalance(metalInc, metalDec, energyInc, en
 	es := eco.currentEnergy
 	return (ms+metalInc >= metalDec) && (es+energyInc >= energyDec)
 }
+
