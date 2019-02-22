@@ -60,7 +60,7 @@ func createBuilding(codename string, x, y int, f *faction) *pawn {
 		b = &pawn{name: "Geothermal Powerplant",
 			buildingInfo:              &building{w: 4, h: 4, appearance: app, canBeBuiltOnThermalOnly: true},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 60, costM: 350, costE: 1500},
-			res:                       &pawnResourceInformation{energyIncome: 250},
+			res:                       &pawnResourceInformation{isGeothermalPowerplant: true},
 		}
 
 	case "mstorage":

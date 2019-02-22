@@ -12,8 +12,6 @@ Closest plans:
 - Working buildings animations and/or flickering
 
 Fixes needed:
-- Fix enemy unit orders shown
-- Fix cursor snapping to an enemy in fog of war
 - Remove debug messages
 - Add a bunker with marines (just joking)
 - Add descriptions everywhere
