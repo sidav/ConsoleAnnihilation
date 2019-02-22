@@ -48,7 +48,17 @@ func createUnit(codename string, x, y int, f *faction, alreadyConstructed bool) 
 			moveInfo:                  &pawnMovementInformation{ticksForMoveSingleCell: 15, movesOnLand: true},
 			res:                       &pawnResourceInformation{metalStorage: 25, energyStorage: 50},
 			nanolatherInfo:            &nanolatherInformation{builderCoeff: 5, allowedBuildings: []string{
-				"corekbotlab", "coret2kbotlab", "mstorage", "estorage", "solar", "metalmaker", "railgunturret", "geo", "radar",},
+				"corekbotlab", "coret2kbotlab", "mstorage", "estorage", "mextractor", "solar", "metalmaker", "railgunturret", "geo", "radar",},
+			},
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 25, costM: 650, costE: 1200},
+		}
+	case "corecv":
+		newUnit = &pawn{name: "Tech 1 Construction Vehicle", maxHitpoints: 25, isLight: true,
+			unitInfo:                  &unit{appearance: ccell{char: 'v'}},
+			moveInfo:                  &pawnMovementInformation{ticksForMoveSingleCell: 15, movesOnLand: true},
+			res:                       &pawnResourceInformation{metalStorage: 25, energyStorage: 50},
+			nanolatherInfo:            &nanolatherInformation{builderCoeff: 5, allowedBuildings: []string{
+				"corevehfactory", "mstorage", "estorage", "mextractor", "solar", "metalmaker", "railgunturret", "geo", "radar",},
 			},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 25, costM: 650, costE: 1200},
 		}
