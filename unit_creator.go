@@ -89,7 +89,7 @@ func createUnit(codename string, x, y int, f *faction, alreadyConstructed bool) 
 		newUnit = &pawn{name: "Raider", maxHitpoints: 55, isLight: true, regenPeriod: 6,
 			moveInfo:                  &pawnMovementInformation{ticksForMoveSingleCell: 7, movesOnLand: true},
 			unitInfo:                  &unit{appearance: ccell{char: 'r'}},
-			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 12, costM: 350, costE: 600},
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 18, costM: 350, costE: 600},
 			weapons: []*pawnWeaponInformation{
 				{attackDelay: 13, attackEnergyCost: 1, attackRadius: 4, attacksLand: true, canBeFiredOnMove: true,
 					hitscan: &WeaponHitscan{baseDamage:4},
@@ -100,7 +100,7 @@ func createUnit(codename string, x, y int, f *faction, alreadyConstructed bool) 
 		newUnit = &pawn{name: "Flash", maxHitpoints: 55, isLight: true, regenPeriod: 6,
 			moveInfo:                  &pawnMovementInformation{ticksForMoveSingleCell: 7, movesOnLand: true},
 			unitInfo:                  &unit{appearance: ccell{char: 'f'}},
-			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 12, costM: 350, costE: 600},
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 18, costM: 350, costE: 600},
 			weapons: []*pawnWeaponInformation{
 				{attackDelay: 13, attackEnergyCost: 1, attackRadius: 4, attacksLand: true, canBeFiredOnMove: true,
 					hitscan: &WeaponHitscan{baseDamage:4},
@@ -111,7 +111,7 @@ func createUnit(codename string, x, y int, f *faction, alreadyConstructed bool) 
 		newUnit = &pawn{name: "The Can", maxHitpoints: 125, isHeavy: true,
 			moveInfo:                  &pawnMovementInformation{ticksForMoveSingleCell: 10, movesOnLand: true},
 			unitInfo:                  &unit{appearance: ccell{char: 'c'}},
-			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 10, costM: 250, costE: 500},
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 25, costM: 250, costE: 500},
 			weapons: []*pawnWeaponInformation{
 				{attackDelay: 13, attackEnergyCost: 1, attackRadius: 4, attacksLand: true,
 					hitscan: &WeaponHitscan{baseDamage:4},
@@ -122,7 +122,7 @@ func createUnit(codename string, x, y int, f *faction, alreadyConstructed bool) 
 		newUnit = &pawn{name: "A.K.", maxHitpoints: 30,
 			moveInfo:                  &pawnMovementInformation{ticksForMoveSingleCell: 10, movesOnLand: true},
 			unitInfo:                  &unit{appearance: ccell{char: 'a'}},
-			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 9, costM: 75, costE: 500},
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 14, costM: 75, costE: 500},
 			weapons: []*pawnWeaponInformation{
 				{attackDelay: 7, attackEnergyCost: 1, attackRadius: 5, attacksLand: true, canBeFiredOnMove: true,
 					hitscan: &WeaponHitscan{baseDamage:3},
@@ -133,7 +133,7 @@ func createUnit(codename string, x, y int, f *faction, alreadyConstructed bool) 
 		newUnit = &pawn{name: "P.I.V.-1", maxHitpoints: 35, isLight: true,
 			moveInfo:                  &pawnMovementInformation{ticksForMoveSingleCell: 10, movesOnLand: true},
 			unitInfo:                  &unit{appearance: ccell{char: 'p'}},
-			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 9, costM: 75, costE: 500},
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 14, costM: 75, costE: 500},
 			weapons: []*pawnWeaponInformation{
 				{attackDelay: 6, attackEnergyCost: 1, attackRadius: 5, attacksLand: true, canBeFiredOnMove: true,
 					hitscan: &WeaponHitscan{baseDamage:3, lightMod:3},
@@ -144,7 +144,7 @@ func createUnit(codename string, x, y int, f *faction, alreadyConstructed bool) 
 		newUnit = &pawn{name: "Thud", maxHitpoints: 35, isHeavy: true,
 			moveInfo:                  &pawnMovementInformation{ticksForMoveSingleCell: 16, movesOnLand: true},
 			unitInfo:                  &unit{appearance: ccell{char: 't'}},
-			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 12, costM: 350, costE: 650},
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 22, costM: 350, costE: 650},
 			weapons: []*pawnWeaponInformation{
 				{attackDelay: 13, attackEnergyCost: 1, attackRadius: 7, attacksLand: true,
 					hitscan: &WeaponHitscan{baseDamage:3, heavyMod:4},
@@ -155,7 +155,7 @@ func createUnit(codename string, x, y int, f *faction, alreadyConstructed bool) 
 		newUnit = &pawn{name: "Hammer", maxHitpoints: 25, isHeavy: true,
 			moveInfo:                  &pawnMovementInformation{ticksForMoveSingleCell: 13, movesOnLand: true},
 			unitInfo:                  &unit{appearance: ccell{char: 'h'}},
-			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 12, costM: 250, costE: 500},
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 22, costM: 250, costE: 500},
 			weapons: []*pawnWeaponInformation{
 				{attackDelay: 14, attackEnergyCost: 1, attackRadius: 6, attacksLand: true, canBeFiredOnMove: false,
 					hitscan: &WeaponHitscan{baseDamage:3, heavyMod:3},
