@@ -36,22 +36,19 @@ func main() {
 	cw.Init_console()
 	defer cw.Close_console()
 
-	r_showTitleScreen()
-
 	log = &LOG{}
 
 	CURRENT_MAP = &gameMap{}
 	CURRENT_MAP.init()
 
-	//for i:=0; i<1024; i++ {
-	//	cw.PutChar(int32(i), i%80, i/80)
-	//}
-	//cw.Flush_console()
-	//for key:=""; key != "ESCAPE"; {
-	//	key = cw.ReadKey()
-	//}
-
-	showBriefing()
+	///////////////////////////////
+	// uncomment later
+	//r_showTitleScreen()
+	//showBriefing()
+	// comment later
+	IS_PAUSED = false
+	endTurnPeriod = 0
+	///////////////////////////////////
 
 	for {
 		startTime := time.Now()
