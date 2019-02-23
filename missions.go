@@ -48,13 +48,15 @@ var MIS1_MAP = &[]string {
 func initMapForMission(g *gameMap, missionNumber int) {
 	g.initTileMap(MIS1_MAP)
 
-	g.factions = append(g.factions, createFaction("AI 1", 0,false, true))
-	g.addBuilding(createBuilding("armhq", 7, mapH/2, g.factions[0]), true)
+	g.factions = append(g.factions, createFaction("AI 1", 0,true, true))
+	g.addPawn(createUnit("armcommander", 7, mapH/2, g.factions[0], true))
+	// g.addPawn(createUnit("coreck", 3, 3, g.factions[0], true))
 
 	g.factions = append(g.factions, createFaction("AI 2", 1, false, true))
-	g.addBuilding(createBuilding("armhq", mapW - 10, mapH/2, g.factions[1]), true)
+	g.addPawn(createUnit("corecommander", mapW - 10, mapH/2, g.factions[1], true))
+	// g.addPawn(createUnit("coreck", 3, 3, g.factions[0], true))
 
-	g.factions = append(g.factions, createFaction("OBSERVER", 0, true, false))
+	// g.factions = append(g.factions, createFaction("OBSERVER", 0, true, false))
 	CHEAT_IGNORE_FOW = true
 }
 
