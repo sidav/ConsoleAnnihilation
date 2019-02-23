@@ -16,10 +16,10 @@ type aiData struct {
 	construction_orders_this_turn      int
 	max_constr_orders_increment_period int
 
-	unit_limit            int // it MAY be exceeded (dependant on recount units period), be advised.
-	current_units_count   int // 99999 is for preventing AI production stucking. The var will be recalculated later anyway.
-	currentEngineersCount int
-	recount_units_period  int
+	unitLimit, buildingLimit                 int // it MAY be exceeded (dependant on recount units period), be advised.
+	currentUnitsCount, currentBuildingsCount int
+	currentEngineersCount                    int
+	recount_units_period                     int
 
 	buildOrder        *[]*ai_buildOrderStep // not meant to be changed
 	currentStepNumber int
@@ -35,10 +35,13 @@ func ai_createAiData() *aiData {
 		MAX_CONSTRUCTION_ORDERS_AT_A_TIME:  1,
 		construction_orders_this_turn:      0,
 		max_constr_orders_increment_period: 100,
-		unit_limit:                         25, // it MAY be exceeded (dependant on recount units period), be advised.
-		current_units_count:                1,  // 99999 is for preventing AI production stucking. The var will be recalculated later anyway.
-		currentEngineersCount:              1,
-		recount_units_period:               100,
+
+		unitLimit:             25, // it MAY be exceeded (dependant on recount units period), be advised.
+		buildingLimit:         15,
+		currentUnitsCount:     1,
+		currentBuildingsCount: 0,
+		currentEngineersCount: 1,
+		recount_units_period:  100,
 	}
 	buildOrderNum := routines.Random(len(ai_allBuildOrders))
 	ai.buildOrder = &(ai_allBuildOrders[buildOrderNum])
@@ -85,13 +88,14 @@ func ai_controlPawn(currAi *aiData, p *pawn) {
 		}
 		p.order = &order{orderType: order_attack_move, x: routines.Random(mapW), y: routines.Random(mapH)}
 	}
-	// construct
-	if currAi.current_units_count < currAi.unit_limit && currAi.construction_orders_this_turn < currAi.MAX_CONSTRUCTION_ORDERS_AT_A_TIME {
-		if p.canConstructBuildings() {
+
+	if currAi.construction_orders_this_turn < currAi.MAX_CONSTRUCTION_ORDERS_AT_A_TIME {
+		// build
+		if p.canConstructBuildings() && currAi.currentBuildingsCount < currAi.buildingLimit {
 			currAi.ai_decideConstruction(p)
 		}
 		// produce
-		if p.canConstructUnits() {
+		if p.canConstructUnits() && currAi.currentUnitsCount < currAi.unitLimit {
 			currAi.ai_decideProduction(p)
 		}
 	}
@@ -120,24 +124,30 @@ func (currAi *aiData) ai_recalculateParamsIfNeccessary(f *faction) {
 	}
 
 	if getCurrentTurn()%currAi.recount_units_period == 0 {
-		currAi.recountUnitsAndCheckBuildsSatisfations(f)
+		currAi.recountUnitsAndBuildings(f)
 	}
 }
 
-func (currAi *aiData) recountUnitsAndCheckBuildsSatisfations(f *faction) {
+func (currAi *aiData) recountUnitsAndBuildings(f *faction) {
 
-	currAi.current_units_count = 0
+	currAi.currentUnitsCount = 0
+	currAi.currentBuildingsCount = 0
 	currAi.currentEngineersCount = 0
 
 	for _, p := range CURRENT_MAP.pawns {
 		if p.faction == f {
-			currAi.current_units_count++
+			if p.isBuilding() {
+				currAi.currentBuildingsCount++
+			} else {
+				currAi.currentUnitsCount++
+			}
 			if p.canConstructBuildings() {
 				currAi.currentEngineersCount++
 			}
 		}
 	}
-	ai_write("I've got " + strconv.Itoa(currAi.current_units_count) + " minions right now.")
+	ai_write("I've got " + strconv.Itoa(currAi.currentUnitsCount) + " minions right now.")
+	ai_write("I've got " + strconv.Itoa(currAi.currentBuildingsCount) + " buildings right now.")
 	ai_write("I've got " + strconv.Itoa(currAi.currentEngineersCount) + " engineers right now.")
 
 }
