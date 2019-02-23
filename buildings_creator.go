@@ -12,7 +12,7 @@ func createBuilding(codename string, x, y int, f *faction) *pawn {
 			"xx" +
 			"xx", colors: colors}
 		b = &pawn{name: "Metal Synthesizer",
-			buildingInfo:              &building{w: 2, h: 2, appearance: app},
+			buildingInfo:              &building{w: 2, h: 2, appearance: app, allowsTightPlacement: true},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 35, costM: 10, costE: 500},
 			res:                       &pawnResourceInformation{metalIncome: 1, energyDrain: 60},
 		}
@@ -25,7 +25,7 @@ func createBuilding(codename string, x, y int, f *faction) *pawn {
 			"==" +
 			"==", colors: colors}
 		b = &pawn{name: "Solar Collector",
-			buildingInfo:              &building{w: 2, h: 2, appearance: app},
+			buildingInfo:              &building{w: 2, h: 2, appearance: app, allowsTightPlacement: true},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 60, costM: 100, costE: 500},
 			res:                       &pawnResourceInformation{energyIncome: 20},
 		}
@@ -41,7 +41,7 @@ func createBuilding(codename string, x, y int, f *faction) *pawn {
 			"-%-" +
 			"#|#", colors: colors}
 		b = &pawn{name: "Metal Extractor",
-			buildingInfo:              &building{w: 3, h: 3, appearance: app, canBeBuiltOnMetalOnly: true},
+			buildingInfo:              &building{w: 3, h: 3, appearance: app, canBeBuiltOnMetalOnly: true, allowsTightPlacement: true},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 60, costM: 100, costE: 500},
 			res:                       &pawnResourceInformation{energyDrain: 9, isMetalExtractor: true},
 		}
@@ -58,7 +58,7 @@ func createBuilding(codename string, x, y int, f *faction) *pawn {
 			"{00}" +
 			"=VV=", colors: colors}
 		b = &pawn{name: "Geothermal Powerplant",
-			buildingInfo:              &building{w: 4, h: 4, appearance: app, canBeBuiltOnThermalOnly: true},
+			buildingInfo:              &building{w: 4, h: 4, appearance: app, canBeBuiltOnThermalOnly: true, allowsTightPlacement: true},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 60, costM: 350, costE: 1500},
 			res:                       &pawnResourceInformation{isGeothermalPowerplant: true},
 		}

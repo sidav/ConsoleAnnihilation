@@ -168,10 +168,10 @@ func (g *gameMap) canBuildingBeBuiltAt(b *pawn, cx, cy int) bool {
 	if bx < 0 || by < 0 || bx+b.buildingInfo.w >= mapW || by+b.buildingInfo.h >= mapH {
 		return false
 	}
-	if b.buildingInfo.canBeBuiltOnMetalOnly && g.getNumberOfMetalDepositsUnderBuilding(b) == 0 {
+	if b.buildingInfo.canBeBuiltOnMetalOnly && g.getNumberOfMetalDepositsInRect(bx, by, b.buildingInfo.w, b.buildingInfo.h) == 0 {
 		return false
 	}
-	if b.buildingInfo.canBeBuiltOnThermalOnly && g.getNumberOfThermalDepositsUnderBuilding(b) == 0 {
+	if b.buildingInfo.canBeBuiltOnThermalOnly && g.getNumberOfThermalDepositsInRect(bx, by, b.buildingInfo.w, b.buildingInfo.h) == 0 {
 		return false
 	}
 	for x := bx; x < bx+b.buildingInfo.w; x++ {

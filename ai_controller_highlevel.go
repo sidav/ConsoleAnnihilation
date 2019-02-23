@@ -37,6 +37,11 @@ func (currAi *aiData) ai_decideProduction(factory *pawn) {
 
 func (ai *aiData) ai_decideConstruction(builder *pawn) {
 
+	if builder.faction.economy.metalIncome < ai.getCurrentOrderStep().desiredMIncome {
+		ai.ai_buildMetalIncome(builder)
+		return
+	}
+
 	if builder.faction.economy.energyIncome < ai.getCurrentOrderStep().desiredEIncome {
 		ai.ai_buildEnergyIncome(builder)
 		return
@@ -67,4 +72,16 @@ func (ai *aiData) ai_buildEnergyIncome(builder *pawn) {
 		}
 	}
 	ai_makeBuildOrderForBuilding(builder, final_build_variant)
+}
+
+func (ai *aiData) ai_buildMetalIncome(builder *pawn) {
+	variants := builder.nanolatherInfo.allowedBuildings
+	final_build_variant := ""
+	for _, variant := range variants {
+		candidate := createBuilding(variant, 0, 0, builder.faction)
+		if candidate.res != nil && candidate.res.isMetalExtractor {
+			final_build_variant = variant
+		}
+	}
+	ai_tryBuildMetalExtractor(builder, final_build_variant)
 }
