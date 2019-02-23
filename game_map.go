@@ -50,20 +50,20 @@ func (g *gameMap) getPawnAtCoordinates(x, y int) *pawn {
 	return nil
 }
 
-func (g *gameMap) getPawnsInRadiusFrom(x, y, radius int) []*pawn {
-	var arr []*pawn
-	for _, p := range g.pawns {
-		px, py := p.getCenter()
-		if p.isBuilding() && routines.AreCircleAndRectOverlapping(x, y, radius, p.x, p.y, p.buildingInfo.w, p.buildingInfo.h ){
-			arr = append(arr, p)
-			continue
-		}
-		if p.isUnit() && routines.AreCoordsInRange(px, py, x, y, radius) {
-			arr = append(arr, p)
-		}
-	}
-	return arr
-}
+//func (g *gameMap) getPawnsInRadiusFrom(x, y, radius int) []*pawn {
+//	var arr []*pawn
+//	for _, p := range g.pawns {
+//		px, py := p.getCenter()
+//		if p.isBuilding() && routines.AreCircleAndRectOverlapping(x, y, radius, p.x, p.y, p.buildingInfo.w, p.buildingInfo.h ){
+//			arr = append(arr, p)
+//			continue
+//		}
+//		if p.isUnit() && routines.AreCoordsInRange(px, py, x, y, radius) {
+//			arr = append(arr, p)
+//		}
+//	}
+//	return arr
+//}
 
 func (g *gameMap) getPawnsInRect(x, y, w, h int) []*pawn {
 	var arr []*pawn
@@ -140,6 +140,24 @@ func (g *gameMap) getNumberOfThermalDepositsUnderBuilding(b *pawn) int {
 	return g.getNumberOfThermalDepositsInRect(b.x, b.y, b.buildingInfo.w, b.buildingInfo.h)
 }
 
+func (g *gameMap) isConstructionSiteBlockedByUnitOrBuilding(x, y, w, h int) bool  {
+	for _, p := range g.pawns {
+		if p.isBuilding() {
+			if routines.AreTwoCellRectsOverlapping(x-1, y-1, w+2, h+2, p.x, p.y, p.buildingInfo.w, p.buildingInfo.h) {
+				// -1s and +2s are to prevent tight placement...
+				// ..and ensure that there always will be at least 1 cell between buildings.
+				return true
+			}
+		} else {
+			cx, cy := p.getCenter()
+			if routines.AreCoordsInRect(cx, cy, x, y, w, h) {
+				return true
+			}
+		}
+	}
+	return false
+}
+
 func (g *gameMap) canBuildingBeBuiltAt(b *pawn, cx, cy int) bool {
 	bx := cx - b.buildingInfo.w/2
 	by := cy - b.buildingInfo.h/2
@@ -159,9 +177,8 @@ func (g *gameMap) canBuildingBeBuiltAt(b *pawn, cx, cy int) bool {
 			}
 		}
 	}
-	if len(g.getPawnsInRect(bx-1, by-1, b.buildingInfo.w+2, b.buildingInfo.h+2)) > 0 { 	// +1s are to prevent tight placement...
-		return false 																	// ..and ensure that there always will be at least 1 cell between buildings.
-		// TODO: allow tight placement to units (they are not allowing placement lol)
+	if g.isConstructionSiteBlockedByUnitOrBuilding(bx, by, b.buildingInfo.w, b.buildingInfo.h) {
+		return false
 	}
 	return true
 }
