@@ -20,6 +20,7 @@ type faction struct {
 	factionNumber                          int
 	name                                   string
 	playerControlled, aiControlled         bool // used as a stub for now
+	aiData                                 *aiData // for AI-controlled factions
 	seenTiles, tilesInSight, radarCoverage [][] bool
 }
 
@@ -27,6 +28,9 @@ func createFaction(name string, n int, playerControlled, aiControlled bool) *fac
 	fctn := &faction{
 		playerControlled: playerControlled, aiControlled: aiControlled, name: name, factionNumber: n,
 		economy: &factionEconomy{currentMetal: 99999, currentEnergy: 99999}, cursor: &cursor{},
+	}
+	if aiControlled {
+		fctn.aiData = ai_createAiData()
 	}
 	fctn.seenTiles = make([][]bool, mapW)
 	for i := range fctn.seenTiles {
