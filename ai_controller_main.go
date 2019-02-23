@@ -42,7 +42,7 @@ func ai_createAiData() *aiData {
 	}
 	buildOrderNum := routines.Random(len(ai_allBuildOrders))
 	ai.buildOrder = &(ai_allBuildOrders[buildOrderNum])
-	ai_write("SELECTED BUILD ORDER #" + strconv.Itoa(buildOrderNum+1))
+	ai_write("SELECTED BUILD ORDER #" + strconv.Itoa(buildOrderNum))
 	return ai
 }
 

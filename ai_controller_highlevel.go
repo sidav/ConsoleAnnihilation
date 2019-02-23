@@ -36,6 +36,12 @@ func (currAi *aiData) ai_decideProduction(factory *pawn) {
 }
 
 func (ai *aiData) ai_decideConstruction(builder *pawn) {
+
+	if builder.faction.economy.energyIncome < ai.getCurrentOrderStep().desiredEIncome {
+		ai.ai_buildEnergyIncome(builder)
+		return
+	}
+
 	variants := builder.nanolatherInfo.allowedBuildings
 	step := ai.getCurrentOrderStep()
 	final_build_variant := ""
@@ -47,6 +53,18 @@ func (ai *aiData) ai_decideConstruction(builder *pawn) {
 	}
 	if final_build_variant == "" {
 		final_build_variant = variants[routines.Random(len(variants))]
+	}
+	ai_makeBuildOrderForBuilding(builder, final_build_variant)
+}
+
+func (ai *aiData) ai_buildEnergyIncome(builder *pawn) {
+	variants := builder.nanolatherInfo.allowedBuildings
+	final_build_variant := ""
+	for _, variant := range variants {
+		candidate := createBuilding(variant, 0, 0, builder.faction)
+		if candidate.res != nil && candidate.res.energyIncome > 0 {
+			final_build_variant = variant
+		}
 	}
 	ai_makeBuildOrderForBuilding(builder, final_build_variant)
 }
