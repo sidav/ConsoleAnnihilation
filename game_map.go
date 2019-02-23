@@ -134,9 +134,9 @@ func (g *gameMap) getNumberOfThermalDepositsUnderBuilding(b *pawn) int {
 }
 
 func (g *gameMap) canBuildingBeBuiltAt(b *pawn, cx, cy int) bool {
-	b.x = cx - b.buildingInfo.w/2
-	b.y = cy - b.buildingInfo.h/2
-	if b.x < 0 || b.y < 0 || b.x+b.buildingInfo.w > mapW || b.y+b.buildingInfo.h > mapH {
+	bx := cx - b.buildingInfo.w/2
+	by := cy - b.buildingInfo.h/2
+	if bx < 0 || by < 0 || bx+b.buildingInfo.w >= mapW || by+b.buildingInfo.h >= mapH {
 		return false
 	}
 	if b.buildingInfo.canBeBuiltOnMetalOnly && g.getNumberOfMetalDepositsUnderBuilding(b) == 0 {
@@ -145,14 +145,14 @@ func (g *gameMap) canBuildingBeBuiltAt(b *pawn, cx, cy int) bool {
 	if b.buildingInfo.canBeBuiltOnThermalOnly && g.getNumberOfThermalDepositsUnderBuilding(b) == 0 {
 		return false
 	}
-	for x:=b.x;x<b.x+b.buildingInfo.w;x++ {
-		for y:=b.y;y<b.y+b.buildingInfo.w;y++ {
+	for x:=bx;x<bx+b.buildingInfo.w;x++ {
+		for y:=by;y<by+b.buildingInfo.w;y++ {
 			if !g.tileMap[x][y].isPassable {
 				return false
 			}
 		}
 	}
-	if len(g.getPawnsInRect(b.x, b.y, b.buildingInfo.w, b.buildingInfo.h)) > 0 {
+	if len(g.getPawnsInRect(bx, by, b.buildingInfo.w, b.buildingInfo.h)) > 0 {
 		return false
 	}
 	return true
