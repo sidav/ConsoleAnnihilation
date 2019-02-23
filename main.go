@@ -46,7 +46,6 @@ func main() {
 	//r_showTitleScreen()
 	//showBriefing()
 	// comment later
-	IS_PAUSED = false
 	endTurnPeriod = 0
 	///////////////////////////////////
 

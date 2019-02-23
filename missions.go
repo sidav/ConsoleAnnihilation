@@ -49,6 +49,8 @@ func initMapForMission(g *gameMap, missionNumber int) {
 	g.initTileMap(MIS1_MAP)
 
 	g.factions = append(g.factions, createFaction("AI 1", 0,true, true))
+	g.factions[0].cursor.x = mapW/2
+	g.factions[0].cursor.y = mapH/2
 	g.addPawn(createUnit("armcommander", 7, mapH/2, g.factions[0], true))
 	// g.addPawn(createUnit("coreck", 3, 3, g.factions[0], true))
 

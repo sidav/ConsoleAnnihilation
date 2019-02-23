@@ -20,8 +20,7 @@ type aiData struct {
 	current_units_count  int // 99999 is for preventing AI production stucking. The var will be recalculated later anyway.
 	recount_units_period int
 
-	buildOrder             []string // not meant to be changed
-	buildOrderSatisfaction []bool // meant to be changed lol
+	buildOrder             *[]*ai_buildOrderStep // not meant to be changed
 }
 
 func ai_createAiData() *aiData {
@@ -38,8 +37,9 @@ func ai_createAiData() *aiData {
 		current_units_count:                1, // 99999 is for preventing AI production stucking. The var will be recalculated later anyway.
 		recount_units_period:               100,
 	}
-	ai.buildOrder = ai_buildOrdersArm[0]
-	ai.buildOrderSatisfaction = make([]bool, len(ai.buildOrder))
+	buildOrderNum := routines.Random(len(ai_allBuildOrders))
+	ai.buildOrder = &(ai_allBuildOrders[buildOrderNum])
+	ai_write("SELECTED BUILD ORDER #"+strconv.Itoa(buildOrderNum))
 	return ai
 }
 

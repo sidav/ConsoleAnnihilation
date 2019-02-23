@@ -1,38 +1,22 @@
 package main
 
-var ai_buildOrdersArm = [][]string {
-	{ // build order 1: kbot lab
-		"armkbotlab",
-		"mextractor",
-		"solar",
-		"solar",
-		"lturret",
-	},
-	// build order 2: vehicle factory
-	{
-		"armvehfactory",
-		"mextractor",
-		"solar",
-		"solar",
-		"lturret",
-	},
+type ai_buildOrderStep struct {
+	desiredMIncome, desiredEIncome int
+	desiredEngineers               int
+
+	buildCode, buildCodeAlt string // alt is for when a faction has no buildCode
 }
 
-var ai_buildOrdersCore = [][]string {
-	{ // build order 1: kbot lab
-		"corekbotlab",
-		"mextractor",
-		"solar",
-		"solar",
-		"lturret",
-	},
-	// build order 2: vehicle factory
+var ai_allBuildOrders = [][]*ai_buildOrderStep{
+	// order 1: KBot Lab
 	{
-		"corevehfactory",
-		"mextractor",
-		"solar",
-		"solar",
-		"lturret",
+		{0, 0, 1, "armkbotlab", "corekbotlab"},
+		{0, 0, 2, "armkbotlab", "corekbotlab"},
+	},
+
+	// order 2: vehicle factory
+	{
+		{0, 0, 1, "armvehfactory", "corevahfactory"},
 	},
 }
 
