@@ -50,15 +50,6 @@ func (g *gameMap) getPawnAtCoordinates(x, y int) *pawn {
 	return nil
 }
 
-//func (g *gameMap) getUnitAtCoordinates(x, y int) *pawn { // TODO: remove (as a duplicate of getPawnAtCoordinates)
-//	for _, b := range g.pawns {
-//		if b.isOccupyingCoords(x, y) {
-//			return b
-//		}
-//	}
-//	return nil
-//}
-
 func (g *gameMap) getPawnsInRadiusFrom(x, y, radius int) []*pawn {
 	var arr []*pawn
 	for _, p := range g.pawns {
@@ -73,9 +64,15 @@ func (g *gameMap) getPawnsInRadiusFrom(x, y, radius int) []*pawn {
 func (g *gameMap) getPawnsInRect(x, y, w, h int) []*pawn {
 	var arr []*pawn
 	for _, p := range g.pawns {
-		px, py := p.getCenter()
-		if (px >= x) && (px < x+w) && (py >= y) && (py < y+h) { // TODO: pawns bigger than one cell
-			arr = append(arr, p)
+		cx, cy := p.getCenter()
+		if p.isBuilding() {
+			if routines.AreTwoCellRectsOverlapping(x, y, w, h, p.x, p.y, p.buildingInfo.w, p.buildingInfo.h) {
+				arr = append(arr, p)
+			}
+		} else {
+			if routines.AreCoordsInRect(cx, cy, x, y, w, h) {
+				arr = append(arr, p)
+			}
 		}
 	}
 	return arr
@@ -145,15 +142,16 @@ func (g *gameMap) canBuildingBeBuiltAt(b *pawn, cx, cy int) bool {
 	if b.buildingInfo.canBeBuiltOnThermalOnly && g.getNumberOfThermalDepositsUnderBuilding(b) == 0 {
 		return false
 	}
-	for x:=bx;x<bx+b.buildingInfo.w;x++ {
-		for y:=by;y<by+b.buildingInfo.w;y++ {
+	for x := bx; x < bx+b.buildingInfo.w; x++ {
+		for y := by; y < by+b.buildingInfo.h; y++ {
 			if !g.tileMap[x][y].isPassable {
 				return false
 			}
 		}
 	}
-	if len(g.getPawnsInRect(bx, by, b.buildingInfo.w, b.buildingInfo.h)) > 0 {
-		return false
+	if len(g.getPawnsInRect(bx-1, by-1, b.buildingInfo.w+2, b.buildingInfo.h+2)) > 0 { 	// +1s are to prevent tight placement...
+		return false 																	// ..and ensure that there always will be at least 1 cell between buildings.
+		// TODO: allow tight placement to units (they are not allowing placement lol)
 	}
 	return true
 }
