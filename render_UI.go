@@ -17,10 +17,10 @@ func renderFactionStats(f *faction) {
 		cw.SetFgColor(f.getFactionColor())
 		cw.PutString(f.name+": ", statsx, 0)
 		cw.SetFgColor(cw.YELLOW)
-		cw.PutString(fmt.Sprintf("turn %d (PAUSED)", CURRENT_TURN/10+1), statsx+len(f.name)+2, 0)
+		cw.PutString(fmt.Sprintf("turn %d (PAUSED)", getCurrentTurn()), statsx+len(f.name)+2, 0)
 	} else {
 		cw.SetFgColor(f.getFactionColor())
-		cw.PutString(fmt.Sprintf("%s: turn %d", f.name, CURRENT_TURN/10+1), statsx, 0)
+		cw.PutString(fmt.Sprintf("%s: turn %d", f.name, getCurrentTurn()), statsx, 0)
 	}
 
 	metal, maxmetal, metalFlow := eco.currentMetal, eco.maxMetal, eco.metalIncome-eco.metalSpending
@@ -47,6 +47,58 @@ func renderFactionStats(f *faction) {
 	if energy+energyFlow < 0 {
 		cw.SetFgColor(cw.RED)
 		cw.PutString("STALL", statsx+SIDEBAR_W/3, 4)
+	}
+}
+
+func renderInfoOnCursor(f *faction, g *gameMap) {
+
+	title := "Unidentified Object"
+	color := 2
+	details := make([]string, 0)
+	var res *pawnResourceInformation
+	sp := f.cursor.snappedPawn
+
+	if sp != nil {
+
+		if sp.faction == f {
+			renderOrderLine(sp)
+		}
+		color = sp.faction.getFactionColor()
+		if CURRENT_FACTION_SEEING_THE_SCREEN.areCoordsInSight(sp.x, sp.y) {
+			title = sp.name
+			if sp.faction != f {
+				if sp.isBuilding() {
+					details = append(details, "(Enemy building)")
+				} else {
+					details = append(details, "(Enemy unit)")
+				}
+			} else {
+				details = append(details, sp.getCurrentOrderDescription())
+				if sp.res != nil && sp.currentConstructionStatus == nil {
+					res = sp.res
+				}
+			}
+			r_renderAttackRadius(sp)
+		} else {
+			details = append(details, "(Enemy on radar)")
+		}
+	}
+
+	if len(details) > 0 {
+		if CURRENT_FACTION_SEEING_THE_SCREEN.areCoordsInSight(sp.x, sp.y) {
+			details = append(details, sp.getArmorDescriptionString())
+			if sp.hasWeapons() {
+				for _, wpn := range sp.weapons {
+					details = append(details, wpn.getDescriptionString())
+				}
+			}
+			if res != nil {
+				economyInfo := fmt.Sprintf("METAL: (+%d / -%d) ENERGY: (+%d / -%d)",
+					res.metalIncome, res.metalSpending, res.energyIncome, res.energySpending+res.energyDrain)
+				details = append(details, economyInfo)
+			}
+		}
+		routines.DrawSidebarInfoMenu(title, color, SIDEBAR_X, SIDEBAR_FLOOR_2, SIDEBAR_W, details)
 	}
 }
 
@@ -142,7 +194,8 @@ func r_renderAttackRadius(p *pawn) {
 	if len(p.weapons) > 0 {
 		// (p.x, p.y, p.weapons[0].attackRadius, false, CURRENT_FACTION_SEEING_THE_SCREEN.cursor.x-VIEWPORT_W/2, CURRENT_FACTION_SEEING_THE_SCREEN.cursor.y-VIEWPORT_H/2)
 		vx, vy := CURRENT_FACTION_SEEING_THE_SCREEN.cursor.x-VIEWPORT_W/2, CURRENT_FACTION_SEEING_THE_SCREEN.cursor.y-VIEWPORT_H/2
-		line := routines.GetCircle(p.x, p.y, p.weapons[0].attackRadius)
+		px, py := p.getCenter()
+		line := routines.GetCircle(px, py, p.weapons[0].attackRadius)
 		for _, point := range *line {
 			x, y := point.X, point.Y
 			cw.SetFgColor(cw.BLACK)
@@ -212,16 +265,24 @@ func renderLine(fromx, fromy, tox, toy int, flush bool, vx, vy int) {
 	}
 }
 
-func renderCircle(fromx, fromy, radius int, flush bool, vx, vy int) {
+func renderPawnInfo(p *pawn) {
+	var name, desc string
+	if p.isUnit() {
+		name, desc = getUnitNameAndDescription(p.codename)
+	} else if p.isBuilding() {
+		name, desc = getBuildingNameAndDescription(p.codename)
+	}
+	routines.ShowSimpleInfoWindow(name, desc, 60, 15, p.faction.getFactionColor())
+}
+
+func renderCircle(fromx, fromy, radius int, char rune, flush bool) {
 	if radius == 0 {
 		return
 	} else {
 		line := routines.GetCircle(fromx, fromy, radius)
 		for _, point := range *line {
 			x, y := point.X, point.Y
-			if routines.AreCoordsInRect(x-vx, y-vy, 0, 0, VIEWPORT_W, VIEWPORT_H) {
-				cw.PutChar('X', x-vx, y-vy)
-			}
+			renderCharByGlobalCoords(char, x, y)
 		}
 	}
 	if flush {

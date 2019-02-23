@@ -14,6 +14,9 @@ func (f *faction) recalculateSeenTiles() {
 	}
 	for _, p := range CURRENT_MAP.pawns {
 		if p.faction == f {
+			if p.currentConstructionStatus != nil {
+				continue
+			}
 			px, py := p.getCenter()
 			radiusToIterate := p.sightRadius
 			if p.radarRadius > p.sightRadius {
@@ -37,13 +40,13 @@ func (f *faction) recalculateSeenTiles() {
 }
 
 func (f *faction) areCoordsInSight(x, y int) bool {
-	return f.tilesInSight[x][y] || CHEAT_IGNORE_FOW
+	return f.tilesInSight[x][y] || CHEAT_IGNORE_FOW || f.aiControlled
 }
 
 func (f *faction) wereCoordsSeen(x, y int) bool {
-	return f.seenTiles[x][y] || CHEAT_IGNORE_FOW
+	return f.seenTiles[x][y] || CHEAT_IGNORE_FOW || f.aiControlled
 }
 
 func (f *faction) areCoordsInRadarRadius(x, y int) bool {
-	return f.radarCoverage[x][y]
+	return f.radarCoverage[x][y] || f.aiControlled
 }

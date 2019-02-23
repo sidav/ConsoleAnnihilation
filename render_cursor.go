@@ -148,14 +148,19 @@ func renderBuildCursor(c *cursor) {
 	totalMetalUnderCursor := CURRENT_MAP.getNumberOfMetalDepositsInRect(c.x-c.w/2, c.y-c.h/2, c.w, c.h)
 	totalThermalUnderCursor := CURRENT_MAP.getNumberOfThermalDepositsInRect(c.x-c.w/2, c.y-c.h/2, c.w, c.h)
 
+	if c.radius > 0 {
+		cw.SetFgColor(cw.RED)
+		renderCircle(c.x, c.y, c.radius, '.', false)
+	}
+
 	for i := 0; i < c.w; i++ {
 		for j := 0; j < c.h; j++ {
 			if (c.buildOnMetalOnly && totalMetalUnderCursor == 0) ||
 				(c.buildOnThermalOnly && totalThermalUnderCursor == 0) {
 				cw.SetBgColor(cw.RED)
 			} else {
-				if CURRENT_MAP.getPawnAtCoordinates(c.x+i-c.w/2, c.y+j-c.h/2) == nil &&
-					areCoordsValid(c.x+i-c.w/2, c.y+j-c.h/2){
+				if areCoordsValid(c.x+i-c.w/2, c.y+j-c.h/2) && CURRENT_MAP.tileMap[c.x+i-c.w/2][c.y+j-c.h/2].isPassable &&
+					CURRENT_MAP.getPawnAtCoordinates(c.x+i-c.w/2, c.y+j-c.h/2) == nil {
 					cw.SetBgColor(cw.GREEN)
 				} else {
 					cw.SetBgColor(cw.RED)

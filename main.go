@@ -12,18 +12,24 @@ func areCoordsValid(x, y int) bool {
 }
 
 var (
-	GAME_IS_RUNNING = true
-	log             *LOG
-	CURRENT_TURN    = 0
-	CURRENT_MAP     *gameMap
-	CURRENT_FACTION_SEEING_THE_SCREEN *faction // for various rendering crap
+	GAME_IS_RUNNING                      = true
+	log                                 *LOG
+	CURRENT_TICK                        = 1
+	CURRENT_MAP                         *gameMap
+	CURRENT_FACTION_SEEING_THE_SCREEN   *faction // for various rendering crap
 	FIRE_WAS_OPENED_ON_SCREEN_THIS_TURN bool // for killing pewpews overrender.
-	CHEAT_IGNORE_FOW bool
+	CHEAT_IGNORE_FOW                    bool
 )
+
+func getCurrentTurn() int {
+	return CURRENT_TICK/ 10 + 1
+}
 
 func main() {
 	cw.Init_console()
 	defer cw.Close_console()
+
+	r_showTitleScreen()
 
 	log = &LOG{}
 
@@ -40,10 +46,11 @@ func main() {
 
 	showBriefing()
 
-	for GAME_IS_RUNNING {
+	for {
 		startTime := time.Now()
 		for _, f := range CURRENT_MAP.factions {
 			f.recalculateSeenTiles()
+			checkWinOrLose()
 			if !GAME_IS_RUNNING {
 				return
 			}
@@ -63,7 +70,7 @@ func main() {
 					CURRENT_MAP.removePawn(u)
 					continue
 				}
-				if u.regenPeriod > 0 && CURRENT_TURN % u.regenPeriod == 0 && u.hitpoints < u.maxHitpoints {
+				if u.regenPeriod > 0 && CURRENT_TICK% u.regenPeriod == 0 && u.hitpoints < u.maxHitpoints {
 					u.hitpoints++
 				}
 				u.executeOrders(CURRENT_MAP)
@@ -74,7 +81,7 @@ func main() {
 				FIRE_WAS_OPENED_ON_SCREEN_THIS_TURN = false
 				time.Sleep(time.Duration(endTurnPeriod/ 4)*time.Millisecond)
 			}
-			CURRENT_TURN += 1
+			CURRENT_TICK += 1
 		}
 
 		for _, f := range CURRENT_MAP.factions {
@@ -88,6 +95,7 @@ func main() {
 }
 
 func showBriefing() {
+	cw.Clear_console()
 	text := "Good day, Head Officer #CC-42, and welcome to Thalassean-3. \\n " +
 		"That \"Arm\" rebellion was quite of a " +
 		"surprise for command, and our forces were drawn away from this planet by surprise attack. Our intel suggested " +
@@ -109,6 +117,7 @@ func showBriefing() {
 		"equipment. That means that you are clear to embark right now. \\n " +
 		"You will be dispatched immediately. "
 	routines.DrawWrappedTextInRect(text, 0, 0, CONSOLE_W, CONSOLE_H)
+	cw.Flush_console()
 	key := ""
 	for key != "ESCAPE" && key != "ENTER" {
 		key = cw.ReadKey()

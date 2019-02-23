@@ -90,10 +90,16 @@ func plr_selectPawn(f *faction, m *gameMap) *[]*pawn { // returns a pointer to a
 		case "C":
 			trySnapCursorToCommander(f)
 			return &[]*pawn {f.cursor.snappedPawn}
+		case "?":
+			if f.cursor.snappedPawn != nil {
+				renderPawnInfo(f.cursor.snappedPawn)
+			}
 		case "ESCAPE":
-			GAME_IS_RUNNING = false
-			PLR_LOOP = false
-			return nil
+			if routines.ShowSimpleYNChoiceModalWindow("Are you sure you want to quit?") {
+				GAME_IS_RUNNING = false
+				PLR_LOOP = false
+				return nil
+			}
 
 		case "DELETE": // cheat
 			for _, p := range CURRENT_MAP.pawns {
@@ -104,6 +110,10 @@ func plr_selectPawn(f *faction, m *gameMap) *[]*pawn { // returns a pointer to a
 				}
 			}
 		case "INSERT": // cheat
+			CURRENT_MAP.addBuilding(createBuilding("wall", f.cursor.x, f.cursor.y, CURRENT_MAP.factions[1]), true)
+		case "HOME": // cheat
+			CURRENT_MAP.addBuilding(createBuilding("lturret", f.cursor.x, f.cursor.y, CURRENT_MAP.factions[0]), true)
+		case "END": // cheat
 			CHEAT_IGNORE_FOW = !CHEAT_IGNORE_FOW
 
 		default:
@@ -256,7 +266,7 @@ func plr_selectUnitsToConstruct(p *pawn) {
 
 	if indicesQueue != nil {
 		if len(indicesQueue) > 0 {
-			p.order = &order{orderType: order_construct}
+			p.setOrder(&order{orderType: order_construct})
 			for _, i := range indicesQueue {
 				p.order.constructingQueue = append(p.order.constructingQueue,
 					createUnit(availableUnitCodes[i], p.x, p.y, p.faction, false))
@@ -292,12 +302,14 @@ func plr_selectBuildingSite(p *pawn, b *pawn, m *gameMap) {
 	log.appendMessage("Select construction site for " + b.name)
 	for {
 		f := p.faction
-		cx, cy := f.cursor.getCoords()
-		f.cursor.currentCursorMode = CURSOR_BUILD
-		f.cursor.w = b.buildingInfo.w
-		f.cursor.h = b.buildingInfo.h
-		f.cursor.buildOnMetalOnly = b.buildingInfo.canBeBuiltOnMetalOnly
-		f.cursor.buildOnThermalOnly = b.buildingInfo.canBeBuiltOnThermalOnly
+		cursor := f.cursor
+		cx, cy := cursor.getCoords()
+		cursor.currentCursorMode = CURSOR_BUILD
+		cursor.w = b.buildingInfo.w
+		cursor.h = b.buildingInfo.h
+		cursor.buildOnMetalOnly = b.buildingInfo.canBeBuiltOnMetalOnly
+		cursor.buildOnThermalOnly = b.buildingInfo.canBeBuiltOnThermalOnly
+		cursor.radius = b.getMaxRadiusToFire()
 		r_renderScreenForFaction(f, m)
 		flushView()
 
@@ -307,7 +319,7 @@ func plr_selectBuildingSite(p *pawn, b *pawn, m *gameMap) {
 			if m.canBuildingBeBuiltAt(b, cx, cy) {
 				b.x = cx - b.buildingInfo.w/2
 				b.y = cy - b.buildingInfo.h/2
-				p.order = &order{orderType: order_build, x: cx, y: cy, buildingToConstruct: b}
+				p.setOrder(&order{orderType: order_build, x: cx, y: cy, buildingToConstruct: b})
 				return
 			} else {
 				log.appendMessage("This building can't be placed here!")
@@ -348,6 +360,9 @@ func plr_moveCursor(f *faction, keyPressed string) {
 }
 
 func snapCursorToPawn(f *faction, g *gameMap) {
+	if !(f.areCoordsInSight(f.cursor.x, f.cursor.y) || f.areCoordsInRadarRadius(f.cursor.x, f.cursor.y) ){
+		return
+	}
 	b := g.getPawnAtCoordinates(f.cursor.x, f.cursor.y)
 	if b == nil {
 		f.cursor.snappedPawn = nil
@@ -387,13 +402,13 @@ func trySelectNextIdlePawn(f *faction) {
 
 func plr_keyToDirection(keyPressed string) (int, int) {
 	switch keyPressed {
-	case "2":
+	case "2", "DOWN":
 		return 0, 1
-	case "8":
+	case "8", "UP":
 		return 0, -1
-	case "4":
+	case "4", "LEFT":
 		return -1, 0
-	case "6":
+	case "6", "RIGHT":
 		return 1, 0
 	case "7":
 		return -1, -1

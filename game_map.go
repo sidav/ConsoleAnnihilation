@@ -63,7 +63,7 @@ func (g *gameMap) getPawnsInRadiusFrom(x, y, radius int) []*pawn {
 	var arr []*pawn
 	for _, p := range g.pawns {
 		px, py := p.getCenter()
-		if routines.GetSqDistanceBetween(x, y, px, py) <= radius*radius {
+		if routines.AreCoordsInRange(px, py, x, y, radius) {
 			arr = append(arr, p)
 		}
 	}
@@ -85,7 +85,7 @@ func (g *gameMap) getEnemyPawnsInRadiusFrom(x, y, radius int, f *faction) []*paw
 	var arr []*pawn
 	for _, p := range g.pawns {
 		px, py := p.getCenter()
-		if p.faction != f && routines.GetSqDistanceBetween(x, y, px, py) <= radius*radius {
+		if p.faction != f && routines.AreCoordsInRange(px, py, x, y, radius) {
 			arr = append(arr, p)
 		}
 	}
@@ -144,6 +144,13 @@ func (g *gameMap) canBuildingBeBuiltAt(b *pawn, cx, cy int) bool {
 	}
 	if b.buildingInfo.canBeBuiltOnThermalOnly && g.getNumberOfThermalDepositsUnderBuilding(b) == 0 {
 		return false
+	}
+	for x:=b.x;x<b.x+b.buildingInfo.w;x++ {
+		for y:=b.y;y<b.y+b.buildingInfo.w;y++ {
+			if !g.tileMap[x][y].isPassable {
+				return false
+			}
+		}
 	}
 	if len(g.getPawnsInRect(b.x, b.y, b.buildingInfo.w, b.buildingInfo.h)) > 0 {
 		return false

@@ -3,7 +3,6 @@ package main
 import (
 	"SomeTBSGame/routines"
 	cw "TCellConsoleWrapper"
-	"fmt"
 )
 
 var (
@@ -157,7 +156,7 @@ func renderBuilding(f *faction, p *pawn, g *gameMap, vx, vy int, inverse bool) {
 				}
 			} else { // building is under construction
 				colorToRender = cw.DARK_GREEN
-				if CURRENT_TURN/10 % 2 == 0 {
+				if getCurrentTurn() % 2 == 0 {
 					colorToRender = cw.GREEN
 				}
 			}
@@ -173,51 +172,6 @@ func renderBuilding(f *faction, p *pawn, g *gameMap, vx, vy int, inverse bool) {
 		}
 	}
 	cw.SetBgColor(cw.BLACK)
-}
-
-func renderInfoOnCursor(f *faction, g *gameMap) {
-
-	title := "nothing"
-	color := 2
-	details := make([]string, 0)
-	var res *pawnResourceInformation
-	sp := f.cursor.snappedPawn
-
-	if sp != nil {
-
-		renderOrderLine(sp)
-
-		color = sp.faction.getFactionColor()
-		title = sp.name
-		if sp.faction != f {
-			if sp.isBuilding() {
-				details = append(details, "(Enemy building)")
-			} else {
-				details = append(details, "(Enemy unit)")
-			}
-		} else {
-			details = append(details, sp.getCurrentOrderDescription())
-			if sp.res != nil && sp.currentConstructionStatus == nil {
-				res = sp.res
-			}
-		}
-		r_renderAttackRadius(sp)
-	}
-
-	if len(details) > 0 {
-		details = append(details, sp.getArmorDescriptionString())
-		if sp.hasWeapons() {
-			for _, wpn := range sp.weapons {
-				details = append(details, wpn.getDescriptionString())
-			}
-		}
-		if res != nil {
-			economyInfo := fmt.Sprintf("METAL: (+%d / -%d) ENERGY: (+%d / -%d)",
-				res.metalIncome, res.metalSpending, res.energyIncome, res.energySpending+res.energyReqForConditionalMetalIncome)
-			details = append(details, economyInfo)
-		}
-		routines.DrawSidebarInfoMenu(title, color, SIDEBAR_X, SIDEBAR_FLOOR_2, SIDEBAR_W, details)
-	}
 }
 
 func flushView() {
