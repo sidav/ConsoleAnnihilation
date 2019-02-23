@@ -4,6 +4,25 @@ func createBuilding(codename string, x, y int, f *faction) *pawn {
 	var b *pawn
 	switch codename {
 
+	case "bunkerwithmarines":
+		colors := []int{
+			7, -1, 7,
+			-1, 5, -1,
+			7, -1, 7}
+		app := &buildingAppearance{chars: "" +
+			"#^#" +
+			"<0>" +
+			"#V#", colors: colors}
+		b = &pawn{name: "Bunker With Marines Inside", maxHitpoints: 50, isHeavy: true, sightRadius: 6,
+			buildingInfo:              &building{w: 3, h: 3, appearance: app},
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 150, costM: 250, costE: 1200},
+			weapons: []*pawnWeaponInformation{
+				{attackDelay: 12, attackEnergyCost: 0, attackRadius: 7, attacksLand: true,
+					hitscan: &WeaponHitscan{baseDamage: 5, lightMod: 2},
+				},
+			},
+		}
+
 	case "metalmaker":
 		colors := []int{
 			7, 7,
@@ -26,7 +45,7 @@ func createBuilding(codename string, x, y int, f *faction) *pawn {
 			"==", colors: colors}
 		b = &pawn{name: "Solar Collector",
 			buildingInfo:              &building{w: 2, h: 2, appearance: app},
-			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 60, costM: 100, costE: 500},
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 80, costM: 100, costE: 500},
 			res:                       &pawnResourceInformation{energyIncome: 20},
 		}
 
@@ -42,7 +61,7 @@ func createBuilding(codename string, x, y int, f *faction) *pawn {
 			"#|#", colors: colors}
 		b = &pawn{name: "Metal Extractor",
 			buildingInfo:              &building{w: 3, h: 3, appearance: app, canBeBuiltOnMetalOnly: true},
-			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 60, costM: 100, costE: 500},
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 120, costM: 100, costE: 500},
 			res:                       &pawnResourceInformation{energyDrain: 9, isMetalExtractor: true},
 		}
 
@@ -59,7 +78,7 @@ func createBuilding(codename string, x, y int, f *faction) *pawn {
 			"=VV=", colors: colors}
 		b = &pawn{name: "Geothermal Powerplant",
 			buildingInfo:              &building{w: 4, h: 4, appearance: app, canBeBuiltOnThermalOnly: true},
-			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 60, costM: 350, costE: 1500},
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 160, costM: 350, costE: 1500},
 			res:                       &pawnResourceInformation{isGeothermalPowerplant: true},
 		}
 
@@ -157,7 +176,7 @@ func createBuilding(codename string, x, y int, f *faction) *pawn {
 			"/=\\", colors: colors}
 		b = &pawn{name: "Tech 1 Core KBot Lab",
 			buildingInfo:              &building{w: 3, h: 3, appearance: app},
-			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 100, costM: 100, costE: 500},
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 150, costM: 100, costE: 500},
 			nanolatherInfo:            &nanolatherInformation{builderCoeff: 1, allowedUnits: []string{"coreck", "coreak", "corethud"}},
 		}
 
@@ -215,7 +234,7 @@ func createBuilding(codename string, x, y int, f *faction) *pawn {
 			"=-=", colors: colors}
 		b = &pawn{name: "Radar station", maxHitpoints: 25, isLight: true, radarRadius: 30,
 			buildingInfo:              &building{w: 3, h: 3, appearance: app},
-			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 100, costM: 250, costE: 450},
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 150, costM: 250, costE: 450},
 			res: &pawnResourceInformation{energyDrain: 15},
 		}
 
@@ -224,7 +243,7 @@ func createBuilding(codename string, x, y int, f *faction) *pawn {
 		app := &buildingAppearance{chars: "T", colors: colors}
 		b = &pawn{name: "Light Laser Turret", maxHitpoints: 90, isHeavy: true, regenPeriod: 70, sightRadius: 6,
 			buildingInfo:              &building{w: 1, h: 1, appearance: app},
-			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 100, costM: 250, costE: 900},
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 150, costM: 250, costE: 900},
 			weapons: []*pawnWeaponInformation{
 				{attackDelay: 16, attackEnergyCost: 15, attackRadius: 6, attacksLand: true,
 					hitscan: &WeaponHitscan{baseDamage: 6},
@@ -243,7 +262,7 @@ func createBuilding(codename string, x, y int, f *faction) *pawn {
 			"=-=", colors: colors}
 		b = &pawn{name: "Guardian", maxHitpoints: 65, isHeavy: true,
 			buildingInfo:              &building{w: 3, h: 3, appearance: app},
-			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 100, costM: 250, costE: 900},
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 250, costM: 250, costE: 900},
 			weapons: []*pawnWeaponInformation{
 				{attackDelay: 35, attackEnergyCost: 250, attackRadius: 12, attacksLand: true,
 					hitscan: &WeaponHitscan{baseDamage: 3, heavyMod: 5},
@@ -262,7 +281,7 @@ func createBuilding(codename string, x, y int, f *faction) *pawn {
 			"=-=", colors: colors}
 		b = &pawn{name: "Railgun Turret", maxHitpoints: 40, isHeavy: true,
 			buildingInfo:              &building{w: 3, h: 3, appearance: app},
-			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 100, costM: 450, costE: 1200},
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 250, costM: 450, costE: 1200},
 			weapons: []*pawnWeaponInformation{
 				{attackDelay: 55, attackEnergyCost: 150, attackRadius: 10, attacksLand: true,
 					hitscan: &WeaponHitscan{baseDamage: 5, heavyMod: 15},
@@ -300,7 +319,7 @@ func createBuilding(codename string, x, y int, f *faction) *pawn {
 	b.faction = f
 	b.codename = codename
 	if b.sightRadius == 0 {
-		b.sightRadius = b.buildingInfo.w 
+		b.sightRadius = b.buildingInfo.w
 	}
 	if b.nanolatherInfo != nil && b.res == nil {
 		b.res = &pawnResourceInformation{} // adds zero-value resource info struct for spendings usage.
@@ -357,6 +376,8 @@ func getBuildingNameAndDescription(code string) (string, string) {
 		description += "A radar facility. Reveals enemy units' locations in an area arount itself. Drains energy."
 	case "wall":
 		description += "A hard metal block designed to block enemy movement."
+	case "bunkerwithmarines":
+		description += "It's a bunker! With LIVING NON-ROBOTIC MARINES inside! They can't leave the bunker because of the very nice sofa and free beer."
 	default:
 		description += "No description."
 	}

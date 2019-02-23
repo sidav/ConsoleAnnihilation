@@ -3,7 +3,6 @@ package main
 import (
 	"SomeTBSGame/routines"
 	cw "TCellConsoleWrapper"
-	"strconv"
 	"time"
 )
 
@@ -47,7 +46,7 @@ func main() {
 	showBriefing()
 
 	for {
-		startTime := time.Now()
+		// startTime := time.Now()
 		for _, f := range CURRENT_MAP.factions {
 			f.recalculateSeenTiles()
 			checkWinOrLose()
@@ -58,7 +57,7 @@ func main() {
 				CURRENT_FACTION_SEEING_THE_SCREEN = f
 				renderFactionStats(f)
 				plr_control(f, CURRENT_MAP)
-				log.appendMessage("DEBUG: TOTAL FLUSHES: "+strconv.Itoa(cw.GetNumberOfRecentFlushes()))
+				// log.appendMessage("DEBUG: TOTAL FLUSHES: "+strconv.Itoa(cw.GetNumberOfRecentFlushes()))
 			} else if f.aiControlled {
 				ai_controlFaction(f)
 			}
@@ -88,8 +87,8 @@ func main() {
 			f.recalculateFactionEconomy(CURRENT_MAP)
 		}
 		doAllNanolathes(CURRENT_MAP)
-		timeForTurn := int(time.Since(startTime) / time.Millisecond)
-		log.appendMessage("DEBUG: Time for turn: " + strconv.Itoa(timeForTurn) + "ms") // TODO: make it removable
+		// timeForTurn := int(time.Since(startTime) / time.Millisecond)
+		// log.appendMessage("DEBUG: Time for turn: " + strconv.Itoa(timeForTurn) + "ms") // TODO: make it removable
 	}
 
 }

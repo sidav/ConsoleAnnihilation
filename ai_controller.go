@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	AI_WRITE_DEBUG_TO_LOG = true
+	AI_WRITE_DEBUG_TO_LOG = false
 )
 
 var (
