@@ -18,6 +18,10 @@ func Randomize() {
 	x = int(time.Duration(time.Now().UnixNano())/time.Millisecond) % m
 }
 
+func SetSeed(val int) {
+	x = val
+}
+
 func Random(modulo int) int {
 	x = (x*a + c) % m
 	if modulo != 0 {
