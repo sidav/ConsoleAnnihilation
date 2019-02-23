@@ -140,10 +140,14 @@ func (g *gameMap) getNumberOfThermalDepositsUnderBuilding(b *pawn) int {
 	return g.getNumberOfThermalDepositsInRect(b.x, b.y, b.buildingInfo.w, b.buildingInfo.h)
 }
 
-func (g *gameMap) isConstructionSiteBlockedByUnitOrBuilding(x, y, w, h int) bool  {
+func (g *gameMap) isConstructionSiteBlockedByUnitOrBuilding(x, y, w, h int, tight bool) bool  {
 	for _, p := range g.pawns {
 		if p.isBuilding() {
-			if routines.AreTwoCellRectsOverlapping(x-1, y-1, w+2, h+2, p.x, p.y, p.buildingInfo.w, p.buildingInfo.h) {
+			if p.buildingInfo.allowsTightPlacement && tight {
+				if routines.AreTwoCellRectsOverlapping(x, y, w, h, p.x, p.y, p.buildingInfo.w, p.buildingInfo.h) {
+					return true
+				}
+			} else if routines.AreTwoCellRectsOverlapping(x-1, y-1, w+2, h+2, p.x, p.y, p.buildingInfo.w, p.buildingInfo.h) {
 				// -1s and +2s are to prevent tight placement...
 				// ..and ensure that there always will be at least 1 cell between buildings.
 				return true
@@ -177,7 +181,7 @@ func (g *gameMap) canBuildingBeBuiltAt(b *pawn, cx, cy int) bool {
 			}
 		}
 	}
-	if g.isConstructionSiteBlockedByUnitOrBuilding(bx, by, b.buildingInfo.w, b.buildingInfo.h) {
+	if g.isConstructionSiteBlockedByUnitOrBuilding(bx, by, b.buildingInfo.w, b.buildingInfo.h, b.buildingInfo.allowsTightPlacement) {
 		return false
 	}
 	return true

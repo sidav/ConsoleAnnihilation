@@ -306,8 +306,15 @@ func plr_selectBuildingSite(p *pawn, b *pawn, m *gameMap) {
 		cursor := f.cursor
 		cx, cy := cursor.getCoords()
 		cursor.currentCursorMode = CURSOR_BUILD
-		cursor.w = b.buildingInfo.w
-		cursor.h = b.buildingInfo.h
+
+		if b.buildingInfo.allowsTightPlacement {
+			cursor.w = b.buildingInfo.w
+			cursor.h = b.buildingInfo.h
+		} else {
+			cursor.w = b.buildingInfo.w + 2
+			cursor.h = b.buildingInfo.h	+ 2
+		}
+
 		cursor.buildOnMetalOnly = b.buildingInfo.canBeBuiltOnMetalOnly
 		cursor.buildOnThermalOnly = b.buildingInfo.canBeBuiltOnThermalOnly
 		cursor.radius = b.getMaxRadiusToFire()
