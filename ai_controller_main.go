@@ -25,7 +25,7 @@ type aiData struct {
 }
 
 func ai_createAiData() *aiData {
-	routines.Randomize()
+	ai_write("Seed is " + strconv.Itoa(routines.Randomize()))
 	ai := &aiData{
 		RECALCULATE_PERIODS_EACH:           50,
 		CONTROL_PERIOD:                     10, // 80
@@ -83,12 +83,12 @@ func ai_controlPawn(currAi *aiData, p *pawn) {
 		p.order = &order{orderType: order_attack_move, x: routines.Random(mapW), y: routines.Random(mapH)}
 	}
 	// construct
-	if currAi.current_units_count < currAi.unit_limit {
+	if currAi.current_units_count < currAi.unit_limit && currAi.construction_orders_this_turn < currAi.MAX_CONSTRUCTION_ORDERS_AT_A_TIME {
 		if p.canConstructBuildings() {
 			ai_decideConstruction(p)
 		}
 		// produce
-		if p.canConstructUnits() && currAi.construction_orders_this_turn < currAi.MAX_CONSTRUCTION_ORDERS_AT_A_TIME {
+		if p.canConstructUnits() {
 			currAi.ai_decideProduction(p)
 		}
 	}

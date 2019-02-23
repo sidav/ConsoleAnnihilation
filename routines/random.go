@@ -14,8 +14,9 @@ var (
 	x int
 )
 
-func Randomize() {
+func Randomize() int {
 	x = int(time.Duration(time.Now().UnixNano())/time.Millisecond) % m
+	return x
 }
 
 func SetSeed(val int) {
