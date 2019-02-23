@@ -61,14 +61,14 @@ func main() {
 			if !GAME_IS_RUNNING {
 				return
 			}
+			if f.aiControlled {
+				ai_controlFaction(f)
+			}
 			if f.playerControlled {
 				CURRENT_FACTION_SEEING_THE_SCREEN = f
 				renderFactionStats(f)
 				plr_control(f, CURRENT_MAP)
 				debug_write("TOTAL FLUSHES: " + strconv.Itoa(cw.GetNumberOfRecentFlushes()))
-			}
-			if f.aiControlled {
-				ai_controlFaction(f)
 			}
 		}
 		for i := 0; i < 10; i++ {
