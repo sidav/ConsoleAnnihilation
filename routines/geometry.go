@@ -31,6 +31,10 @@ func AreTwoCellRectsOverlapping(x1, y1, w1, h1, x2, y2, w2, h2 int) bool {
 }
 
 func AreCircleAndRectOverlapping(cx, cy, r, rx, ry, w, h int) bool {
-	// downleftx, downlefty := rx+w, ry+h
-	return true
+	// topleft: rx, ry
+	// topright: rx+w, ry
+	// downleft: rx, ry+h
+	// downright: rx+w, ry+h
+	// will work bad (bad case example: it won't detect veeeeeeeery wide rectangle and small circle intersection if no corners are in the circle), but suitable for the game, I hope...
+	return AreCoordsInRange(rx, ry, cx, cy, r) || AreCoordsInRange(rx+w, ry, cx, cy, r) || AreCoordsInRange(rx, ry+h, cx, cy, r) || AreCoordsInRange(rx+w, ry+h, cx, cy, r)
 }

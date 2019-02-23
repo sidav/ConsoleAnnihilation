@@ -54,7 +54,11 @@ func (g *gameMap) getPawnsInRadiusFrom(x, y, radius int) []*pawn {
 	var arr []*pawn
 	for _, p := range g.pawns {
 		px, py := p.getCenter()
-		if routines.AreCoordsInRange(px, py, x, y, radius) {
+		if p.isBuilding() && routines.AreCircleAndRectOverlapping(x, y, radius, p.x, p.y, p.buildingInfo.w, p.buildingInfo.h ){
+			arr = append(arr, p)
+			continue
+		}
+		if p.isUnit() && routines.AreCoordsInRange(px, py, x, y, radius) {
 			arr = append(arr, p)
 		}
 	}
@@ -82,8 +86,14 @@ func (g *gameMap) getEnemyPawnsInRadiusFrom(x, y, radius int, f *faction) []*paw
 	var arr []*pawn
 	for _, p := range g.pawns {
 		px, py := p.getCenter()
-		if p.faction != f && routines.AreCoordsInRange(px, py, x, y, radius) {
-			arr = append(arr, p)
+		if p.faction != f {
+			if p.isBuilding() && routines.AreCircleAndRectOverlapping(x, y, radius, p.x, p.y, p.buildingInfo.w, p.buildingInfo.h ){
+				arr = append(arr, p)
+				continue
+			}
+			if p.isUnit() && routines.AreCoordsInRange(px, py, x, y, radius) {
+				arr = append(arr, p)
+			}
 		}
 	}
 	return arr
