@@ -1,5 +1,10 @@
 package main
 
+import (
+	"SomeTBSGame/routines"
+	"strconv"
+)
+
 //var MIS1_MAP = &[]string {
 //	"~~~.........................^............................................",
 //	"~~..;;......................^............................................",
@@ -47,6 +52,8 @@ var MIS1_MAP = &[]string {
 
 func initMapForMission(g *gameMap, missionNumber int) {
 	g.initTileMap(MIS1_MAP)
+
+	ai_write("Seed is " + strconv.Itoa(routines.Randomize()))
 
 	g.factions = append(g.factions, createFaction("AI 1", 0,true, true))
 	g.factions[0].cursor.x = mapW/2

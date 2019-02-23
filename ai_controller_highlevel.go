@@ -23,21 +23,18 @@ func (currAi *aiData) ai_decideProduction(factory *pawn) {
 	ai_write("nothing to produce.")
 }
 
-func ai_decideConstruction(builder *pawn) {
-	variants := &builder.nanolatherInfo.allowedBuildings
-	ai_makeBuildOrderForBuilding(builder, (*variants)[routines.Random(len(*variants))])
-	//listOfCombatUnits := make([]*pawn, 0)
-	//for _, variant := range *variants {
-	//	pawnUnderConsideration := createUnit(variant, 0, 0, f, false)
-	//	if pawnUnderConsideration.canMove() && pawnUnderConsideration.hasWeapons() {
-	//		listOfCombatUnits = append(listOfCombatUnits, pawnUnderConsideration)
-	//	}
-	//}
-	//if len(listOfCombatUnits) > 0 {
-	//	pwn := listOfCombatUnits[routines.Random(len(listOfCombatUnits))]
-	//	ai_write("producing " + pwn.name)
-	//	return pwn
-	//}
-	//ai_write("nothing to produce.")
-	//return nil
+func (ai *aiData) ai_decideConstruction(builder *pawn) {
+	variants := builder.nanolatherInfo.allowedBuildings
+	step := ai.getCurrentOrderStep()
+	final_build_variant := ""
+	for _, variant := range variants {
+		if variant == step.buildCode || variant == step.buildCodeAlt {
+			final_build_variant = variant
+			ai.orderStepSatisfied()
+		}
+	}
+	if final_build_variant == "" {
+		final_build_variant = variants[routines.Random(len(variants))]
+	}
+	ai_makeBuildOrderForBuilding(builder, final_build_variant)
 }

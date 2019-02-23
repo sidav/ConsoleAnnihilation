@@ -16,30 +16,33 @@ type aiData struct {
 	construction_orders_this_turn      int
 	max_constr_orders_increment_period int
 
-	unit_limit           int // it MAY be exceeded (dependant on recount units period), be advised.
-	current_units_count  int // 99999 is for preventing AI production stucking. The var will be recalculated later anyway.
-	recount_units_period int
+	unit_limit            int // it MAY be exceeded (dependant on recount units period), be advised.
+	current_units_count   int // 99999 is for preventing AI production stucking. The var will be recalculated later anyway.
+	currentEngineersCount int
+	recount_units_period  int
 
-	buildOrder             *[]*ai_buildOrderStep // not meant to be changed
+	buildOrder        *[]*ai_buildOrderStep // not meant to be changed
+	currentStepNumber int
 }
 
 func ai_createAiData() *aiData {
-	ai_write("Seed is " + strconv.Itoa(routines.Randomize()))
+
 	ai := &aiData{
 		RECALCULATE_PERIODS_EACH:           50,
 		CONTROL_PERIOD:                     10, // 80
 		AI_MIN_CONTROL_PERIOD:              10,
 		AI_CONTROL_PERIOD_DECREMENT:        5,
-		MAX_CONSTRUCTION_ORDERS_AT_A_TIME:  0,
+		MAX_CONSTRUCTION_ORDERS_AT_A_TIME:  1,
 		construction_orders_this_turn:      0,
 		max_constr_orders_increment_period: 100,
-		unit_limit:                         25,    // it MAY be exceeded (dependant on recount units period), be advised.
-		current_units_count:                1, // 99999 is for preventing AI production stucking. The var will be recalculated later anyway.
+		unit_limit:                         25, // it MAY be exceeded (dependant on recount units period), be advised.
+		current_units_count:                1,  // 99999 is for preventing AI production stucking. The var will be recalculated later anyway.
+		currentEngineersCount:              1,
 		recount_units_period:               100,
 	}
 	buildOrderNum := routines.Random(len(ai_allBuildOrders))
 	ai.buildOrder = &(ai_allBuildOrders[buildOrderNum])
-	ai_write("SELECTED BUILD ORDER #"+strconv.Itoa(buildOrderNum))
+	ai_write("SELECTED BUILD ORDER #" + strconv.Itoa(buildOrderNum+1))
 	return ai
 }
 
@@ -85,7 +88,7 @@ func ai_controlPawn(currAi *aiData, p *pawn) {
 	// construct
 	if currAi.current_units_count < currAi.unit_limit && currAi.construction_orders_this_turn < currAi.MAX_CONSTRUCTION_ORDERS_AT_A_TIME {
 		if p.canConstructBuildings() {
-			ai_decideConstruction(p)
+			currAi.ai_decideConstruction(p)
 		}
 		// produce
 		if p.canConstructUnits() {
@@ -122,10 +125,16 @@ func (currAi *aiData) ai_recalculateParamsIfNeccessary(f *faction) {
 }
 
 func (currAi *aiData) recountUnitsAndCheckBuildsSatisfations(f *faction) {
+
 	currAi.current_units_count = 0
+	currAi.currentEngineersCount = 0
+
 	for _, p := range CURRENT_MAP.pawns {
 		if p.faction == f {
 			currAi.current_units_count++
+			if p.canConstructBuildings() {
+				currAi.currentEngineersCount++
+			}
 		}
 	}
 	ai_write("I've got " + strconv.Itoa(currAi.current_units_count) + " minions right now.")
