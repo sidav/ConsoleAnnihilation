@@ -138,5 +138,6 @@ func (currAi *aiData) recountUnitsAndCheckBuildsSatisfations(f *faction) {
 		}
 	}
 	ai_write("I've got " + strconv.Itoa(currAi.current_units_count) + " minions right now.")
+	ai_write("I've got " + strconv.Itoa(currAi.currentEngineersCount) + " engineers right now.")
 
 }

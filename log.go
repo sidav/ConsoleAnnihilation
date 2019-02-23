@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-const LOG_HEIGHT = 5
+const LOG_HEIGHT = 10
 
 type logMessage struct {
 	message string

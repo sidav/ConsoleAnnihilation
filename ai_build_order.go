@@ -17,6 +17,10 @@ func (ai *aiData) orderStepSatisfied() {
 	}
 }
 
+func (ai *aiData) shouldProduceEngineers() bool {
+	return ai.currentEngineersCount < ai.getCurrentOrderStep().desiredEngineers
+}
+
 var ai_allBuildOrders = [][]*ai_buildOrderStep{
 	// order 1: 2 KBot Labs
 	{
@@ -41,8 +45,8 @@ var ai_allBuildOrders = [][]*ai_buildOrderStep{
 		{desiredMIncome: 0, desiredEIncome: 0, desiredEngineers: 1, buildCode: "armkbotlab", buildCodeAlt: "corekbotlab"},
 		{desiredMIncome: 0, desiredEIncome: 0, desiredEngineers: 1, buildCode: "solar"},
 		{desiredMIncome: 0, desiredEIncome: 0, desiredEngineers: 1, buildCode: "armvehfactory", buildCodeAlt: "corevehfactory"},
-		{desiredMIncome: 0, desiredEIncome: 0, desiredEngineers: 1, buildCode: "solar"},
-		{desiredMIncome: 0, desiredEIncome: 0, desiredEngineers: 1, buildCode: "solar"},
+		{desiredMIncome: 0, desiredEIncome: 0, desiredEngineers: 2, buildCode: "solar"},
+		{desiredMIncome: 0, desiredEIncome: 0, desiredEngineers: 2, buildCode: "solar"},
 		{desiredMIncome: 0, desiredEIncome: 0, desiredEngineers: 2, buildCode: "lturret"},
 		{desiredMIncome: 0, desiredEIncome: 0, desiredEngineers: 2, buildCode: ""},
 	},
