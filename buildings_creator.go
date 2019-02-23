@@ -142,7 +142,7 @@ func createBuilding(codename string, x, y int, f *faction) *pawn {
 			"\\=/", colors: colors}
 		b = &pawn{name: "Tech 1 KBot Lab",
 			buildingInfo:              &building{w: 3, h: 3, appearance: app},
-			nanolatherInfo:            &nanolatherInformation{builderCoeff: 1, allowedUnits: []string{"armpeewee", "armhammer"}},
+			nanolatherInfo:            &nanolatherInformation{builderCoeff: 1, allowedUnits: []string{"armck", "armpeewee", "armhammer"}},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 100, costM: 100, costE: 500},
 		}
 
@@ -160,7 +160,20 @@ func createBuilding(codename string, x, y int, f *faction) *pawn {
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 100, costM: 100, costE: 500},
 			nanolatherInfo:            &nanolatherInformation{builderCoeff: 1, allowedUnits: []string{"coreck", "coreak", "corethud"}},
 		}
-
+	case "armt2kbotlab":
+		colors := []int{
+			7, 7, 7,
+			7, -1, 7,
+			7, 7, 7}
+		app := &buildingAppearance{chars: "" +
+			"|=|" +
+			"=2=" +
+			"|=|", colors: colors}
+		b = &pawn{name: "Tech 2 Arm KBot Lab",
+			buildingInfo:              &building{w: 3, h: 3, appearance: app},
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 150, costM: 450, costE: 1200},
+			nanolatherInfo:            &nanolatherInformation{builderCoeff: 1, allowedUnits: []string{"armfido"}},
+		}
 	case "coret2kbotlab":
 		colors := []int{
 			7, 7, 7,
@@ -187,7 +200,7 @@ func createBuilding(codename string, x, y int, f *faction) *pawn {
 			"\\==/", colors: colors}
 		b = &pawn{name: "Tech 1 Vehicle Factory", buildingInfo: &building{w: 4, h: 3, appearance: app},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 120, costM: 175, costE: 700},
-			nanolatherInfo:            &nanolatherInformation{builderCoeff: 1, allowedUnits: []string{"armjeffy", "armflash"}},
+			nanolatherInfo:            &nanolatherInformation{builderCoeff: 1, allowedUnits: []string{"armcv", "armjeffy", "armflash"}},
 		}
 
 	case "corevehfactory":
