@@ -21,10 +21,10 @@ func ai_makeBuildOrderForBuilding(builder *pawn, buildingCode string) bool { // 
 		placey = routines.RandInRange(by-BUILD_SEARCH_RANGE, by+BUILD_SEARCH_RANGE)
 		if CURRENT_MAP.canBuildingBeBuiltAt(building, placex, placey) &&
 			CURRENT_MAP.getNumberOfMetalDepositsInRect(placex, placey, b_w, b_h) == 0 { // restrict building on metal
-				building.x, building.y = placex - b_w / 2, placey - b_h / 2
-				builder.setOrder(&order{orderType: order_build, buildingToConstruct: building})
-				success = true
-				break
+			building.x, building.y = placex-b_w/2, placey-b_h/2
+			builder.setOrder(&order{orderType: order_build, buildingToConstruct: building})
+			success = true
+			break
 		}
 	}
 	return success
@@ -35,7 +35,7 @@ func ai_makeBuildOrderForBuilding(builder *pawn, buildingCode string) bool { // 
 	//}
 }
 
-func ai_tryBuildMetalExtractor(builder *pawn, buildingCode string) bool  {
+func ai_tryBuildMetalExtractor(builder *pawn, buildingCode string) bool {
 
 	BUILD_SEARCH_RANGE := 20
 
@@ -46,17 +46,17 @@ func ai_tryBuildMetalExtractor(builder *pawn, buildingCode string) bool  {
 	b_w, b_h := building.buildingInfo.w, building.buildingInfo.h
 
 	var placex, placey int
-	goodplacex, goodplacey := -1, -1
+	goodplacex, goodplacey := -1, -1 // center, not upper-left
 	metalForGoodPlace := 0
-	for try := 0; try < 100; try++ {
-		placex = routines.RandInRange(bx-BUILD_SEARCH_RANGE, bx+BUILD_SEARCH_RANGE)
-		placey = routines.RandInRange(by-BUILD_SEARCH_RANGE, by+BUILD_SEARCH_RANGE)
-		metalHere := CURRENT_MAP.getNumberOfMetalDepositsInRect(placex, placey, b_w, b_h)
-		// ai_write(fmt.Sprintf("%d METAL AT %d, %d (%dx%d)", metalHere, placex, placey, b_w, b_h))
-		if  metalHere > metalForGoodPlace &&
-			CURRENT_MAP.canBuildingBeBuiltAt(building, placex, placey) {
+	for placex = bx - BUILD_SEARCH_RANGE; placex < bx+BUILD_SEARCH_RANGE; placex++ {
+		for placey = by - BUILD_SEARCH_RANGE; placey < by+BUILD_SEARCH_RANGE; placey++ {
+			metalHere := CURRENT_MAP.getNumberOfMetalDepositsInRect(placex-b_w/2, placey-b_h/2, b_w, b_h)
+			// ai_write(fmt.Sprintf("%d METAL AT %d, %d (%dx%d)", metalHere, placex, placey, b_w, b_h))
+			if metalHere > metalForGoodPlace &&
+				CURRENT_MAP.canBuildingBeBuiltAt(building, placex, placey) {
 				goodplacex, goodplacey = placex, placey
 				metalForGoodPlace = metalHere
+			}
 		}
 	}
 	if metalForGoodPlace > 0 {
