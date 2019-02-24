@@ -88,6 +88,7 @@ func ai_controlPawn(currAi *aiData, p *pawn) {
 			enemy := enemyPawnsInRadius[0]
 			p.order = &order{orderType: order_attack_move, x:enemy.x, y: enemy.y}
 			ai_write("Self-protection for the Commander activated.")
+			return
 		}
 	}
 	// attack
