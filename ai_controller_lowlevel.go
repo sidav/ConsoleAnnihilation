@@ -20,7 +20,7 @@ func ai_makeBuildOrderForBuilding(builder *pawn, buildingCode string) bool { // 
 		placex = routines.RandInRange(bx-BUILD_SEARCH_RANGE, bx+BUILD_SEARCH_RANGE)
 		placey = routines.RandInRange(by-BUILD_SEARCH_RANGE, by+BUILD_SEARCH_RANGE)
 		if CURRENT_MAP.canBuildingBeBuiltAt(building, placex, placey) &&
-			CURRENT_MAP.getNumberOfMetalDepositsInRect(placex, placey, b_w, b_h) == 0 { // restrict building on metal
+			CURRENT_MAP.getNumberOfMetalDepositsInRect(placex-b_w/2, placey-b_h/2, b_w, b_h) == 0 { // restrict building on metal
 			building.x, building.y = placex-b_w/2, placey-b_h/2
 			builder.setOrder(&order{orderType: order_build, buildingToConstruct: building})
 			success = true
@@ -37,7 +37,7 @@ func ai_makeBuildOrderForBuilding(builder *pawn, buildingCode string) bool { // 
 
 func ai_tryBuildMetalExtractor(builder *pawn, buildingCode string) bool {
 
-	BUILD_SEARCH_RANGE := 20
+	BUILD_SEARCH_RANGE := 25
 
 	success := false
 
