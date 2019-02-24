@@ -14,13 +14,19 @@ func ai_makeBuildOrderForBuilding(builder *pawn, buildingCode string) bool { // 
 	bx, by := builder.getCenter()
 	building := createBuilding(buildingCode, bx, by, builder.faction)
 	b_w, b_h := building.buildingInfo.w, building.buildingInfo.h
+	tight := building.buildingInfo.allowsTightPlacement
 
 	var placex, placey int
 	for try := 0; try < 10; try++ {
 		placex = routines.RandInRange(bx-BUILD_SEARCH_RANGE, bx+BUILD_SEARCH_RANGE)
 		placey = routines.RandInRange(by-BUILD_SEARCH_RANGE, by+BUILD_SEARCH_RANGE)
-		if CURRENT_MAP.canBuildingBeBuiltAt(building, placex, placey) &&
-			CURRENT_MAP.getNumberOfMetalDepositsInRect(placex-b_w/2, placey-b_h/2, b_w, b_h) == 0 { // restrict building on metal
+		if CURRENT_MAP.canBuildingBeBuiltAt(building, placex, placey) {
+			// restrict building on metal
+			if (tight && CURRENT_MAP.getNumberOfMetalDepositsInRect(placex-b_w/2, placey-b_h/2, b_w, b_h) != 0) ||
+				// ...or near it, if building does not allow tight placement and will interfere with possible metal extractor placement.
+				(!tight && CURRENT_MAP.getNumberOfMetalDepositsInRect(placex-b_w/2-1, placey-b_h/2-1, b_w+2, b_h+2) != 0){
+				continue
+			}
 			building.x, building.y = placex-b_w/2, placey-b_h/2
 			builder.setOrder(&order{orderType: order_build, buildingToConstruct: building})
 			success = true
