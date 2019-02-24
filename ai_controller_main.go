@@ -83,7 +83,13 @@ func ai_controlPawn(currAi *aiData, p *pawn) {
 	if !p.isCommander && p.canMove() && p.hasWeapons() {
 		enemyCommander := ai_getEnemyCommander(p.faction)
 		if enemyCommander != nil {
-			p.order = &order{orderType: order_attack_move, x: enemyCommander.x, y: enemyCommander.y}
+			AMOVE_RADIUS := 15
+			x, y := -1, -1
+			for !areCoordsValid(x, y) {
+				x = routines.RandInRange(enemyCommander.x - AMOVE_RADIUS, enemyCommander.x + AMOVE_RADIUS)
+				y = routines.RandInRange(enemyCommander.y - AMOVE_RADIUS, enemyCommander.y + AMOVE_RADIUS)
+			}
+			p.order = &order{orderType: order_attack_move, x: x, y: y}
 			return
 		}
 		p.order = &order{orderType: order_attack_move, x: routines.Random(mapW), y: routines.Random(mapH)}
