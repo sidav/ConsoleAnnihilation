@@ -79,11 +79,22 @@ func ai_controlPawn(currAi *aiData, p *pawn) {
 	if p.order != nil {
 		return
 	}
+	// specific Commander orders
+	if p.isCommander {
+		const RADIUS_FOR_COMMANDER_TO_ATTACK = 10
+		x, y := p.getCenter()
+		enemyPawnsInRadius := CURRENT_MAP.getEnemyPawnsInRadiusFrom(x, y, RADIUS_FOR_COMMANDER_TO_ATTACK, p.faction)
+		if len(enemyPawnsInRadius) > 0 {
+			enemy := enemyPawnsInRadius[0]
+			p.order = &order{orderType: order_attack_move, x:enemy.x, y: enemy.y}
+			ai_write("Self-protection for the Commander activated.")
+		}
+	}
 	// attack
 	if !p.isCommander && p.canMove() && p.hasWeapons() {
 		enemyCommander := ai_getEnemyCommander(p.faction)
 		if enemyCommander != nil {
-			AMOVE_RADIUS := 15
+			const AMOVE_RADIUS = 15
 			x, y := -1, -1
 			for !areCoordsValid(x, y) {
 				x = routines.RandInRange(enemyCommander.x - AMOVE_RADIUS, enemyCommander.x + AMOVE_RADIUS)

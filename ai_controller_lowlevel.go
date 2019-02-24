@@ -28,7 +28,7 @@ func ai_makeBuildOrderForBuilding(builder *pawn, buildingCode string) bool { // 
 				continue
 			}
 			building.x, building.y = placex-b_w/2, placey-b_h/2
-			builder.setOrder(&order{orderType: order_build, buildingToConstruct: building})
+			builder.setOrder(&order{orderType: order_build, x: placex, y: placey, buildingToConstruct: building})
 			success = true
 			break
 		}
@@ -68,7 +68,7 @@ func ai_tryBuildMetalExtractor(builder *pawn, buildingCode string) bool {
 	if metalForGoodPlace > 0 {
 		ai_write("building metal extractor for " + strconv.Itoa(metalForGoodPlace) + " deposits.")
 		building.x, building.y = goodplacex-b_w/2, goodplacey-b_h/2
-		builder.setOrder(&order{orderType: order_build, buildingToConstruct: building})
+		builder.setOrder(&order{orderType: order_build, x: goodplacex, y: goodplacey, buildingToConstruct: building})
 		success = true
 	} else {
 		ai_write("A good place for metal extractor is not found.")
