@@ -97,7 +97,7 @@ func ai_controlPawn(currAi *aiData, p *pawn) {
 		if enemyCommander != nil {
 			const AMOVE_RADIUS = 15
 			x, y := -1, -1
-			for !areCoordsValid(x, y) {
+			for !(areCoordsValid(x, y) && CURRENT_MAP.tileMap[x][y].isPassable) {
 				x = routines.RandInRange(enemyCommander.x - AMOVE_RADIUS, enemyCommander.x + AMOVE_RADIUS)
 				y = routines.RandInRange(enemyCommander.y - AMOVE_RADIUS, enemyCommander.y + AMOVE_RADIUS)
 			}
