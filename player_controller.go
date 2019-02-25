@@ -40,7 +40,7 @@ func plr_selectPawn(f *faction, m *gameMap) *[]*pawn { // returns a pointer to a
 		reRenderNeeded = true
 		switch keyPressed {
 
-		case "NOTHING":
+		case "NOTHING", "NON-KEY":
 			if !IS_PAUSED && isTimeToAutoEndTurn() {
 				last_time = time.Now()
 				PLR_LOOP = false // end turn
@@ -112,7 +112,8 @@ func plr_selectPawn(f *faction, m *gameMap) *[]*pawn { // returns a pointer to a
 		case "INSERT": // cheat
 			CURRENT_MAP.addBuilding(createBuilding("wall", f.cursor.x, f.cursor.y, CURRENT_MAP.factions[1]), true)
 		case "HOME": // cheat
-			CURRENT_MAP.addBuilding(createBuilding("lturret", f.cursor.x, f.cursor.y, CURRENT_MAP.factions[0]), true)
+			// CURRENT_MAP.addBuilding(createBuilding("lturret", f.cursor.x, f.cursor.y, CURRENT_MAP.factions[0]), true)
+			endTurnPeriod = 0
 		case "END": // cheat
 			CHEAT_IGNORE_FOW = !CHEAT_IGNORE_FOW
 
@@ -305,8 +306,15 @@ func plr_selectBuildingSite(p *pawn, b *pawn, m *gameMap) {
 		cursor := f.cursor
 		cx, cy := cursor.getCoords()
 		cursor.currentCursorMode = CURSOR_BUILD
-		cursor.w = b.buildingInfo.w
-		cursor.h = b.buildingInfo.h
+
+		if b.buildingInfo.allowsTightPlacement {
+			cursor.w = b.buildingInfo.w
+			cursor.h = b.buildingInfo.h
+		} else {
+			cursor.w = b.buildingInfo.w + 2
+			cursor.h = b.buildingInfo.h	+ 2
+		}
+
 		cursor.buildOnMetalOnly = b.buildingInfo.canBeBuiltOnMetalOnly
 		cursor.buildOnThermalOnly = b.buildingInfo.canBeBuiltOnThermalOnly
 		cursor.radius = b.getMaxRadiusToFire()

@@ -12,39 +12,42 @@ func areCoordsValid(x, y int) bool {
 }
 
 var (
-	GAME_IS_RUNNING                      = true
+	GAME_IS_RUNNING                     = true
 	log                                 *LOG
 	CURRENT_TICK                        = 1
 	CURRENT_MAP                         *gameMap
 	CURRENT_FACTION_SEEING_THE_SCREEN   *faction // for various rendering crap
-	FIRE_WAS_OPENED_ON_SCREEN_THIS_TURN bool // for killing pewpews overrender.
+	FIRE_WAS_OPENED_ON_SCREEN_THIS_TURN bool     // for killing pewpews overrender.
 	CHEAT_IGNORE_FOW                    bool
+	DEBUG_OUTPUT                        bool
 )
 
 func getCurrentTurn() int {
-	return CURRENT_TICK/ 10 + 1
+	return CURRENT_TICK/10 + 1
+}
+
+func debug_write(text string) {
+	if DEBUG_OUTPUT {
+		log.appendMessage("DEBUG: " + text)
+	}
 }
 
 func main() {
 	cw.Init_console()
 	defer cw.Close_console()
 
-	r_showTitleScreen()
-
 	log = &LOG{}
 
 	CURRENT_MAP = &gameMap{}
 	CURRENT_MAP.init()
 
-	//for i:=0; i<1024; i++ {
-	//	cw.PutChar(int32(i), i%80, i/80)
-	//}
-	//cw.Flush_console()
-	//for key:=""; key != "ESCAPE"; {
-	//	key = cw.ReadKey()
-	//}
-
+	///////////////////////////////
+	// uncomment later
+	r_showTitleScreen()
 	showBriefing()
+	// comment later
+	// endTurnPeriod = 0
+	///////////////////////////////////
 
 	for {
 		startTime := time.Now()
@@ -54,13 +57,14 @@ func main() {
 			if !GAME_IS_RUNNING {
 				return
 			}
+			if f.aiControlled {
+				ai_controlFaction(f)
+			}
 			if f.playerControlled {
 				CURRENT_FACTION_SEEING_THE_SCREEN = f
 				renderFactionStats(f)
 				plr_control(f, CURRENT_MAP)
-				log.appendMessage("DEBUG: TOTAL FLUSHES: "+strconv.Itoa(cw.GetNumberOfRecentFlushes()))
-			} else if f.aiControlled {
-				ai_controlFaction(f)
+				debug_write("TOTAL FLUSHES: " + strconv.Itoa(cw.GetNumberOfRecentFlushes()))
 			}
 		}
 		for i := 0; i < 10; i++ {
@@ -70,7 +74,7 @@ func main() {
 					CURRENT_MAP.removePawn(u)
 					continue
 				}
-				if u.regenPeriod > 0 && CURRENT_TICK% u.regenPeriod == 0 && u.hitpoints < u.maxHitpoints {
+				if u.regenPeriod > 0 && CURRENT_TICK%u.regenPeriod == 0 && u.hitpoints < u.maxHitpoints {
 					u.hitpoints++
 				}
 				u.executeOrders(CURRENT_MAP)
@@ -79,7 +83,7 @@ func main() {
 			if FIRE_WAS_OPENED_ON_SCREEN_THIS_TURN {
 				cw.Flush_console()
 				FIRE_WAS_OPENED_ON_SCREEN_THIS_TURN = false
-				time.Sleep(time.Duration(endTurnPeriod/ 4)*time.Millisecond)
+				time.Sleep(time.Duration(endTurnPeriod/4) * time.Millisecond)
 			}
 			CURRENT_TICK += 1
 		}
@@ -89,7 +93,7 @@ func main() {
 		}
 		doAllNanolathes(CURRENT_MAP)
 		timeForTurn := int(time.Since(startTime) / time.Millisecond)
-		log.appendMessage("DEBUG: Time for turn: " + strconv.Itoa(timeForTurn) + "ms") // TODO: make it removable
+		debug_write("Time for turn: " + strconv.Itoa(timeForTurn) + "ms") // TODO: make it removable
 	}
 
 }

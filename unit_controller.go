@@ -219,17 +219,18 @@ func doAllNanolathes(m *gameMap) { // does the building itself
 				m.addBuilding(tBld, false)
 			}
 
+			if tBld.currentConstructionStatus == nil {
+				u.reportOrderCompletion("Nanolathe interrupted")
+				u.order = nil
+				continue
+			}
+			if tBld.hitpoints <= 0 {
+				u.reportOrderCompletion("Nanolathe interrupted by hostile action")
+				u.order = nil
+				continue
+			}
+
 			if u.faction.economy.nanolatheAllowed && (sqdistance <= building_w*building_w || sqdistance <= building_h*building_h) {
-				if tBld.currentConstructionStatus == nil {
-					u.reportOrderCompletion("Nanolathe interrupted")
-					u.order = nil
-					continue
-				}
-				if tBld.hitpoints <= 0 {
-					u.reportOrderCompletion("Nanolathe interrupted by hostile action")
-					u.order = nil
-					continue
-				}
 				tBld.currentConstructionStatus.currentConstructionAmount += u.nanolatherInfo.builderCoeff
 				if tBld.currentConstructionStatus.isCompleted() {
 					tBld.currentConstructionStatus = nil

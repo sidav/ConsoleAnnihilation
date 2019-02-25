@@ -8,8 +8,10 @@ func createUnit(codename string, x, y int, f *faction, alreadyConstructed bool) 
 		newUnit = &pawn{name: "Arm Commander", maxHitpoints: 200, isHeavy: true, isCommander: true,
 			unitInfo:       &unit{appearance: ccell{char: '@'}},
 			moveInfo:       &pawnMovementInformation{ticksForMoveSingleCell: 10, movesOnLand: true, movesOnSea: true}, regenPeriod: 7, radarRadius: 15,
-			res:            &pawnResourceInformation{metalIncome: 1, energyIncome: 20, metalStorage: 250, energyStorage: 1000},
-			nanolatherInfo: &nanolatherInformation{builderCoeff: 10, allowedBuildings: []string{}},
+			res:            &pawnResourceInformation{metalIncome: 2, energyIncome: 30, metalStorage: 250, energyStorage: 1000},
+			nanolatherInfo: &nanolatherInformation{builderCoeff: 10, allowedBuildings: []string{
+				"armkbotlab", "armvehfactory", "solar", "mextractor", "metalmaker", "lturret", "wall"},
+			},
 			weapons: []*pawnWeaponInformation{
 				{attackDelay: 10, attackEnergyCost: 1, attackRadius: 6, attacksLand: true,
 					hitscan: &WeaponHitscan{baseDamage:4},
@@ -20,8 +22,10 @@ func createUnit(codename string, x, y int, f *faction, alreadyConstructed bool) 
 		newUnit = &pawn{name: "Core Commander", maxHitpoints: 200, isHeavy: true, isCommander: true,
 			unitInfo:       &unit{appearance: ccell{char: '@'}},
 			moveInfo:       &pawnMovementInformation{ticksForMoveSingleCell: 10, movesOnLand: true, movesOnSea: true}, regenPeriod: 7, radarRadius: 15,
-			res:            &pawnResourceInformation{metalIncome: 1, energyIncome: 20, metalStorage: 250, energyStorage: 1000},
-			nanolatherInfo: &nanolatherInformation{builderCoeff: 10, allowedBuildings: []string{"corekbotlab", "solar", "metalmaker", "corevehfactory", "lturret"}},
+			res:            &pawnResourceInformation{metalIncome: 2, energyIncome: 30, metalStorage: 250, energyStorage: 1000},
+			nanolatherInfo: &nanolatherInformation{builderCoeff: 10, allowedBuildings: []string{
+				"corekbotlab", "corevehfactory", "solar", "mextractor", "metalmaker", "lturret", "wall"},
+			},
 			weapons: []*pawnWeaponInformation{
 				{attackDelay: 10, attackEnergyCost: 1, attackRadius: 5, attacksLand: true,
 					hitscan: &WeaponHitscan{baseDamage:5},
@@ -32,7 +36,7 @@ func createUnit(codename string, x, y int, f *faction, alreadyConstructed bool) 
 		newUnit = &pawn{name: "Prototype Commander Unit", maxHitpoints: 200, isHeavy: true, isCommander: true, regenPeriod: 7, radarRadius: 15,
 			unitInfo:       &unit{appearance: ccell{char: '@'}},
 			moveInfo:       &pawnMovementInformation{ticksForMoveSingleCell: 10, movesOnLand: true, movesOnSea: true},
-			res:            &pawnResourceInformation{metalIncome: 1, energyIncome: 20, metalStorage: 250, energyStorage: 1000},
+			res:            &pawnResourceInformation{metalIncome: 2, energyIncome: 30, metalStorage: 250, energyStorage: 1000},
 			nanolatherInfo: &nanolatherInformation{builderCoeff: 10, allowedBuildings: []string{
 				"corekbotlab", "corevehfactory", "solar", "mextractor", "metalmaker", "lturret", "wall"},
 			},
@@ -43,6 +47,16 @@ func createUnit(codename string, x, y int, f *faction, alreadyConstructed bool) 
 			},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 15000, costM: 1567650, costE: 59120150},
 		}
+	case "armck":
+		newUnit = &pawn{name: "Tech 1 Construction KBot", maxHitpoints: 25, isLight: true,
+			unitInfo:                  &unit{appearance: ccell{char: 'k'}},
+			moveInfo:                  &pawnMovementInformation{ticksForMoveSingleCell: 15, movesOnLand: true},
+			res:                       &pawnResourceInformation{metalStorage: 25, energyStorage: 50},
+			nanolatherInfo:            &nanolatherInformation{builderCoeff: 5, allowedBuildings: []string{
+				"armkbotlab", "armt2kbotlab", "mstorage", "estorage", "mextractor", "solar", "metalmaker", "lturret", "guardian", "geo", "radar",},
+			},
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 25, costM: 650, costE: 1200},
+		}
 	case "coreck":
 		newUnit = &pawn{name: "Tech 1 Construction KBot", maxHitpoints: 25, isLight: true,
 			unitInfo:                  &unit{appearance: ccell{char: 'k'}},
@@ -50,6 +64,16 @@ func createUnit(codename string, x, y int, f *faction, alreadyConstructed bool) 
 			res:                       &pawnResourceInformation{metalStorage: 25, energyStorage: 50},
 			nanolatherInfo:            &nanolatherInformation{builderCoeff: 5, allowedBuildings: []string{
 				"corekbotlab", "coret2kbotlab", "mstorage", "estorage", "mextractor", "solar", "metalmaker", "lturret", "railgunturret", "geo", "radar",},
+			},
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 25, costM: 650, costE: 1200},
+		}
+	case "armcv":
+		newUnit = &pawn{name: "Tech 1 Construction Vehicle", maxHitpoints: 25, isLight: true,
+			unitInfo:                  &unit{appearance: ccell{char: 'v'}},
+			moveInfo:                  &pawnMovementInformation{ticksForMoveSingleCell: 15, movesOnLand: true},
+			res:                       &pawnResourceInformation{metalStorage: 25, energyStorage: 50},
+			nanolatherInfo:            &nanolatherInformation{builderCoeff: 5, allowedBuildings: []string{
+				"armvehfactory", "mstorage", "estorage", "mextractor", "solar", "metalmaker", "lturret", "guardian", "geo", "radar",},
 			},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 25, costM: 650, costE: 1200},
 		}
@@ -115,6 +139,17 @@ func createUnit(codename string, x, y int, f *faction, alreadyConstructed bool) 
 			weapons: []*pawnWeaponInformation{
 				{attackDelay: 13, attackEnergyCost: 1, attackRadius: 4, attacksLand: true,
 					hitscan: &WeaponHitscan{baseDamage:4},
+				},
+			},
+		}
+	case "armfido":
+		newUnit = &pawn{name: "Fido", maxHitpoints: 125, isHeavy: true,
+			moveInfo:                  &pawnMovementInformation{ticksForMoveSingleCell: 9, movesOnLand: true},
+			unitInfo:                  &unit{appearance: ccell{char: 'F'}},
+			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 25, costM: 250, costE: 500},
+			weapons: []*pawnWeaponInformation{
+				{attackDelay: 18, attackEnergyCost: 1, attackRadius: 8, attacksLand: true,
+					hitscan: &WeaponHitscan{baseDamage:3},
 				},
 			},
 		}
