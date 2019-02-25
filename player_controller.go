@@ -11,6 +11,7 @@ var (
 	PLR_LOOP       = true
 	IS_PAUSED      = true
 	reRenderNeeded = true
+	mouseEnabled   = true
 	endTurnPeriod  = 700
 	last_time      time.Time
 )
@@ -51,7 +52,14 @@ func plr_selectPawn(f *faction, m *gameMap) *[]*pawn { // returns a pointer to a
 		case ".": // end turn without unpausing the game
 			if IS_PAUSED {
 				PLR_LOOP = false
-				return nil 
+				return nil
+			}
+		case "`":
+			mouseEnabled = !mouseEnabled
+			if mouseEnabled {
+				log.appendMessage("Mouse controls enabled.")
+			} else {
+				log.appendMessage("Mouse controls disabled.")
 			}
 		case "SPACE", " ":
 			IS_PAUSED = !IS_PAUSED
@@ -84,12 +92,12 @@ func plr_selectPawn(f *faction, m *gameMap) *[]*pawn { // returns a pointer to a
 				log.appendMessage("Enemy units can't be selected, Commander.")
 				return nil
 			}
-			return &[]*pawn {f.cursor.snappedPawn}
+			return &[]*pawn{f.cursor.snappedPawn}
 		case "TAB":
 			trySelectNextIdlePawn(f)
 		case "C":
 			trySnapCursorToCommander(f)
-			return &[]*pawn {f.cursor.snappedPawn}
+			return &[]*pawn{f.cursor.snappedPawn}
 		case "?":
 			if f.cursor.snappedPawn != nil {
 				renderPawnInfo(f.cursor.snappedPawn)
@@ -149,7 +157,7 @@ func plr_bandboxSelection(f *faction) *[]*pawn {
 			unitsToReturn := make([]*pawn, 0)
 			for _, p := range unitsInSelection {
 				// select only the pawns if current faction which are capable to move AND attack and are not commanders.
-				if p.faction!= nil && p.faction == f && p.hasWeapons() && p.canMove() && !p.isCommander {
+				if p.faction != nil && p.faction == f && p.hasWeapons() && p.canMove() && !p.isCommander {
 					unitsToReturn = append(unitsToReturn, p)
 				}
 			}
@@ -182,7 +190,7 @@ func plr_selectOrder(selection *[]*pawn, f *faction, m *gameMap) {
 				f.cursor.currentCursorMode = CURSOR_AMOVE
 			}
 		case "m": // move
-				f.cursor.currentCursorMode = CURSOR_MOVE
+			f.cursor.currentCursorMode = CURSOR_MOVE
 		case "b": // build
 			if selectedPawn.canConstructBuildings() {
 				code := plr_selectBuidingToConstruct(selectedPawn)
@@ -221,7 +229,7 @@ func plr_selectOrderForMultiSelect(selection *[]*pawn, f *faction) {
 		switch keyPressed {
 		case "ENTER", "RETURN":
 			for _, p := range *selection {
-			issueDefaultOrderToUnit(p, CURRENT_MAP, cx, cy)
+				issueDefaultOrderToUnit(p, CURRENT_MAP, cx, cy)
 			}
 			return
 		case "a": // attack-move
@@ -235,7 +243,6 @@ func plr_selectOrderForMultiSelect(selection *[]*pawn, f *faction) {
 		}
 	}
 }
-
 
 func plr_selectUnitsToConstruct(p *pawn) {
 	availableUnitCodes := p.nanolatherInfo.allowedUnits
@@ -312,7 +319,7 @@ func plr_selectBuildingSite(p *pawn, b *pawn, m *gameMap) {
 			cursor.h = b.buildingInfo.h
 		} else {
 			cursor.w = b.buildingInfo.w + 2
-			cursor.h = b.buildingInfo.h	+ 2
+			cursor.h = b.buildingInfo.h + 2
 		}
 
 		cursor.buildOnMetalOnly = b.buildingInfo.canBeBuiltOnMetalOnly
@@ -368,7 +375,7 @@ func plr_moveCursor(f *faction, keyPressed string) {
 }
 
 func snapCursorToPawn(f *faction, g *gameMap) {
-	if !(f.areCoordsInSight(f.cursor.x, f.cursor.y) || f.areCoordsInRadarRadius(f.cursor.x, f.cursor.y) ){
+	if !(f.areCoordsInSight(f.cursor.x, f.cursor.y) || f.areCoordsInRadarRadius(f.cursor.x, f.cursor.y)) {
 		return
 	}
 	b := g.getPawnAtCoordinates(f.cursor.x, f.cursor.y)
