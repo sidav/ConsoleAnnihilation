@@ -43,10 +43,10 @@ func main() {
 
 	///////////////////////////////
 	// uncomment later
-	//r_showTitleScreen()
-	//showBriefing()
+	r_showTitleScreen()
+	showBriefing()
 	// comment later
-	endTurnPeriod = 0
+	// endTurnPeriod = 0
 	///////////////////////////////////
 
 	for {

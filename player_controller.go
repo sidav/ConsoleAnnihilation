@@ -40,7 +40,7 @@ func plr_selectPawn(f *faction, m *gameMap) *[]*pawn { // returns a pointer to a
 		reRenderNeeded = true
 		switch keyPressed {
 
-		case "NOTHING":
+		case "NOTHING", "NON-KEY":
 			if !IS_PAUSED && isTimeToAutoEndTurn() {
 				last_time = time.Now()
 				PLR_LOOP = false // end turn
