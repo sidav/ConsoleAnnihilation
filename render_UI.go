@@ -193,7 +193,7 @@ func renderLog(flush bool) {
 func r_renderAttackRadius(p *pawn) {
 	if len(p.weapons) > 0 {
 		// (p.x, p.y, p.weapons[0].attackRadius, false, CURRENT_FACTION_SEEING_THE_SCREEN.cursor.x-VIEWPORT_W/2, CURRENT_FACTION_SEEING_THE_SCREEN.cursor.y-VIEWPORT_H/2)
-		vx, vy := CURRENT_FACTION_SEEING_THE_SCREEN.cursor.x-VIEWPORT_W/2, CURRENT_FACTION_SEEING_THE_SCREEN.cursor.y-VIEWPORT_H/2
+		vx, vy := CURRENT_FACTION_SEEING_THE_SCREEN.cursor.getCameraCoords()
 		px, py := p.getCenter()
 		line := routines.GetCircle(px, py, p.weapons[0].attackRadius)
 		for _, point := range *line {
@@ -229,7 +229,8 @@ func renderOrderLine(p *pawn) {
 		}
 		f := p.faction
 		cx, cy := p.getCenter()
-		renderLine(cx, cy, ordr.x, ordr.y, false, f.cursor.x-VIEWPORT_W/2, f.cursor.y-VIEWPORT_H/2)
+		camx, camy := f.cursor.getCameraCoords()
+		renderLine(cx, cy, ordr.x, ordr.y, false, camx, camy)
 	}
 }
 
