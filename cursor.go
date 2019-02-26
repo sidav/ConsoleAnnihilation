@@ -26,6 +26,10 @@ func (c *cursor) getCoords() (int, int) {
 	return c.x, c.y
 }
 
+func (c *cursor) getOnScreenCoords() (int, int) {
+	return c.x - c.cameraX, c.y - c.cameraY
+}
+
 func (c *cursor) getCameraCoords() (int, int) {
 	return c.cameraX, c.cameraY
 }
