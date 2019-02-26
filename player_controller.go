@@ -18,14 +18,25 @@ var (
 
 func plr_control(f *faction, m *gameMap) {
 	PLR_LOOP = true
-	snapCursorToPawn(f, m)
+	snapCursorToPawn(f)
 	for PLR_LOOP {
-		selection := plr_selectPawn(f, m)
-		if selection != nil {
-			if len(*selection) == 1 {
-				plr_selectOrder(selection, f, m)
-			} else if len(*selection) > 1 {
-				plr_selectOrderForMultiSelect(selection, f)
+		if mouseEnabled {
+			selection := plr_selectPawnWithMouse(f, m)
+			if selection != nil {
+				//if len(*selection) == 1 {
+				//	plr_selectOrder(selection, f, m)
+				//} else if len(*selection) > 1 {
+				//	plr_selectOrderForMultiSelect(selection, f)
+				//}
+			}
+		} else {
+			selection := plr_selectPawn(f, m)
+			if selection != nil {
+				if len(*selection) == 1 {
+					plr_selectOrder(selection, f, m)
+				} else if len(*selection) > 1 {
+					plr_selectOrderForMultiSelect(selection, f)
+				}
 			}
 		}
 	}
@@ -371,15 +382,15 @@ func plr_moveCursor(f *faction, keyPressed string) {
 		f.cursor.snappedPawn = nil
 	}
 	if f.cursor.currentCursorMode != CURSOR_BUILD {
-		snapCursorToPawn(f, CURRENT_MAP)
+		snapCursorToPawn(f)
 	}
 }
 
-func snapCursorToPawn(f *faction, g *gameMap) {
+func snapCursorToPawn(f *faction) {
 	if !(f.areCoordsInSight(f.cursor.x, f.cursor.y) || f.areCoordsInRadarRadius(f.cursor.x, f.cursor.y)) {
 		return
 	}
-	b := g.getPawnAtCoordinates(f.cursor.x, f.cursor.y)
+	b := CURRENT_MAP.getPawnAtCoordinates(f.cursor.x, f.cursor.y)
 	if b == nil {
 		f.cursor.snappedPawn = nil
 	} else {
