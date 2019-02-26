@@ -36,15 +36,12 @@ func r_updateBoundsIfNeccessary() {
 
 func r_renderScreenForFaction(f *faction, g *gameMap) {
 	r_updateBoundsIfNeccessary()
-	cx, cy := f.cursor.x, f.cursor.y
 	cw.Clear_console()
-	vx := cx - VIEWPORT_W/2
-	vy := cy - VIEWPORT_H/2
-	renderMapInViewport(f, g, vx, vy)
+	renderMapInViewport(f, g)
 	renderFactionStats(f)
 	renderInfoOnCursor(f, g)
 	r_renderUIOutline(f)
-	renderPawnsInViewport(f, g, vx, vy)
+	renderPawnsInViewport(f, g)
 	r_renderCursor(f)
 	renderLog(false)
 	flushView()
@@ -71,7 +68,8 @@ func r_renderUIOutline(f *faction) {
 	cw.SetBgColor(cw.BLACK)
 }
 
-func renderMapInViewport(f *faction, g *gameMap, vx, vy int) {
+func renderMapInViewport(f *faction, g *gameMap) {
+	vx, vy := f.cursor.getCameraCoords()
 	for x := vx; x < vx+VIEWPORT_W; x++ {
 		for y := vy; y < vy+VIEWPORT_H; y++ {
 			if areCoordsValid(x, y) {
@@ -91,7 +89,8 @@ func renderMapInViewport(f *faction, g *gameMap, vx, vy int) {
 	}
 }
 
-func renderPawnsInViewport(f *faction, g *gameMap, vx, vy int) {
+func renderPawnsInViewport(f *faction, g *gameMap) {
+	vx, vy := f.cursor.getCameraCoords()
 	for _, p := range g.pawns {
 		cx, cy := p.getCenter()
 		if f.areCoordsInRadarRadius(cx, cy) {
@@ -107,8 +106,7 @@ func renderPawnsInViewport(f *faction, g *gameMap, vx, vy int) {
 }
 
 func r_renderSelectedPawns(f* faction, selection *[]*pawn) {
-	vx := f.cursor.x - VIEWPORT_W/2
-	vy := f.cursor.y - VIEWPORT_H/2
+	vx, vy := f.cursor.getCameraCoords()
 	for _, p := range *selection {
 		if p.isUnit() {
 			renderUnit(f, p, CURRENT_MAP, vx, vy, true)
@@ -179,8 +177,7 @@ func flushView() {
 }
 
 func renderCharByGlobalCoords(c rune, x, y int) { // TODO: use it everywhere
-	vx := CURRENT_FACTION_SEEING_THE_SCREEN.cursor.x - VIEWPORT_W/2
-	vy := CURRENT_FACTION_SEEING_THE_SCREEN.cursor.y - VIEWPORT_H/2
+	vx, vy := CURRENT_FACTION_SEEING_THE_SCREEN.cursor.getCameraCoords()
 	if areGlobalCoordsOnScreenForFaction(x, y, CURRENT_FACTION_SEEING_THE_SCREEN) {
 		cw.PutChar(c, x-vx, y-vy)
 	}
@@ -191,7 +188,6 @@ func areGlobalCoordsOnScreen(gx, gy, vx, vy int) bool {
 }
 
 func areGlobalCoordsOnScreenForFaction(gx, gy int, f *faction) bool {
-	vx := f.cursor.x - VIEWPORT_W/2
-	vy := f.cursor.y - VIEWPORT_H/2
+	vx, vy := f.cursor.getCameraCoords()
 	return routines.AreCoordsInRect(gx, gy, vx, vy, VIEWPORT_W, VIEWPORT_H)
 }

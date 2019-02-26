@@ -357,6 +357,7 @@ func plr_moveCursor(f *faction, keyPressed string) {
 	if areCoordsValid(cx+vx, cy+vy) {
 		f.cursor.moveByVector(vx, vy)
 	}
+	f.cursor.centralizeCamera()
 
 	snapB := f.cursor.snappedPawn
 	if snapB != nil { // unsnap cursor
