@@ -3,6 +3,7 @@ package main
 import (
 	"SomeTBSGame/routines"
 	cw "TCellConsoleWrapper"
+	"fmt"
 	"time"
 )
 
@@ -16,17 +17,23 @@ func plr_selectPawnWithMouse(f *faction, m *gameMap) *[]*pawn { // returns a poi
 		reRenderNeeded = true
 
 		if cw.IsMouseHeld() && cw.WasMouseMovedSinceLastEvent() && cw.GetMouseButton() == "RIGHT" {
-			plr_moveCursorWithMouse(f)
+			plr_moveCameraWithMouse(f)
 			return nil
 		}
 		if cw.WasMouseMovedSinceLastEvent() {
-			cx, cy := cw.GetMouseCoords()
-			camx, camy := f.cursor.getCameraCoords()
-			if areCoordsValid(camx+cx, camy+cy) {
-				f.cursor.x, f.cursor.y = camx+cx, camy+cy
-				snapCursorToPawn(f)
+			plr_moveCursorWithMouse(f)
+			return nil
+		}
+		if cw.GetMouseButton() == "LEFT" {
+			u := f.cursor.snappedPawn //m.getUnitAtCoordinates(cx, cy)
+			if u == nil {
+				return plr_bandboxSelectionWithMouse(f) // select multiple units
+			}
+			if u.faction.factionNumber != f.factionNumber {
+				log.appendMessage("Enemy units can't be selected, Commander.")
 				return nil
 			}
+			return &[]*pawn{f.cursor.snappedPawn}
 		}
 
 		switch keyPressed {
@@ -75,7 +82,7 @@ func plr_selectPawnWithMouse(f *faction, m *gameMap) *[]*pawn { // returns a poi
 		case "ENTER", "RETURN":
 			u := f.cursor.snappedPawn //m.getUnitAtCoordinates(cx, cy)
 			if u == nil {
-				return plr_bandboxSelection(f) // select multiple units
+				return plr_bandboxSelectionWithMouse(f) // select multiple units
 			}
 			if u.faction.factionNumber != f.factionNumber {
 				log.appendMessage("Enemy units can't be selected, Commander.")
@@ -120,7 +127,49 @@ func plr_selectPawnWithMouse(f *faction, m *gameMap) *[]*pawn { // returns a poi
 	}
 }
 
-func plr_moveCursorWithMouse(f *faction) {
+func plr_bandboxSelectionWithMouse(f *faction) *[]*pawn {
+	f.cursor.currentCursorMode = CURSOR_MULTISELECT
+	f.cursor.xorig, f.cursor.yorig = f.cursor.getCoords()
+	reRenderNeeded = true
+	for {
+		if reRenderNeeded {
+			r_renderScreenForFaction(f, CURRENT_MAP)
+		}
+		keyPressed := cw.ReadKeyAsync()
+		if keyPressed == "ESCAPE" {
+			return nil
+		}
+		if !cw.IsMouseHeld() {
+			reRenderNeeded = true 
+			fromx, fromy := f.cursor.xorig, f.cursor.yorig
+			tox, toy := f.cursor.getCoords()
+			if fromx > tox {
+				t := fromx
+				fromx = tox
+				tox = t
+			}
+			if fromy > toy {
+				t := fromy
+				fromy = toy
+				toy = t
+			}
+			unitsInSelection := CURRENT_MAP.getPawnsInRect(fromx, fromy, tox-fromx+1, toy-fromy+1)
+			unitsToReturn := make([]*pawn, 0)
+			for _, p := range unitsInSelection {
+				// select only the pawns if current faction which are capable to move AND attack and are not commanders.
+				if p.faction != nil && p.faction == f && p.hasWeapons() && p.canMove() && !p.isCommander {
+					unitsToReturn = append(unitsToReturn, p)
+				}
+			}
+			log.appendMessage(fmt.Sprintf("%d units selected from %d", len(unitsToReturn), len(unitsInSelection)))
+			return &unitsToReturn
+		} else {
+			plr_moveCursorWithMouse(f)
+		}
+	}
+}
+
+func plr_moveCameraWithMouse(f *faction) {
 		vx, vy := cw.GetMouseMovementVector()
 		if vx == 0 && vy == 0 {
 			return
@@ -145,4 +194,16 @@ func plr_moveCursorWithMouse(f *faction) {
 		if f.cursor.currentCursorMode != CURSOR_BUILD {
 			snapCursorToPawn(f)
 		}
+}
+
+func plr_moveCursorWithMouse(f *faction) {
+	cx, cy := cw.GetMouseCoords()
+	camx, camy := f.cursor.getCameraCoords()
+
+	reRenderNeeded = !(f.cursor.x == camx+cx && f.cursor.y == camy+cy) // rerender is needed if cursor was _actually_ moved
+
+	if areCoordsValid(camx+cx, camy+cy) {
+		f.cursor.x, f.cursor.y = camx+cx, camy+cy
+		snapCursorToPawn(f)
+	}
 }
