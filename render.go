@@ -126,7 +126,7 @@ func r_renderSelectedPawns(f* faction, selection *[]*pawn) {
 
 func renderUnit(f *faction, p *pawn, g *gameMap, vx, vy int, inverse bool) {
 	u := p.unitInfo
-	if areGlobalCoordsOnScreen(p.x, p.y, vx, vy) && f.areCoordsInSight(p.x, p.y){
+	if areGlobalCoordsOnScreen(p.x, p.y) && f.areCoordsInSight(p.x, p.y){
 		tileApp := u.appearance
 		// r, g, b := getFactionRGB(u.faction.factionNumber)
 		// cw.SetFgColorRGB(r, g, b)\
@@ -166,7 +166,7 @@ func renderBuilding(f *faction, p *pawn, g *gameMap, vx, vy int, inverse bool) {
 					colorToRender = cw.GREEN
 				}
 			}
-			if areGlobalCoordsOnScreen(bx+x, by+y, vx, vy) && f.wereCoordsSeen(bx+x, by+y) {
+			if areGlobalCoordsOnScreen(bx+x, by+y) && f.wereCoordsSeen(bx+x, by+y) {
 				if inverse {
 					cw.SetBgColor(colorToRender)
 					cw.SetFgColor(cw.BLACK)
@@ -191,7 +191,8 @@ func renderCharByGlobalCoords(c rune, x, y int) { // TODO: use it everywhere
 	}
 }
 
-func areGlobalCoordsOnScreen(gx, gy, vx, vy int) bool {
+func areGlobalCoordsOnScreen(gx, gy int) bool {
+	vx, vy := CURRENT_FACTION_SEEING_THE_SCREEN.cursor.getCameraCoords()
 	return routines.AreCoordsInRect(gx, gy, vx, vy, VIEWPORT_W, VIEWPORT_H)
 }
 

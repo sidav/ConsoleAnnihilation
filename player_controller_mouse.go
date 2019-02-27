@@ -334,6 +334,7 @@ func plr_selectBuildingSiteWithMouse(p *pawn, b *pawn, m *gameMap) {
 func plr_moveCameraWithMouse(f *faction) {
 	vx, vy := cw.GetMouseMovementVector()
 	if vx == 0 && vy == 0 {
+		reRenderNeeded = false
 		return
 	}
 	cx, cy := f.cursor.getCoords()
@@ -356,6 +357,7 @@ func plr_moveCameraWithMouse(f *faction) {
 	if f.cursor.currentCursorMode != CURSOR_BUILD {
 		snapCursorToPawn(f)
 	}
+	reRenderNeeded = true
 }
 
 func plr_moveCursorWithMouse(f *faction) {
