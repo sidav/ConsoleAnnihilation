@@ -23,11 +23,11 @@ func plr_control(f *faction, m *gameMap) {
 		if mouseEnabled {
 			selection := plr_selectPawnWithMouse(f, m)
 			if selection != nil {
-				//if len(*selection) == 1 {
-				//	plr_selectOrder(selection, f, m)
-				//} else if len(*selection) > 1 {
+				if len(*selection) == 1 {
+					plr_selectOrderWithMouse(selection, f)
+				} else if len(*selection) > 1 {
 				//	plr_selectOrderForMultiSelect(selection, f)
-				//}
+				}
 			}
 		} else {
 			selection := plr_selectPawn(f, m)

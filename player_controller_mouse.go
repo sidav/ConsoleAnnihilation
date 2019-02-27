@@ -24,7 +24,7 @@ func plr_selectPawnWithMouse(f *faction, m *gameMap) *[]*pawn { // returns a poi
 			plr_moveCursorWithMouse(f)
 			return nil
 		}
-		if cw.GetMouseButton() == "LEFT" {
+		if !cw.IsMouseHeld() && cw.GetMouseButton() == "LEFT" {
 			u := f.cursor.snappedPawn //m.getUnitAtCoordinates(cx, cy)
 			if u == nil {
 				return plr_bandboxSelectionWithMouse(f) // select multiple units
@@ -165,6 +165,62 @@ func plr_bandboxSelectionWithMouse(f *faction) *[]*pawn {
 			return &unitsToReturn
 		} else {
 			plr_moveCursorWithMouse(f)
+		}
+	}
+}
+
+func plr_selectOrderWithMouse(selection *[]*pawn, f *faction) {
+	selectedPawn := (*selection)[0] //m.getUnitAtCoordinates(cx, cy)
+	log.appendMessage(selectedPawn.name + " is awaiting orders.")
+	f.cursor.currentCursorMode = CURSOR_MOVE
+	for {
+		cx, cy := f.cursor.getCoords()
+		r_renderScreenForFaction(f, CURRENT_MAP)
+		r_renderSelectedPawns(f, selection)
+		r_renderPossibleOrdersForPawn(selectedPawn)
+		flushView()
+
+		keyPressed := cw.ReadKeyAsync()
+		if cw.IsMouseHeld() && cw.WasMouseMovedSinceLastEvent() && cw.GetMouseButton() == "RIGHT" {
+			plr_moveCameraWithMouse(f)
+		}
+		if cw.WasMouseMovedSinceLastEvent() {
+			plr_moveCursorWithMouse(f)
+		}
+		if !cw.IsMouseHeld() && cw.GetMouseButton() == "LEFT" {
+			issueDefaultOrderToUnit(selectedPawn, CURRENT_MAP, cx, cy)
+			return
+		}
+		switch keyPressed {
+		case "ENTER", "RETURN":
+			issueDefaultOrderToUnit(selectedPawn, CURRENT_MAP, cx, cy)
+			return
+		case "a": // attack-move
+			if selectedPawn.hasWeapons() || selectedPawn.canConstructUnits() {
+				f.cursor.currentCursorMode = CURSOR_AMOVE
+			}
+		case "m": // move
+			f.cursor.currentCursorMode = CURSOR_MOVE
+		case "b": // build
+			if selectedPawn.canConstructBuildings() {
+				code := plr_selectBuidingToConstruct(selectedPawn)
+				if code != "" {
+					plr_selectBuildingSite(selectedPawn, createBuilding(code, cx, cy, f), CURRENT_MAP)
+					return
+				}
+			}
+		case "c": // construct units
+			if selectedPawn.canConstructUnits() {
+				plr_selectUnitsToConstruct(selectedPawn)
+			}
+		case "r": // repeat construction queue
+			if selectedPawn.canConstructUnits() {
+				selectedPawn.repeatConstructionQueue = !selectedPawn.repeatConstructionQueue
+			}
+		case "ESCAPE":
+			return
+		default:
+			plr_moveCursor(f, keyPressed)
 		}
 	}
 }
