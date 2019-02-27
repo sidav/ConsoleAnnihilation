@@ -208,7 +208,7 @@ func plr_giveOrderWithMouse(selection *[]*pawn, f *faction) {
 			if selectedPawn.canConstructBuildings() {
 				code := plr_selectBuidingToConstruct(selectedPawn)
 				if code != "" {
-					plr_selectBuildingSite(selectedPawn, createBuilding(code, cx, cy, f), CURRENT_MAP)
+					plr_selectBuildingSiteWithMouse(selectedPawn, createBuilding(code, cx, cy, f), CURRENT_MAP)
 					return
 				}
 			}
@@ -267,6 +267,63 @@ func plr_giveOrderForMultiSelectWithMouse(selection *[]*pawn, f *faction) {
 		case "m": // move
 			f.cursor.currentCursorMode = CURSOR_MOVE
 		case "ESCAPE":
+			return
+		default:
+			reRenderNeeded = false
+		}
+	}
+}
+
+func plr_selectBuildingSiteWithMouse(p *pawn, b *pawn, m *gameMap) {
+	log.appendMessage("Select construction site for " + b.name)
+	reRenderNeeded = true
+	for {
+		f := p.faction
+		cursor := f.cursor
+		cx, cy := cursor.getCoords()
+		cursor.currentCursorMode = CURSOR_BUILD
+
+		if b.buildingInfo.allowsTightPlacement {
+			cursor.w = b.buildingInfo.w
+			cursor.h = b.buildingInfo.h
+		} else {
+			cursor.w = b.buildingInfo.w + 2
+			cursor.h = b.buildingInfo.h + 2
+		}
+
+		cursor.buildOnMetalOnly = b.buildingInfo.canBeBuiltOnMetalOnly
+		cursor.buildOnThermalOnly = b.buildingInfo.canBeBuiltOnThermalOnly
+		cursor.radius = b.getMaxRadiusToFire()
+
+		if reRenderNeeded { // TODO: move all that "if reRenderNeeded" to the renderer itself to keep code more clean.
+			r_renderScreenForFaction(f, m, nil)
+		}
+
+		keyPressed := cw.ReadKeyAsync()
+
+		if cw.IsMouseHeld() && cw.WasMouseMovedSinceLastEvent() && cw.GetMouseButton() == "RIGHT" {
+			plr_moveCameraWithMouse(f)
+			continue
+		}
+		if cw.WasMouseMovedSinceLastEvent() {
+			plr_moveCursorWithMouse(f)
+			continue
+		}
+		if !cw.IsMouseHeld() && cw.GetMouseButton() == "LEFT" {
+			if m.canBuildingBeBuiltAt(b, cx, cy) {
+				b.x = cx - b.buildingInfo.w/2
+				b.y = cy - b.buildingInfo.h/2
+				p.setOrder(&order{orderType: order_build, x: cx, y: cy, buildingToConstruct: b})
+				return
+			} else {
+				log.appendMessage("This building can't be placed here!")
+			}
+		}
+
+		switch keyPressed {
+		case "ESCAPE":
+			reRenderNeeded = true
+			log.appendMessage("Construction cancelled: " + b.name)
 			return
 		default:
 			reRenderNeeded = false
