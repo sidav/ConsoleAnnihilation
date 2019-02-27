@@ -36,7 +36,7 @@ func r_updateBoundsIfNeccessary() {
 
 func r_renderScreenForFaction(f *faction, g *gameMap, selection *[]*pawn) {
 	r_updateBoundsIfNeccessary()
-	cw.Clear_console()
+	cw.Clear_console() // TODO: replace with ClearViewportOnly (and create it of course). Prevent overrendering of whole screen.
 	renderMapInViewport(f, g)
 	renderFactionStats(f)
 	renderInfoOnCursor(f, g)
