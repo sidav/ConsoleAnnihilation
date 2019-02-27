@@ -11,7 +11,7 @@ func plr_selectPawnWithMouse(f *faction, m *gameMap) *[]*pawn { // returns a poi
 	f.cursor.currentCursorMode = CURSOR_SELECT
 	for {
 		if reRenderNeeded {
-			r_renderScreenForFaction(f, m) // TODO: think what to do with all that rendering overkill.
+			r_renderScreenForFaction(f, m, nil)
 		}
 		keyPressed := cw.ReadKeyAsync()
 		reRenderNeeded = true
@@ -133,7 +133,7 @@ func plr_bandboxSelectionWithMouse(f *faction) *[]*pawn {
 	reRenderNeeded = true
 	for {
 		if reRenderNeeded {
-			r_renderScreenForFaction(f, CURRENT_MAP)
+			r_renderScreenForFaction(f, CURRENT_MAP, nil)
 		}
 		keyPressed := cw.ReadKeyAsync()
 		if keyPressed == "ESCAPE" {
@@ -180,10 +180,7 @@ func plr_giveOrderWithMouse(selection *[]*pawn, f *faction) {
 	for {
 		cx, cy := f.cursor.getCoords()
 		if reRenderNeeded {
-			r_renderScreenForFaction(f, CURRENT_MAP)
-			r_renderSelectedPawns(f, selection)
-			r_renderPossibleOrdersForPawn(selectedPawn)
-			flushView()
+			r_renderScreenForFaction(f, CURRENT_MAP, selection)
 		}
 
 		keyPressed := cw.ReadKeyAsync()
@@ -239,10 +236,7 @@ func plr_giveOrderForMultiSelectWithMouse(selection *[]*pawn, f *faction) {
 		cx, cy := f.cursor.getCoords()
 
 		if reRenderNeeded {
-			r_renderScreenForFaction(f, CURRENT_MAP)
-			r_renderSelectedPawns(f, selection)
-			r_renderPossibleOrdersForMultiselection(f, selection)
-			flushView()
+			r_renderScreenForFaction(f, CURRENT_MAP, selection)
 		}
 
 		keyPressed := cw.ReadKeyAsync()

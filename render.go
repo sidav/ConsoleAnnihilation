@@ -34,7 +34,7 @@ func r_updateBoundsIfNeccessary() {
 	}
 }
 
-func r_renderScreenForFaction(f *faction, g *gameMap) {
+func r_renderScreenForFaction(f *faction, g *gameMap, selection *[]*pawn) {
 	r_updateBoundsIfNeccessary()
 	cw.Clear_console()
 	renderMapInViewport(f, g)
@@ -42,6 +42,14 @@ func r_renderScreenForFaction(f *faction, g *gameMap) {
 	renderInfoOnCursor(f, g)
 	r_renderUIOutline(f)
 	renderPawnsInViewport(f, g)
+	if selection != nil && len(*selection) != 0 {
+		r_renderSelectedPawns(f, selection)
+		if len(*selection) == 1 {
+			r_renderPossibleOrdersForPawn((*selection)[0])
+		} else {
+			r_renderPossibleOrdersForMultiselection(f, selection)
+		}
+	}
 	r_renderCursor(f)
 	renderLog(false)
 	flushView()
