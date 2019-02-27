@@ -24,9 +24,9 @@ func plr_control(f *faction, m *gameMap) {
 			selection := plr_selectPawnWithMouse(f, m)
 			if selection != nil {
 				if len(*selection) == 1 {
-					plr_selectOrderWithMouse(selection, f)
+					plr_giveOrderWithMouse(selection, f)
 				} else if len(*selection) > 1 {
-				//	plr_selectOrderForMultiSelect(selection, f)
+					plr_giveOrderForMultiSelectWithMouse(selection, f)
 				}
 			}
 		} else {

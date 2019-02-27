@@ -169,23 +169,28 @@ func plr_bandboxSelectionWithMouse(f *faction) *[]*pawn {
 	}
 }
 
-func plr_selectOrderWithMouse(selection *[]*pawn, f *faction) {
+func plr_giveOrderWithMouse(selection *[]*pawn, f *faction) {
 	selectedPawn := (*selection)[0] //m.getUnitAtCoordinates(cx, cy)
 	log.appendMessage(selectedPawn.name + " is awaiting orders.")
 	f.cursor.currentCursorMode = CURSOR_MOVE
+	reRenderNeeded = true
 	for {
 		cx, cy := f.cursor.getCoords()
 		r_renderScreenForFaction(f, CURRENT_MAP)
 		r_renderSelectedPawns(f, selection)
 		r_renderPossibleOrdersForPawn(selectedPawn)
-		flushView()
+		if reRenderNeeded {
+			flushView()
+		}
 
 		keyPressed := cw.ReadKeyAsync()
 		if cw.IsMouseHeld() && cw.WasMouseMovedSinceLastEvent() && cw.GetMouseButton() == "RIGHT" {
 			plr_moveCameraWithMouse(f)
+			continue
 		}
 		if cw.WasMouseMovedSinceLastEvent() {
 			plr_moveCursorWithMouse(f)
+			continue
 		}
 		if !cw.IsMouseHeld() && cw.GetMouseButton() == "LEFT" {
 			issueDefaultOrderToUnit(selectedPawn, CURRENT_MAP, cx, cy)
@@ -217,6 +222,50 @@ func plr_selectOrderWithMouse(selection *[]*pawn, f *faction) {
 			if selectedPawn.canConstructUnits() {
 				selectedPawn.repeatConstructionQueue = !selectedPawn.repeatConstructionQueue
 			}
+		case "ESCAPE":
+			return
+		default:
+			reRenderNeeded = false
+		}
+	}
+}
+
+func plr_giveOrderForMultiSelectWithMouse(selection *[]*pawn, f *faction) {
+	log.appendMessage(fmt.Sprintf("%d units are awaiting orders.", len(*selection)))
+	f.cursor.currentCursorMode = CURSOR_MOVE
+	for {
+		cx, cy := f.cursor.getCoords()
+		r_renderScreenForFaction(f, CURRENT_MAP)
+		r_renderSelectedPawns(f, selection)
+		r_renderPossibleOrdersForMultiselection(f, selection)
+		flushView()
+
+		keyPressed := cw.ReadKeyAsync()
+		if cw.IsMouseHeld() && cw.WasMouseMovedSinceLastEvent() && cw.GetMouseButton() == "RIGHT" {
+			plr_moveCameraWithMouse(f)
+			continue
+		}
+		if cw.WasMouseMovedSinceLastEvent() {
+			plr_moveCursorWithMouse(f)
+			continue
+		}
+		if !cw.IsMouseHeld() && cw.GetMouseButton() == "LEFT" {
+			for _, p := range *selection {
+				issueDefaultOrderToUnit(p, CURRENT_MAP, cx, cy)
+			}
+			return
+		}
+
+		switch keyPressed {
+		case "ENTER", "RETURN":
+			for _, p := range *selection {
+				issueDefaultOrderToUnit(p, CURRENT_MAP, cx, cy)
+			}
+			return
+		case "a": // attack-move
+			f.cursor.currentCursorMode = CURSOR_AMOVE
+		case "m": // move
+			f.cursor.currentCursorMode = CURSOR_MOVE
 		case "ESCAPE":
 			return
 		default:
