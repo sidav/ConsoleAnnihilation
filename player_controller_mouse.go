@@ -140,7 +140,7 @@ func plr_bandboxSelectionWithMouse(f *faction) *[]*pawn {
 			return nil
 		}
 		if !cw.IsMouseHeld() {
-			reRenderNeeded = true 
+			reRenderNeeded = true
 			fromx, fromy := f.cursor.xorig, f.cursor.yorig
 			tox, toy := f.cursor.getCoords()
 			if fromx > tox {
@@ -163,8 +163,11 @@ func plr_bandboxSelectionWithMouse(f *faction) *[]*pawn {
 			}
 			log.appendMessage(fmt.Sprintf("%d units selected from %d", len(unitsToReturn), len(unitsInSelection)))
 			return &unitsToReturn
-		} else {
+		}
+		if cw.WasMouseMovedSinceLastEvent() {
 			plr_moveCursorWithMouse(f)
+		} else {
+			reRenderNeeded = false
 		}
 	}
 }
@@ -176,10 +179,10 @@ func plr_giveOrderWithMouse(selection *[]*pawn, f *faction) {
 	reRenderNeeded = true
 	for {
 		cx, cy := f.cursor.getCoords()
-		r_renderScreenForFaction(f, CURRENT_MAP)
-		r_renderSelectedPawns(f, selection)
-		r_renderPossibleOrdersForPawn(selectedPawn)
 		if reRenderNeeded {
+			r_renderScreenForFaction(f, CURRENT_MAP)
+			r_renderSelectedPawns(f, selection)
+			r_renderPossibleOrdersForPawn(selectedPawn)
 			flushView()
 		}
 
@@ -197,9 +200,6 @@ func plr_giveOrderWithMouse(selection *[]*pawn, f *faction) {
 			return
 		}
 		switch keyPressed {
-		case "ENTER", "RETURN":
-			issueDefaultOrderToUnit(selectedPawn, CURRENT_MAP, cx, cy)
-			return
 		case "a": // attack-move
 			if selectedPawn.hasWeapons() || selectedPawn.canConstructUnits() {
 				f.cursor.currentCursorMode = CURSOR_AMOVE
@@ -233,12 +233,16 @@ func plr_giveOrderWithMouse(selection *[]*pawn, f *faction) {
 func plr_giveOrderForMultiSelectWithMouse(selection *[]*pawn, f *faction) {
 	log.appendMessage(fmt.Sprintf("%d units are awaiting orders.", len(*selection)))
 	f.cursor.currentCursorMode = CURSOR_MOVE
+	reRenderNeeded = true
 	for {
 		cx, cy := f.cursor.getCoords()
-		r_renderScreenForFaction(f, CURRENT_MAP)
-		r_renderSelectedPawns(f, selection)
-		r_renderPossibleOrdersForMultiselection(f, selection)
-		flushView()
+
+		if reRenderNeeded {
+			r_renderScreenForFaction(f, CURRENT_MAP)
+			r_renderSelectedPawns(f, selection)
+			r_renderPossibleOrdersForMultiselection(f, selection)
+			flushView()
+		}
 
 		keyPressed := cw.ReadKeyAsync()
 		if cw.IsMouseHeld() && cw.WasMouseMovedSinceLastEvent() && cw.GetMouseButton() == "RIGHT" {
@@ -269,36 +273,36 @@ func plr_giveOrderForMultiSelectWithMouse(selection *[]*pawn, f *faction) {
 		case "ESCAPE":
 			return
 		default:
-			plr_moveCursor(f, keyPressed)
+			reRenderNeeded = false
 		}
 	}
 }
 
 func plr_moveCameraWithMouse(f *faction) {
-		vx, vy := cw.GetMouseMovementVector()
-		if vx == 0 && vy == 0 {
-			return
-		}
-		cx, cy := f.cursor.getCoords()
-		if areCoordsValid(cx+vx, cy+vy) {
-			f.cursor.cameraX += vx
-			f.cursor.cameraY += vy
-		}
+	vx, vy := cw.GetMouseMovementVector()
+	if vx == 0 && vy == 0 {
+		return
+	}
+	cx, cy := f.cursor.getCoords()
+	if areCoordsValid(cx+vx, cy+vy) {
+		f.cursor.cameraX += vx
+		f.cursor.cameraY += vy
+	}
 
-		snapB := f.cursor.snappedPawn
-		if snapB != nil { // unsnap cursor
-			for snapB.isOccupyingCoords(f.cursor.x, f.cursor.y) {
-				if areCoordsValid(f.cursor.x+vx, f.cursor.y+vy) {
-					f.cursor.moveByVector(vx, vy)
-				} else {
-					break
-				}
+	snapB := f.cursor.snappedPawn
+	if snapB != nil { // unsnap cursor
+		for snapB.isOccupyingCoords(f.cursor.x, f.cursor.y) {
+			if areCoordsValid(f.cursor.x+vx, f.cursor.y+vy) {
+				f.cursor.moveByVector(vx, vy)
+			} else {
+				break
 			}
-			f.cursor.snappedPawn = nil
 		}
-		if f.cursor.currentCursorMode != CURSOR_BUILD {
-			snapCursorToPawn(f)
-		}
+		f.cursor.snappedPawn = nil
+	}
+	if f.cursor.currentCursorMode != CURSOR_BUILD {
+		snapCursorToPawn(f)
+	}
 }
 
 func plr_moveCursorWithMouse(f *faction) {
