@@ -196,6 +196,7 @@ func plr_giveOrderWithMouse(selection *[]*pawn, f *faction) {
 			continue
 		}
 		if !cw.IsMouseHeld() && cw.GetMouseButton() == "LEFT" {
+			reRenderNeeded = true
 			issueDefaultOrderToUnit(selectedPawn, CURRENT_MAP, cx, cy)
 			return
 		}
@@ -257,6 +258,7 @@ func plr_giveOrderForMultiSelectWithMouse(selection *[]*pawn, f *faction) {
 			for _, p := range *selection {
 				issueDefaultOrderToUnit(p, CURRENT_MAP, cx, cy)
 			}
+			reRenderNeeded = true
 			return
 		}
 
