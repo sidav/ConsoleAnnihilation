@@ -396,6 +396,7 @@ func trySnapCursorToCommander(f *faction) bool {
 	for _, p := range CURRENT_MAP.pawns {
 		if p.faction == f && p.isCommander {
 			f.cursor.x, f.cursor.y = p.getCoords()
+			f.cursor.centralizeCamera()
 			f.cursor.snappedPawn = p
 			return true
 		}

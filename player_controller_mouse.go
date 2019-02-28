@@ -201,9 +201,11 @@ func plr_giveOrderWithMouse(selection *[]*pawn, f *faction) {
 		case "a": // attack-move
 			if selectedPawn.hasWeapons() || selectedPawn.canConstructUnits() {
 				f.cursor.currentCursorMode = CURSOR_AMOVE
+				reRenderNeeded = true
 			}
 		case "m": // move
 			f.cursor.currentCursorMode = CURSOR_MOVE
+			reRenderNeeded = true
 		case "b": // build
 			if selectedPawn.canConstructBuildings() {
 				code := plr_selectBuidingToConstruct(selectedPawn)
@@ -215,10 +217,12 @@ func plr_giveOrderWithMouse(selection *[]*pawn, f *faction) {
 		case "c": // construct units
 			if selectedPawn.canConstructUnits() {
 				plr_selectUnitsToConstruct(selectedPawn)
+				reRenderNeeded = true
 			}
 		case "r": // repeat construction queue
 			if selectedPawn.canConstructUnits() {
 				selectedPawn.repeatConstructionQueue = !selectedPawn.repeatConstructionQueue
+				reRenderNeeded = true
 			}
 		case "ESCAPE":
 			return
