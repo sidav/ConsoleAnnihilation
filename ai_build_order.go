@@ -21,6 +21,14 @@ func (ai *aiData) shouldProduceEngineers() bool {
 	return ai.currentEngineersCount < ai.getCurrentOrderStep().desiredEngineers
 }
 
+var ai_buildOrderNames = []string {
+	"CRAZY (NO STRATEGY)",
+	"2 KBOT LABS RUSH",
+	"2 VEHICLE PLANTS RUSH",
+	"KBOT/VEHICLE BALANCED",
+	"TECH RUSH",
+}
+
 var ai_allBuildOrders = [][]*ai_buildOrderStep{
 	// order 0: full random
 	{
