@@ -314,6 +314,7 @@ func plr_selectBuildingSiteWithMouse(p *pawn, b *pawn, m *gameMap) {
 				b.x = cx - b.buildingInfo.w/2
 				b.y = cy - b.buildingInfo.h/2
 				p.setOrder(&order{orderType: order_build, x: cx, y: cy, buildingToConstruct: b})
+				reRenderNeeded = true
 				return
 			} else {
 				log.appendMessage("This building can't be placed here!")

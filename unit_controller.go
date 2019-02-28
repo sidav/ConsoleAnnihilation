@@ -135,7 +135,8 @@ func (attacker *pawn) openFireIfPossible() { // does the firing, does NOT necess
 			if areGlobalCoordsOnScreenForFaction(attackerCenterX, attackerCenterY, CURRENT_FACTION_SEEING_THE_SCREEN) || areGlobalCoordsOnScreenForFaction(target.x, target.y, CURRENT_FACTION_SEEING_THE_SCREEN) {
 				tcell_wrapper.SetFgColor(tcell_wrapper.RED)
 				cx, cy := target.getCenter()
-				renderLine(attackerCenterX, attackerCenterY, cx, cy, false, CURRENT_FACTION_SEEING_THE_SCREEN.cursor.x-VIEWPORT_W/2, CURRENT_FACTION_SEEING_THE_SCREEN.cursor.y-VIEWPORT_H/2)
+				camx, camy := CURRENT_FACTION_SEEING_THE_SCREEN.cursor.getCameraCoords()
+				renderLine(attackerCenterX, attackerCenterY, cx, cy, false, camx, camy)
 				FIRE_WAS_OPENED_ON_SCREEN_THIS_TURN = true
 			}
 			dealDamageToTarget(attacker, wpn, target)

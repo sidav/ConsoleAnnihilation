@@ -7,6 +7,10 @@ import (
 
 func r_renderCursor(f *faction) {
 	c := f.cursor
+	cx, cy := c.getCoords()
+	if !areGlobalCoordsOnScreen(cx, cy) {
+		return
+	}
 	switch c.currentCursorMode {
 	case CURSOR_SELECT:
 		renderSelectCursor(f)
