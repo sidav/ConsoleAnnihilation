@@ -2,7 +2,7 @@ package main
 
 import (
 	"SomeTBSGame/routines"
-	"goLibRL/astar"
+	"github.com/sidav/goLibRL/astar"
 )
 
 var (
