@@ -24,7 +24,7 @@ func r_setFgColorByCcell(c *ccell) {
 func r_updateBoundsIfNeccessary() {
 	if cw.WasResized() {
 		CONSOLE_W, CONSOLE_H = cw.GetConsoleSize()
-		VIEWPORT_W           = cw.CONSOLE_WIDTH / 2
+		VIEWPORT_W           = CONSOLE_W / 2
 		VIEWPORT_H           = CONSOLE_H - LOG_HEIGHT - 1
 		SIDEBAR_X            = VIEWPORT_W + 1
 		SIDEBAR_W            = CONSOLE_W - VIEWPORT_W - 1

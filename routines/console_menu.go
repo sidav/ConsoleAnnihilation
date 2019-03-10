@@ -47,8 +47,9 @@ func DrawWrappedTextInRect(text string, x, y, w, h int) {
 }
 
 func ShowSimpleInfoWindow(title, text string, w, h, outlineColor int) {
+	c_w, c_h := cw.GetConsoleSize()
 	for {
-		x, y := (cw.CONSOLE_WIDTH-w)/2, (cw.CONSOLE_HEIGHT-h)/2
+		x, y := (c_w-w)/2, (c_h-h)/2
 		// draw background
 		cw.SetBgColor(outlineColor)
 		for i := x; i < x+w; i++ {
@@ -83,16 +84,17 @@ func ShowSimpleInfoWindow(title, text string, w, h, outlineColor int) {
 func ShowSimpleYNChoiceModalWindow(text string) bool {
 	var w, h int
 	var wrap bool
+	c_w, c_h := cw.GetConsoleSize()
 	for {
-		if len(text) <= cw.CONSOLE_WIDTH/3 {
+		if len(text) <= c_w/3 {
 			w = len(text) + 2
 			h = 5
 		} else {
 			wrap = true
-			w = cw.CONSOLE_WIDTH/3 + 2
+			w = c_w/3 + 2
 			h = len(text)/w + 4
 		}
-		x, y := (cw.CONSOLE_WIDTH-w)/2, (cw.CONSOLE_HEIGHT-h)/2
+		x, y := (c_w-w)/2, (c_h-h)/2
 		// draw background
 		cw.SetBgColor(cw.DARK_GRAY)
 		for i := x; i < x+w; i++ {

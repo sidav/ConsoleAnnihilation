@@ -72,10 +72,11 @@ var (
 )
 
 func r_drawWinLogo() {
+	c_w, c_h := cw.GetConsoleSize()
 	logo := &coreWon
 	cw.Clear_console()
-	cy := (cw.CONSOLE_HEIGHT - len(*logo)) / 2
-	cx := (cw.CONSOLE_WIDTH - len((*logo)[0])) / 2
+	cy := (c_h - len(*logo)) / 2
+	cx := (c_w - len((*logo)[0])) / 2
 	for y := 0; y < len(*logo); y++ {
 		for x := 0; x < len((*logo)[y]); x++ {
 			chr := (*logo)[y][x]
@@ -98,10 +99,11 @@ func r_drawWinLogo() {
 }
 
 func r_drawLoseLogo() {
+	c_w, c_h := cw.GetConsoleSize()
 	logo := &coreLost
 	cw.Clear_console()
-	cy := (cw.CONSOLE_HEIGHT - len(*logo)) / 2
-	cx := (cw.CONSOLE_WIDTH - len((*logo)[0])) / 2
+	cy := (c_h - len(*logo)) / 2
+	cx := (c_w - len((*logo)[0])) / 2
 	for y := 0; y < len(*logo); y++ {
 		for x := 0; x < len((*logo)[y]); x++ {
 			chr := (*logo)[y][x]
@@ -124,11 +126,12 @@ func r_drawLoseLogo() {
 }
 
 func r_showTitleScreen() {
+	c_w, c_h := cw.GetConsoleSize()
 	r_drawWinLogo()
 	str := "TOTAL ANNIHILATION: THE PREQUEL"
-	cw.PutString(str, (cw.CONSOLE_WIDTH-len(str))/2, 0)
+	cw.PutString(str, (c_w-len(str))/2, 0)
 	str = "Press enter to continue"
-	cw.PutString(str, (cw.CONSOLE_WIDTH-len(str))/2, cw.CONSOLE_HEIGHT-1)
+	cw.PutString(str, (c_w-len(str))/2, c_h-1)
 	cw.Flush_console()
 	key := ""
 	for key != "ESCAPE" && key != "ENTER" {
@@ -137,12 +140,13 @@ func r_showTitleScreen() {
 }
 
 func r_gamelostScreen() {
+	c_w, c_h := cw.GetConsoleSize()
 	r_drawLoseLogo()
 	cw.SetFgColor(cw.GREEN)
 	str := "YOU HAVE LOST"
-	cw.PutString(str, (cw.CONSOLE_WIDTH-len(str))/2, 0)
+	cw.PutString(str, (c_w-len(str))/2, 0)
 	str = "THE ARM VERMIN WILL SOON OVERRUN THALASSEAN"
-	cw.PutString(str, (cw.CONSOLE_WIDTH-len(str))/2, cw.CONSOLE_HEIGHT-1)
+	cw.PutString(str, (c_w-len(str))/2, c_h-1)
 	cw.Flush_console()
 	key := ""
 	for key != "ESCAPE" && key != "ENTER" {
@@ -151,12 +155,13 @@ func r_gamelostScreen() {
 }
 
 func r_gameWonScreen() {
+	c_w, c_h := cw.GetConsoleSize()
 	r_drawWinLogo()
 	cw.SetFgColor(cw.GREEN)
 	str := "MISSION ACCOMPLISHED"
-	cw.PutString(str, (cw.CONSOLE_WIDTH-len(str))/2, 0)
+	cw.PutString(str, (c_w-len(str))/2, 0)
 	str = "THANKS FOR PLAYING!"
-	cw.PutString(str, (cw.CONSOLE_WIDTH-len(str))/2, cw.CONSOLE_HEIGHT-1)
+	cw.PutString(str, (c_w-len(str))/2, c_h-1)
 	cw.Flush_console()
 	key := ""
 	for key != "ESCAPE" && key != "ENTER" {
