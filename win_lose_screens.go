@@ -1,6 +1,6 @@
 package main
 
-import cw "TCellConsoleWrapper"
+import cw "github.com/sidav/goLibRL/console"
 
 var (
 	coreLogo = []string{

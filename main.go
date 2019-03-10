@@ -2,7 +2,7 @@ package main
 
 import (
 	"SomeTBSGame/routines"
-	cw "TCellConsoleWrapper"
+	cw "github.com/sidav/goLibRL/console"
 	"strconv"
 	"time"
 )
@@ -33,7 +33,7 @@ func debug_write(text string) {
 }
 
 func main() {
-	cw.Init_console()
+	cw.Init_console("Console Annihilation", cw.TCellRenderer)
 	defer cw.Close_console()
 
 	log = &LOG{}

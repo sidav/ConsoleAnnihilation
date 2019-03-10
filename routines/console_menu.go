@@ -1,7 +1,7 @@
 package routines
 
 import (
-	cw "TCellConsoleWrapper"
+	cw "github.com/sidav/goLibRL/console"
 	"strings"
 )
 

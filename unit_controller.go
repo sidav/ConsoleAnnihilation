@@ -2,7 +2,7 @@ package main
 
 import (
 	"SomeTBSGame/routines"
-	"TCellConsoleWrapper"
+	cw "github.com/sidav/goLibRL/console"
 )
 
 func (p *pawn) isTimeToAct() bool {
@@ -133,7 +133,7 @@ func (attacker *pawn) openFireIfPossible() { // does the firing, does NOT necess
 			}
 			// draw the pew pew laser TODO: move this crap somewhere already
 			if areGlobalCoordsOnScreenForFaction(attackerCenterX, attackerCenterY, CURRENT_FACTION_SEEING_THE_SCREEN) || areGlobalCoordsOnScreenForFaction(target.x, target.y, CURRENT_FACTION_SEEING_THE_SCREEN) {
-				tcell_wrapper.SetFgColor(tcell_wrapper.RED)
+				cw.SetFgColor(cw.RED)
 				cx, cy := target.getCenter()
 				camx, camy := CURRENT_FACTION_SEEING_THE_SCREEN.cursor.getCameraCoords()
 				renderLine(attackerCenterX, attackerCenterY, cx, cy, false, camx, camy)

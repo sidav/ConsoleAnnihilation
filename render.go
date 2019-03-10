@@ -2,7 +2,7 @@ package main
 
 import (
 	"SomeTBSGame/routines"
-	cw "TCellConsoleWrapper"
+	cw "github.com/sidav/goLibRL/console"
 )
 
 var (

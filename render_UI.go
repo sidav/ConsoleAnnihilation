@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"sort"
 )
-import cw "TCellConsoleWrapper"
+import cw "github.com/sidav/goLibRL/console"
 
 func renderFactionStats(f *faction) {
 	eco := f.economy

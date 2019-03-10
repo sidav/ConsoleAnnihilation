@@ -1,7 +1,7 @@
 package main
 
 import (
-	cw "TCellConsoleWrapper"
+	cw "github.com/sidav/goLibRL/console"
 	"fmt"
 )
 
