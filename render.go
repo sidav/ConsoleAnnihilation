@@ -1,7 +1,7 @@
 package main
 
 import (
-	"SomeTBSGame/routines"
+	geometry "github.com/sidav/goLibRL/geometry"
 	cw "github.com/sidav/goLibRL/console"
 )
 
@@ -193,10 +193,10 @@ func renderCharByGlobalCoords(c rune, x, y int) { // TODO: use it everywhere
 
 func areGlobalCoordsOnScreen(gx, gy int) bool {
 	vx, vy := CURRENT_FACTION_SEEING_THE_SCREEN.cursor.getCameraCoords()
-	return routines.AreCoordsInRect(gx, gy, vx, vy, VIEWPORT_W, VIEWPORT_H)
+	return geometry.AreCoordsInRect(gx, gy, vx, vy, VIEWPORT_W, VIEWPORT_H)
 }
 
 func areGlobalCoordsOnScreenForFaction(gx, gy int, f *faction) bool {
 	vx, vy := f.cursor.getCameraCoords()
-	return routines.AreCoordsInRect(gx, gy, vx, vy, VIEWPORT_W, VIEWPORT_H)
+	return geometry.AreCoordsInRect(gx, gy, vx, vy, VIEWPORT_W, VIEWPORT_H)
 }

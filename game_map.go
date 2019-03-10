@@ -1,7 +1,7 @@
 package main
 
 import (
-	"SomeTBSGame/routines"
+	geometry "github.com/sidav/goLibRL/geometry"
 	"github.com/sidav/goLibRL/astar"
 )
 
@@ -54,11 +54,11 @@ func (g *gameMap) getPawnAtCoordinates(x, y int) *pawn {
 //	var arr []*pawn
 //	for _, p := range g.pawns {
 //		px, py := p.getCenter()
-//		if p.isBuilding() && routines.AreCircleAndRectOverlapping(x, y, radius, p.x, p.y, p.buildingInfo.w, p.buildingInfo.h ){
+//		if p.isBuilding() && geometry.AreCircleAndRectOverlapping(x, y, radius, p.x, p.y, p.buildingInfo.w, p.buildingInfo.h ){
 //			arr = append(arr, p)
 //			continue
 //		}
-//		if p.isUnit() && routines.AreCoordsInRange(px, py, x, y, radius) {
+//		if p.isUnit() && geometry.AreCoordsInRange(px, py, x, y, radius) {
 //			arr = append(arr, p)
 //		}
 //	}
@@ -70,11 +70,11 @@ func (g *gameMap) getPawnsInRect(x, y, w, h int) []*pawn {
 	for _, p := range g.pawns {
 		cx, cy := p.getCenter()
 		if p.isBuilding() {
-			if routines.AreTwoCellRectsOverlapping(x, y, w, h, p.x, p.y, p.buildingInfo.w, p.buildingInfo.h) {
+			if geometry.AreTwoCellRectsOverlapping(x, y, w, h, p.x, p.y, p.buildingInfo.w, p.buildingInfo.h) {
 				arr = append(arr, p)
 			}
 		} else {
-			if routines.AreCoordsInRect(cx, cy, x, y, w, h) {
+			if geometry.AreCoordsInRect(cx, cy, x, y, w, h) {
 				arr = append(arr, p)
 			}
 		}
@@ -87,11 +87,11 @@ func (g *gameMap) getEnemyPawnsInRadiusFrom(x, y, radius int, f *faction) []*paw
 	for _, p := range g.pawns {
 		px, py := p.getCenter()
 		if p.faction != f {
-			if p.isBuilding() && routines.AreCircleAndRectOverlapping(x, y, radius, p.x, p.y, p.buildingInfo.w, p.buildingInfo.h ){
+			if p.isBuilding() && geometry.AreCircleAndRectOverlapping(x, y, radius, p.x, p.y, p.buildingInfo.w, p.buildingInfo.h ){
 				arr = append(arr, p)
 				continue
 			}
-			if p.isUnit() && routines.AreCoordsInRange(px, py, x, y, radius) {
+			if p.isUnit() && geometry.AreCoordsInRange(px, py, x, y, radius) {
 				arr = append(arr, p)
 			}
 		}
@@ -144,17 +144,17 @@ func (g *gameMap) isConstructionSiteBlockedByUnitOrBuilding(x, y, w, h int, tigh
 	for _, p := range g.pawns {
 		if p.isBuilding() {
 			if p.buildingInfo.allowsTightPlacement && tight {
-				if routines.AreTwoCellRectsOverlapping(x, y, w, h, p.x, p.y, p.buildingInfo.w, p.buildingInfo.h) {
+				if geometry.AreTwoCellRectsOverlapping(x, y, w, h, p.x, p.y, p.buildingInfo.w, p.buildingInfo.h) {
 					return true
 				}
-			} else if routines.AreTwoCellRectsOverlapping(x-1, y-1, w+2, h+2, p.x, p.y, p.buildingInfo.w, p.buildingInfo.h) {
+			} else if geometry.AreTwoCellRectsOverlapping(x-1, y-1, w+2, h+2, p.x, p.y, p.buildingInfo.w, p.buildingInfo.h) {
 				// -1s and +2s are to prevent tight placement...
 				// ..and ensure that there always will be at least 1 cell between buildings.
 				return true
 			}
 		} else {
 			cx, cy := p.getCenter()
-			if routines.AreCoordsInRect(cx, cy, x, y, w, h) {
+			if geometry.AreCoordsInRect(cx, cy, x, y, w, h) {
 				return true
 			}
 		}

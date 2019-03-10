@@ -1,7 +1,7 @@
 package main
 
 import (
-	"SomeTBSGame/routines"
+	rnd "github.com/sidav/goLibRL/random"
 	"strconv"
 )
 
@@ -64,7 +64,7 @@ var MIS1_MAP = &[]string {
 func initMapForMission(g *gameMap, missionNumber int) {
 	g.initTileMap(MIS1_MAP)
 
-	ai_write("Seed is " + strconv.Itoa(routines.Randomize()))
+	ai_write("Seed is " + strconv.Itoa(rnd.Randomize()))
 
 	g.factions = append(g.factions, createFaction("AI 1", 0,true, false))
 	g.addPawn(createUnit("armcommander", 7, mapH/2, g.factions[0], true))

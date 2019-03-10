@@ -1,7 +1,7 @@
 package main
 
 import (
-	"SomeTBSGame/routines"
+	rnd "github.com/sidav/goLibRL/random"
 	"strconv"
 )
 
@@ -18,8 +18,8 @@ func ai_makeBuildOrderForBuilding(builder *pawn, buildingCode string) bool { // 
 
 	var placex, placey int
 	for try := 0; try < 10; try++ {
-		placex = routines.RandInRange(bx-BUILD_SEARCH_RANGE, bx+BUILD_SEARCH_RANGE)
-		placey = routines.RandInRange(by-BUILD_SEARCH_RANGE, by+BUILD_SEARCH_RANGE)
+		placex = rnd.RandInRange(bx-BUILD_SEARCH_RANGE, bx+BUILD_SEARCH_RANGE)
+		placey = rnd.RandInRange(by-BUILD_SEARCH_RANGE, by+BUILD_SEARCH_RANGE)
 		if CURRENT_MAP.canBuildingBeBuiltAt(building, placex, placey) {
 			// restrict building on metal
 			if (tight && CURRENT_MAP.getNumberOfMetalDepositsInRect(placex-b_w/2, placey-b_h/2, b_w, b_h) != 0) ||

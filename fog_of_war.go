@@ -1,6 +1,6 @@
 package main
 
-import "SomeTBSGame/routines"
+import geometry "github.com/sidav/goLibRL/geometry"
 
 func (f *faction) recalculateSeenTiles() {
 	if CHEAT_IGNORE_FOW {
@@ -25,11 +25,11 @@ func (f *faction) recalculateSeenTiles() {
 			for x := px - radiusToIterate; x <= px+radiusToIterate; x++ {
 				for y := py - radiusToIterate; y <= py+radiusToIterate; y++ {
 					if areCoordsValid(x, y) {
-						if routines.AreCoordsInRange(px, py, x, y, p.sightRadius) {
+						if geometry.AreCoordsInRange(px, py, x, y, p.sightRadius) {
 							f.seenTiles[x][y] = true
 							f.tilesInSight[x][y] = true
 						}
-						if p.radarRadius > 0 && routines.AreCoordsInRange(px, py, x, y, p.radarRadius) {
+						if p.radarRadius > 0 && geometry.AreCoordsInRange(px, py, x, y, p.radarRadius) {
 							f.radarCoverage[x][y] = true
 						}
 					}

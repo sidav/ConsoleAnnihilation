@@ -1,7 +1,7 @@
 package main
 
 import (
-	"SomeTBSGame/routines"
+	cmenu "github.com/sidav/goLibRL/console_menu"
 	cw "github.com/sidav/goLibRL/console"
 	"fmt"
 	"time"
@@ -114,7 +114,7 @@ func plr_selectPawn(f *faction, m *gameMap) *[]*pawn { // returns a pointer to a
 				renderPawnInfo(f.cursor.snappedPawn)
 			}
 		case "ESCAPE":
-			if routines.ShowSimpleYNChoiceModalWindow("Are you sure you want to quit?") {
+			if cmenu.ShowSimpleYNChoiceModalWindow("Are you sure you want to quit?") {
 				GAME_IS_RUNNING = false
 				PLR_LOOP = false
 				return nil
@@ -274,7 +274,7 @@ func plr_selectUnitsToConstruct(p *pawn) {
 		}
 	}
 
-	indicesQueue := routines.ShowSidebarCreateQueueMenu("CONSTRUCT:", p.faction.getFactionColor(),
+	indicesQueue := cmenu.ShowSidebarCreateQueueMenu("CONSTRUCT:", p.faction.getFactionColor(),
 		SIDEBAR_X, SIDEBAR_FLOOR_2, SIDEBAR_W, SIDEBAR_H-SIDEBAR_FLOOR_2, names, descriptions, presetValues)
 
 	if indicesQueue != nil {
@@ -303,7 +303,7 @@ func plr_selectBuidingToConstruct(p *pawn) string {
 		descriptions = append(descriptions, desc)
 	}
 
-	index := routines.ShowSidebarSingleChoiceMenu("BUILD:", p.faction.getFactionColor(),
+	index := cmenu.ShowSidebarSingleChoiceMenu("BUILD:", p.faction.getFactionColor(),
 		SIDEBAR_X, SIDEBAR_FLOOR_2, SIDEBAR_W, SIDEBAR_H-SIDEBAR_FLOOR_2, names, descriptions)
 	if index != -1 {
 		return availableBuildingCodes[index]

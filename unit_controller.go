@@ -1,7 +1,7 @@
 package main
 
 import (
-	"SomeTBSGame/routines"
+	geometry "github.com/sidav/goLibRL/geometry"
 	cw "github.com/sidav/goLibRL/console"
 )
 
@@ -47,7 +47,7 @@ func (u *pawn) doMoveOrder() { // TODO: rewrite
 	ux, uy := u.getCoords()
 	var vx, vy int
 
-	//vector := routines.CreateVectorByStartAndEndInt(ux, uy, ox, oy)
+	//vector := geometry.CreateVectorByStartAndEndInt(ux, uy, ox, oy)
 	//vector.TransformIntoUnitVector()
 	//vx, vy := vector.GetRoundedCoords()
 	path := CURRENT_MAP.getPathFromTo(ux, uy, ox, oy)
@@ -87,7 +87,7 @@ func (p *pawn) doAttackOrder() { // Only moves the unit to a firing position. Th
 	}
 	targetX, targetY := order.targetPawn.getCenter()
 
-	if !routines.AreCoordsInRange(ux, uy, targetX, targetY, p.getMaxRadiusToFire()) {
+	if !geometry.AreCoordsInRange(ux, uy, targetX, targetY, p.getMaxRadiusToFire()) {
 		order.x = targetX
 		order.y = targetY
 		p.doMoveOrder()
@@ -114,7 +114,7 @@ func (attacker *pawn) openFireIfPossible() { // does the firing, does NOT necess
 		}
 		var target *pawn
 		radius := wpn.attackRadius
-		if pawnInOrder != nil && routines.AreCoordsInRange(attackerCenterX, attackerCenterY, pawnInOrder.x, pawnInOrder.y, radius) {
+		if pawnInOrder != nil && geometry.AreCoordsInRange(attackerCenterX, attackerCenterY, pawnInOrder.x, pawnInOrder.y, radius) {
 			target = pawnInOrder
 		} else {
 			potential_targets := CURRENT_MAP.getEnemyPawnsInRadiusFrom(attackerCenterX, attackerCenterY, radius, attacker.faction)

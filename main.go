@@ -1,14 +1,15 @@
 package main
 
 import (
-	"SomeTBSGame/routines"
+	geometry "github.com/sidav/goLibRL/geometry"
+	cmenu "github.com/sidav/goLibRL/console_menu"
 	cw "github.com/sidav/goLibRL/console"
 	"strconv"
 	"time"
 )
 
 func areCoordsValid(x, y int) bool {
-	return routines.AreCoordsInRect(x, y, 0, 0, mapW, mapH)
+	return geometry.AreCoordsInRect(x, y, 0, 0, mapW, mapH)
 }
 
 var (
@@ -120,7 +121,7 @@ func showBriefing() {
 		"As we speak, our data transfer relays are finishing uploading some basic scematics for the prototype's nanolating " +
 		"equipment. That means that you are clear to embark right now. \\n " +
 		"You will be dispatched immediately. "
-	routines.DrawWrappedTextInRect(text, 0, 0, CONSOLE_W, CONSOLE_H)
+	cmenu.DrawWrappedTextInRect(text, 0, 0, CONSOLE_W, CONSOLE_H)
 	cw.Flush_console()
 	key := ""
 	for key != "ESCAPE" && key != "ENTER" {

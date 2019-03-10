@@ -1,7 +1,7 @@
 package main
 
 import (
-	"SomeTBSGame/routines"
+	geometry "github.com/sidav/goLibRL/geometry"
 	"fmt"
 )
 
@@ -65,7 +65,7 @@ func (p *pawn) setOrder(o *order) {
 
 func (p *pawn) isOccupyingCoords(x, y int) bool {
 	if p.isBuilding() {
-		return routines.AreCoordsInRect(x, y, p.x, p.y, p.buildingInfo.w, p.buildingInfo.h)
+		return geometry.AreCoordsInRect(x, y, p.x, p.y, p.buildingInfo.w, p.buildingInfo.h)
 	} else {
 		return x == p.x && y == p.y
 	}

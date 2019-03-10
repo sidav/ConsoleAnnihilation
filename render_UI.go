@@ -1,8 +1,11 @@
 package main
 
 import (
-	"SomeTBSGame/routines"
 	"fmt"
+	cmenu "github.com/sidav/goLibRL/console_menu"
+	"github.com/sidav/goLibRL/geometry"
+	primitives "github.com/sidav/goLibRL/graphic_primitives"
+	vectorMath "github.com/sidav/goLibRL/math"
 	"sort"
 )
 import cw "github.com/sidav/goLibRL/console"
@@ -98,7 +101,7 @@ func renderInfoOnCursor(f *faction, g *gameMap) {
 				details = append(details, economyInfo)
 			}
 		}
-		routines.DrawSidebarInfoMenu(title, color, SIDEBAR_X, SIDEBAR_FLOOR_2, SIDEBAR_W, details)
+		cmenu.DrawSidebarInfoMenu(title, color, SIDEBAR_X, SIDEBAR_FLOOR_2, SIDEBAR_W, details)
 	}
 }
 
@@ -129,7 +132,7 @@ func r_renderPossibleOrdersForPawn(p *pawn) {
 			orders = append(orders, "(A)ttack-move")
 		}
 	}
-	routines.DrawSidebarInfoMenu("Orders for: "+p.name, p.faction.getFactionColor(),
+	cmenu.DrawSidebarInfoMenu("Orders for: "+p.name, p.faction.getFactionColor(),
 		SIDEBAR_X, SIDEBAR_FLOOR_3, SIDEBAR_W, orders)
 }
 
@@ -154,7 +157,7 @@ func r_renderPossibleOrdersForMultiselection(f *faction, selection *[]*pawn) {
 	} else {
 		orders = append(orders, "(A)ttack-move")
 	}
-	routines.DrawSidebarInfoMenu(fmt.Sprintf("ORDERS FOR %d UNITS", len(*selection)), f.getFactionColor(),
+	cmenu.DrawSidebarInfoMenu(fmt.Sprintf("ORDERS FOR %d UNITS", len(*selection)), f.getFactionColor(),
 		SIDEBAR_X, SIDEBAR_FLOOR_3, SIDEBAR_W, orders)
 }
 
@@ -195,11 +198,11 @@ func r_renderAttackRadius(p *pawn) {
 		// (p.x, p.y, p.weapons[0].attackRadius, false, CURRENT_FACTION_SEEING_THE_SCREEN.cursor.x-VIEWPORT_W/2, CURRENT_FACTION_SEEING_THE_SCREEN.cursor.y-VIEWPORT_H/2)
 		vx, vy := CURRENT_FACTION_SEEING_THE_SCREEN.cursor.getCameraCoords()
 		px, py := p.getCenter()
-		line := routines.GetCircle(px, py, p.weapons[0].attackRadius)
+		line := primitives.GetCircle(px, py, p.weapons[0].attackRadius)
 		for _, point := range *line {
 			x, y := point.X, point.Y
 			cw.SetFgColor(cw.BLACK)
-			if routines.AreCoordsInRect(x-vx, y-vy, 0, 0, VIEWPORT_W, VIEWPORT_H) && areCoordsValid(x, y) {
+			if geometry.AreCoordsInRect(x-vx, y-vy, 0, 0, VIEWPORT_W, VIEWPORT_H) && areCoordsValid(x, y) {
 				tileApp := CURRENT_MAP.tileMap[x][y].appearance
 				cw.SetBgColor(tileApp.color)
 				cw.PutChar(tileApp.char, x-vx, y-vy)
@@ -235,10 +238,10 @@ func renderOrderLine(p *pawn) {
 }
 
 func renderLine(fromx, fromy, tox, toy int, flush bool, vx, vy int) {
-	line := routines.GetLine(fromx, fromy, tox, toy)
+	line := primitives.GetLine(fromx, fromy, tox, toy)
 	char := '?'
 	if len(line) > 1 {
-		dirVector := routines.CreateVectorByStartAndEndInt(fromx, fromy, tox, toy)
+		dirVector := vectorMath.CreateVectorByStartAndEndInt(fromx, fromy, tox, toy)
 		dirVector.TransformIntoUnitVector()
 		dirx, diry := dirVector.GetRoundedCoords()
 		char = getTargetingChar(dirx, diry)
@@ -256,7 +259,7 @@ func renderLine(fromx, fromy, tox, toy int, flush bool, vx, vy int) {
 			char = 'X'
 		}
 		viewx, viewy := line[i].X-vx, line[i].Y-vy
-		if routines.AreCoordsInRect(viewx, viewy, 0, 0, VIEWPORT_W, VIEWPORT_H) {
+		if geometry.AreCoordsInRect(viewx, viewy, 0, 0, VIEWPORT_W, VIEWPORT_H) {
 			cw.PutChar(char, viewx, viewy)
 		}
 		// }
@@ -273,14 +276,14 @@ func renderPawnInfo(p *pawn) {
 	} else if p.isBuilding() {
 		name, desc = getBuildingNameAndDescription(p.codename)
 	}
-	routines.ShowSimpleInfoWindow(name, desc, 60, 15, p.faction.getFactionColor())
+	cmenu.ShowSimpleInfoWindow(name, desc, 60, 15, p.faction.getFactionColor())
 }
 
 func renderCircle(fromx, fromy, radius int, char rune, flush bool) {
 	if radius == 0 {
 		return
 	} else {
-		line := routines.GetCircle(fromx, fromy, radius)
+		line := primitives.GetCircle(fromx, fromy, radius)
 		for _, point := range *line {
 			x, y := point.X, point.Y
 			renderCharByGlobalCoords(char, x, y)

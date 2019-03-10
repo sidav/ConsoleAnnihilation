@@ -1,7 +1,7 @@
 package main
 
 import (
-	"SomeTBSGame/routines"
+	cmenu "github.com/sidav/goLibRL/console_menu"
 	cw "github.com/sidav/goLibRL/console"
 	"fmt"
 	"time"
@@ -99,7 +99,7 @@ func plr_selectPawnWithMouse(f *faction, m *gameMap) *[]*pawn { // returns a poi
 				renderPawnInfo(f.cursor.snappedPawn)
 			}
 		case "ESCAPE":
-			if routines.ShowSimpleYNChoiceModalWindow("Are you sure you want to quit?") {
+			if cmenu.ShowSimpleYNChoiceModalWindow("Are you sure you want to quit?") {
 				GAME_IS_RUNNING = false
 				PLR_LOOP = false
 				return nil
