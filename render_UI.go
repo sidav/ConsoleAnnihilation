@@ -2,13 +2,13 @@ package main
 
 import (
 	"fmt"
-	cmenu "github.com/sidav/goLibRL/console_menu"
-	"github.com/sidav/goLibRL/geometry"
-	primitives "github.com/sidav/goLibRL/graphic_primitives"
-	vectorMath "github.com/sidav/goLibRL/math"
+	cmenu "github.com/sidav/golibrl/console_menu"
+	"github.com/sidav/golibrl/geometry"
+	primitives "github.com/sidav/golibrl/graphic_primitives"
+	vectorMath "github.com/sidav/golibrl/math"
 	"sort"
 )
-import cw "github.com/sidav/goLibRL/console"
+import cw "github.com/sidav/golibrl/console"
 
 func renderFactionStats(f *faction) {
 	eco := f.economy
@@ -132,7 +132,9 @@ func r_renderPossibleOrdersForPawn(p *pawn) {
 			orders = append(orders, "(A)ttack-move")
 		}
 	}
-	cmenu.DrawSidebarInfoMenu("Orders for: "+p.name, p.faction.getFactionColor(),
+	//cmenu.DrawSidebarInfoMenu("Orders for: "+p.name, p.faction.getFactionColor(),
+	//	SIDEBAR_X, SIDEBAR_FLOOR_3, SIDEBAR_W, orders)
+	cmenu.DrawSidebarMouseOnlyAsyncMenu("Orders for: "+p.name, p.faction.getFactionColor(),
 		SIDEBAR_X, SIDEBAR_FLOOR_3, SIDEBAR_W, orders)
 }
 

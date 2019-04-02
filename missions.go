@@ -1,7 +1,7 @@
 package main
 
 import (
-	rnd "github.com/sidav/goLibRL/random"
+	rnd "github.com/sidav/golibrl/random"
 	"strconv"
 )
 

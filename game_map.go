@@ -1,8 +1,8 @@
 package main
 
 import (
-	geometry "github.com/sidav/goLibRL/geometry"
-	"github.com/sidav/goLibRL/astar"
+	geometry "github.com/sidav/golibrl/geometry"
+	"github.com/sidav/golibrl/astar"
 )
 
 var (
@@ -206,5 +206,5 @@ func (g *gameMap) createCostMapForPathfinding() *[][]int {
 }
 
 func (g *gameMap) getPathFromTo(fx, fy, tx, ty int) *astar.Cell {
-	return astar.FindPath(g.createCostMapForPathfinding(), fx, fy, tx, ty, true, true)
+	return astar.FindPath(g.createCostMapForPathfinding(), fx, fy, tx, ty, true, true, false)
 }

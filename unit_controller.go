@@ -1,8 +1,8 @@
 package main
 
 import (
-	geometry "github.com/sidav/goLibRL/geometry"
-	cw "github.com/sidav/goLibRL/console"
+	geometry "github.com/sidav/golibrl/geometry"
+	cw "github.com/sidav/golibrl/console"
 )
 
 func (p *pawn) isTimeToAct() bool {

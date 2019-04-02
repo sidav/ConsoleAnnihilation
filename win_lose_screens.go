@@ -1,6 +1,6 @@
 package main
 
-import cw "github.com/sidav/goLibRL/console"
+import cw "github.com/sidav/golibrl/console"
 
 var (
 	coreLogo = []string{

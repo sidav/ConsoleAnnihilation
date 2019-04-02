@@ -1,7 +1,7 @@
 package main
 
 import (
-	geometry "github.com/sidav/goLibRL/geometry"
+	geometry "github.com/sidav/golibrl/geometry"
 	"fmt"
 )
 

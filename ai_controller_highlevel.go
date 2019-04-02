@@ -1,6 +1,6 @@
 package main
 
-import rnd "github.com/sidav/goLibRL/random"
+import rnd "github.com/sidav/golibrl/random"
 
 func (currAi *aiData) ai_decideProduction(factory *pawn) {
 	currFaction := factory.faction

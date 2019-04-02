@@ -1,8 +1,8 @@
 package main
 
 import (
-	cmenu "github.com/sidav/goLibRL/console_menu"
-	cw "github.com/sidav/goLibRL/console"
+	cmenu "github.com/sidav/golibrl/console_menu"
+	cw "github.com/sidav/golibrl/console"
 	"fmt"
 	"time"
 )

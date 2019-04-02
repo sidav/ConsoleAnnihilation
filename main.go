@@ -1,9 +1,9 @@
 package main
 
 import (
-	geometry "github.com/sidav/goLibRL/geometry"
-	cmenu "github.com/sidav/goLibRL/console_menu"
-	cw "github.com/sidav/goLibRL/console"
+	geometry "github.com/sidav/golibrl/geometry"
+	cmenu "github.com/sidav/golibrl/console_menu"
+	cw "github.com/sidav/golibrl/console"
 	"strconv"
 	"time"
 )
@@ -34,7 +34,7 @@ func debug_write(text string) {
 }
 
 func main() {
-	cw.Init_console("Console Annihilation", cw.TCellRenderer)
+	cw.Init_console("Console Annihilation", cw.SDLRenderer)
 	defer cw.Close_console()
 
 	log = &LOG{}

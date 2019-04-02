@@ -1,6 +1,6 @@
 package main
 
-import geometry "github.com/sidav/goLibRL/geometry"
+import geometry "github.com/sidav/golibrl/geometry"
 
 func (f *faction) recalculateSeenTiles() {
 	if CHEAT_IGNORE_FOW {
