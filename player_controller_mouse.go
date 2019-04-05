@@ -181,7 +181,7 @@ func plr_giveOrderWithMouse(selection *[]*pawn, f *faction) {
 		equivKey := "NONE" // mouse clicked menu result
 		cx, cy := f.cursor.getCoords()
 		if reRenderNeeded {
-			r_renderScreenForFaction(f, CURRENT_MAP, selection, true)
+			r_renderScreenForFaction(f, CURRENT_MAP, selection, false)
 		}
 		equivKey = pcm_mouseOrderSelectMenu(selectedPawn)
 		if reRenderNeeded {
@@ -247,10 +247,15 @@ func plr_giveOrderForMultiSelectWithMouse(selection *[]*pawn, f *faction) {
 	f.cursor.currentCursorMode = CURSOR_MOVE
 	reRenderNeeded = true
 	for {
+		equivKey := "NONE"
 		cx, cy := f.cursor.getCoords()
 
 		if reRenderNeeded {
-			r_renderScreenForFaction(f, CURRENT_MAP, selection, true)
+			r_renderScreenForFaction(f, CURRENT_MAP, selection, false)
+		}
+		equivKey = pcm_MouseOrderForMultiselectMenu(f, selection)
+		if reRenderNeeded {
+			cw.Flush_console()
 		}
 
 		keyPressed := cw.ReadKeyAsync()
@@ -263,11 +268,15 @@ func plr_giveOrderForMultiSelectWithMouse(selection *[]*pawn, f *faction) {
 			continue
 		}
 		if !cw.IsMouseHeld() && cw.GetMouseButton() == "LEFT" {
-			for _, p := range *selection {
-				issueDefaultOrderToUnit(p, CURRENT_MAP, cx, cy)
+			if equivKey == "NONE" {
+				for _, p := range *selection {
+					issueDefaultOrderToUnit(p, CURRENT_MAP, cx, cy)
+				}
+				reRenderNeeded = true
+				return
+			} else {
+				keyPressed = equivKey
 			}
-			reRenderNeeded = true
-			return
 		}
 
 		switch keyPressed {

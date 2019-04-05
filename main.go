@@ -34,7 +34,7 @@ func debug_write(text string) {
 }
 
 func main() {
-	cw.Init_console("Console Annihilation", cw.SDLRenderer)
+	cw.Init_console("Console Annihilation", cw.TCellRenderer)
 	defer cw.Close_console()
 
 	log = &LOG{}
