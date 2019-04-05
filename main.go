@@ -41,6 +41,7 @@ func main() {
 
 	CURRENT_MAP = &gameMap{}
 	CURRENT_MAP.init()
+	r_updateBoundsIfNeccessary(true)
 
 	///////////////////////////////
 	// uncomment later

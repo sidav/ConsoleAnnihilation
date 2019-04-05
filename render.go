@@ -21,8 +21,8 @@ func r_setFgColorByCcell(c *ccell) {
 	// cw.SetFgColorRGB(c.r, c.g, c.b)
 }
 
-func r_updateBoundsIfNeccessary() {
-	if cw.WasResized() {
+func r_updateBoundsIfNeccessary(force bool) {
+	if cw.WasResized() || force {
 		CONSOLE_W, CONSOLE_H = cw.GetConsoleSize()
 		VIEWPORT_W           = CONSOLE_W / 2
 		VIEWPORT_H           = CONSOLE_H - LOG_HEIGHT - 1
@@ -35,7 +35,7 @@ func r_updateBoundsIfNeccessary() {
 }
 
 func r_renderScreenForFaction(f *faction, g *gameMap, selection *[]*pawn, flush bool) {
-	r_updateBoundsIfNeccessary()
+	r_updateBoundsIfNeccessary(false)
 	cw.Clear_console() // TODO: replace with ClearViewportOnly (and create it of course). Prevent overrendering of whole screen.
 	renderMapInViewport(f, g)
 	renderFactionStats(f)
