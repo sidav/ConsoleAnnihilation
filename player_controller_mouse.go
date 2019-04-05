@@ -11,7 +11,7 @@ func plr_selectPawnWithMouse(f *faction, m *gameMap) *[]*pawn { // returns a poi
 	f.cursor.currentCursorMode = CURSOR_SELECT
 	for {
 		if reRenderNeeded {
-			r_renderScreenForFaction(f, m, nil)
+			r_renderScreenForFaction(f, m, nil, true)
 		}
 		keyPressed := cw.ReadKeyAsync()
 		reRenderNeeded = true
@@ -133,7 +133,7 @@ func plr_bandboxSelectionWithMouse(f *faction) *[]*pawn {
 	reRenderNeeded = true
 	for {
 		if reRenderNeeded {
-			r_renderScreenForFaction(f, CURRENT_MAP, nil)
+			r_renderScreenForFaction(f, CURRENT_MAP, nil, true)
 		}
 		keyPressed := cw.ReadKeyAsync()
 		if keyPressed == "ESCAPE" {
@@ -178,9 +178,14 @@ func plr_giveOrderWithMouse(selection *[]*pawn, f *faction) {
 	f.cursor.currentCursorMode = CURSOR_MOVE
 	reRenderNeeded = true
 	for {
+		equivKey := "NONE" // mouse clicked menu result
 		cx, cy := f.cursor.getCoords()
 		if reRenderNeeded {
-			r_renderScreenForFaction(f, CURRENT_MAP, selection)
+			r_renderScreenForFaction(f, CURRENT_MAP, selection, true)
+		}
+		equivKey = pcm_mouseOrderSelectMenu(selectedPawn)
+		if reRenderNeeded {
+			cw.Flush_console()
 		}
 
 		keyPressed := cw.ReadKeyAsync()
@@ -193,10 +198,15 @@ func plr_giveOrderWithMouse(selection *[]*pawn, f *faction) {
 			continue
 		}
 		if !cw.IsMouseHeld() && cw.GetMouseButton() == "LEFT" {
-			reRenderNeeded = true
-			issueDefaultOrderToUnit(selectedPawn, CURRENT_MAP, cx, cy)
-			return
+			if equivKey == "NONE" {
+				reRenderNeeded = true
+				issueDefaultOrderToUnit(selectedPawn, CURRENT_MAP, cx, cy)
+				return
+			} else {
+				keyPressed = equivKey
+			}
 		}
+
 		switch keyPressed {
 		case "a": // attack-move
 			if selectedPawn.hasWeapons() || selectedPawn.canConstructUnits() {
@@ -240,7 +250,7 @@ func plr_giveOrderForMultiSelectWithMouse(selection *[]*pawn, f *faction) {
 		cx, cy := f.cursor.getCoords()
 
 		if reRenderNeeded {
-			r_renderScreenForFaction(f, CURRENT_MAP, selection)
+			r_renderScreenForFaction(f, CURRENT_MAP, selection, true)
 		}
 
 		keyPressed := cw.ReadKeyAsync()
@@ -300,7 +310,7 @@ func plr_selectBuildingSiteWithMouse(p *pawn, b *pawn, m *gameMap) {
 		cursor.radius = b.getMaxRadiusToFire()
 
 		if reRenderNeeded { // TODO: move all that "if reRenderNeeded" to the renderer itself to keep code more clean.
-			r_renderScreenForFaction(f, m, nil)
+			r_renderScreenForFaction(f, m, nil, true)
 		}
 
 		keyPressed := cw.ReadKeyAsync()

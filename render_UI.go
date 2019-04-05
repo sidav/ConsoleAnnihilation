@@ -132,9 +132,7 @@ func r_renderPossibleOrdersForPawn(p *pawn) {
 			orders = append(orders, "(A)ttack-move")
 		}
 	}
-	//cmenu.DrawSidebarInfoMenu("Orders for: "+p.name, p.faction.getFactionColor(),
-	//	SIDEBAR_X, SIDEBAR_FLOOR_3, SIDEBAR_W, orders)
-	cmenu.DrawSidebarMouseOnlyAsyncMenu("Orders for: "+p.name, p.faction.getFactionColor(),
+	cmenu.DrawSidebarInfoMenu("Orders for: "+p.name, p.faction.getFactionColor(),
 		SIDEBAR_X, SIDEBAR_FLOOR_3, SIDEBAR_W, orders)
 }
 

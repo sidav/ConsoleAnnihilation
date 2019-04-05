@@ -46,7 +46,7 @@ func plr_selectPawn(f *faction, m *gameMap) *[]*pawn { // returns a pointer to a
 	f.cursor.currentCursorMode = CURSOR_SELECT
 	for {
 		if reRenderNeeded {
-			r_renderScreenForFaction(f, m, nil) 
+			r_renderScreenForFaction(f, m, nil, true)
 		}
 		keyPressed := cw.ReadKeyAsync()
 		reRenderNeeded = true
@@ -146,7 +146,7 @@ func plr_bandboxSelection(f *faction) *[]*pawn {
 	f.cursor.currentCursorMode = CURSOR_MULTISELECT
 	f.cursor.xorig, f.cursor.yorig = f.cursor.getCoords()
 	for {
-		r_renderScreenForFaction(f, CURRENT_MAP, nil)
+		r_renderScreenForFaction(f, CURRENT_MAP, nil, true)
 		keyPressed := cw.ReadKey()
 		switch keyPressed {
 		case "ESCAPE":
@@ -186,7 +186,7 @@ func plr_selectOrder(selection *[]*pawn, f *faction, m *gameMap) {
 	f.cursor.currentCursorMode = CURSOR_MOVE
 	for {
 		cx, cy := f.cursor.getCoords()
-		r_renderScreenForFaction(f, m, selection)
+		r_renderScreenForFaction(f, m, selection, true)
 
 		keyPressed := cw.ReadKey()
 		switch keyPressed {
@@ -228,7 +228,7 @@ func plr_selectOrderForMultiSelect(selection *[]*pawn, f *faction) {
 	f.cursor.currentCursorMode = CURSOR_MOVE
 	for {
 		cx, cy := f.cursor.getCoords()
-		r_renderScreenForFaction(f, CURRENT_MAP, selection)
+		r_renderScreenForFaction(f, CURRENT_MAP, selection, true)
 
 		keyPressed := cw.ReadKey()
 		switch keyPressed {
@@ -330,7 +330,7 @@ func plr_selectBuildingSite(p *pawn, b *pawn, m *gameMap) {
 		cursor.buildOnMetalOnly = b.buildingInfo.canBeBuiltOnMetalOnly
 		cursor.buildOnThermalOnly = b.buildingInfo.canBeBuiltOnThermalOnly
 		cursor.radius = b.getMaxRadiusToFire()
-		r_renderScreenForFaction(f, m, nil)
+		r_renderScreenForFaction(f, m, nil, true)
 
 		keyPressed := cw.ReadKey()
 		switch keyPressed {
