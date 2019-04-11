@@ -1,9 +1,9 @@
 package main
 
 import (
-	cmenu "github.com/sidav/golibrl/console_menu"
-	cw "github.com/sidav/golibrl/console"
 	"fmt"
+	cw "github.com/sidav/golibrl/console"
+	cmenu "github.com/sidav/golibrl/console_menu"
 	"time"
 )
 
@@ -16,19 +16,14 @@ func plr_selectPawnWithMouse(f *faction, m *gameMap) *[]*pawn { // returns a poi
 		keyPressed := cw.ReadKeyAsync()
 		reRenderNeeded = true
 
-		if cw.IsMouseHeld() && cw.WasMouseMovedSinceLastEvent() && cw.GetMouseButton() == "RIGHT" {
-			plr_moveCameraWithMouse(f)
-			return nil
+		if plr_moveCameraOrCursorWithMouseIfNeeded(f) {
+			return nil 
 		}
-		if cw.WasMouseMovedSinceLastEvent() {
-			plr_moveCursorWithMouse(f)
-			return nil
+		u := f.cursor.snappedPawn
+		if cw.GetMouseHeldButton() == "LEFT" {
+			return plr_bandboxSelectionWithMouse(f)
 		}
-		if !cw.IsMouseHeld() && cw.GetMouseButton() == "LEFT" {
-			u := f.cursor.snappedPawn //m.getUnitAtCoordinates(cx, cy)
-			if u == nil {
-				return plr_bandboxSelectionWithMouse(f) // select multiple units
-			}
+		if u != nil && cw.GetMouseClickedButton() == "LEFT" {
 			if u.faction.factionNumber != f.factionNumber {
 				log.appendMessage("Enemy units can't be selected, Commander.")
 				return nil
@@ -139,7 +134,7 @@ func plr_bandboxSelectionWithMouse(f *faction) *[]*pawn {
 		if keyPressed == "ESCAPE" {
 			return nil
 		}
-		if !cw.IsMouseHeld() {
+		if cw.GetMouseHeldButton() == "NONE" {
 			reRenderNeeded = true
 			fromx, fromy := f.cursor.xorig, f.cursor.yorig
 			tox, toy := f.cursor.getCoords()
@@ -189,15 +184,10 @@ func plr_giveOrderWithMouse(selection *[]*pawn, f *faction) {
 		}
 
 		keyPressed := cw.ReadKeyAsync()
-		if cw.IsMouseHeld() && cw.WasMouseMovedSinceLastEvent() && cw.GetMouseButton() == "RIGHT" {
-			plr_moveCameraWithMouse(f)
+		if plr_moveCameraOrCursorWithMouseIfNeeded(f) {
 			continue
 		}
-		if cw.WasMouseMovedSinceLastEvent() {
-			plr_moveCursorWithMouse(f)
-			continue
-		}
-		if !cw.IsMouseHeld() && cw.GetMouseButton() == "LEFT" {
+		if cw.GetMouseClickedButton() == "LEFT" {
 			if equivKey == "NONE" {
 				reRenderNeeded = true
 				issueDefaultOrderToUnit(selectedPawn, CURRENT_MAP, cx, cy)
@@ -259,15 +249,10 @@ func plr_giveOrderForMultiSelectWithMouse(selection *[]*pawn, f *faction) {
 		}
 
 		keyPressed := cw.ReadKeyAsync()
-		if cw.IsMouseHeld() && cw.WasMouseMovedSinceLastEvent() && cw.GetMouseButton() == "RIGHT" {
-			plr_moveCameraWithMouse(f)
+		if plr_moveCameraOrCursorWithMouseIfNeeded(f) {
 			continue
 		}
-		if cw.WasMouseMovedSinceLastEvent() {
-			plr_moveCursorWithMouse(f)
-			continue
-		}
-		if !cw.IsMouseHeld() && cw.GetMouseButton() == "LEFT" {
+		if cw.GetMouseClickedButton() == "LEFT" {
 			if equivKey == "NONE" {
 				for _, p := range *selection {
 					issueDefaultOrderToUnit(p, CURRENT_MAP, cx, cy)
@@ -324,15 +309,11 @@ func plr_selectBuildingSiteWithMouse(p *pawn, b *pawn, m *gameMap) {
 
 		keyPressed := cw.ReadKeyAsync()
 
-		if cw.IsMouseHeld() && cw.WasMouseMovedSinceLastEvent() && cw.GetMouseButton() == "RIGHT" {
-			plr_moveCameraWithMouse(f)
+		if plr_moveCameraOrCursorWithMouseIfNeeded(f) {
 			continue
 		}
-		if cw.WasMouseMovedSinceLastEvent() {
-			plr_moveCursorWithMouse(f)
-			continue
-		}
-		if !cw.IsMouseHeld() && cw.GetMouseButton() == "LEFT" {
+
+		if cw.GetMouseClickedButton() == "LEFT" {
 			if m.canBuildingBeBuiltAt(b, cx, cy) {
 				b.x = cx - b.buildingInfo.w/2
 				b.y = cy - b.buildingInfo.h/2
@@ -353,6 +334,19 @@ func plr_selectBuildingSiteWithMouse(p *pawn, b *pawn, m *gameMap) {
 			reRenderNeeded = false
 		}
 	}
+}
+
+func plr_moveCameraOrCursorWithMouseIfNeeded(f *faction) bool { // returns true if something was actually moved.
+	if cw.WasMouseMovedSinceLastEvent() {
+		if cw.GetMouseHeldButton() == "RIGHT" {
+			plr_moveCameraWithMouse(f)
+			return true
+		} else {
+			plr_moveCursorWithMouse(f)
+			return true
+		}
+	}
+	return false
 }
 
 func plr_moveCameraWithMouse(f *faction) {
