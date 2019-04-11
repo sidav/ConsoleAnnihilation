@@ -14,16 +14,17 @@ func plr_selectPawnWithMouse(f *faction, m *gameMap) *[]*pawn { // returns a poi
 			r_renderScreenForFaction(f, m, nil, true)
 		}
 		keyPressed := cw.ReadKeyAsync()
+		click := cw.GetMouseClickedButton()
 		reRenderNeeded = true
 
 		if plr_moveCameraOrCursorWithMouseIfNeeded(f) {
-			return nil 
+			return nil
 		}
 		u := f.cursor.snappedPawn
 		if cw.GetMouseHeldButton() == "LEFT" {
 			return plr_bandboxSelectionWithMouse(f)
 		}
-		if u != nil && cw.GetMouseClickedButton() == "LEFT" {
+		if u != nil && click == "LEFT" {
 			if u.faction.factionNumber != f.factionNumber {
 				log.appendMessage("Enemy units can't be selected, Commander.")
 				return nil
@@ -174,6 +175,7 @@ func plr_giveOrderWithMouse(selection *[]*pawn, f *faction) {
 	reRenderNeeded = true
 	for {
 		equivKey := "NONE" // mouse clicked menu result
+		click := cw.GetMouseClickedButton()
 		cx, cy := f.cursor.getCoords()
 		if reRenderNeeded {
 			r_renderScreenForFaction(f, CURRENT_MAP, selection, false)
@@ -187,7 +189,7 @@ func plr_giveOrderWithMouse(selection *[]*pawn, f *faction) {
 		if plr_moveCameraOrCursorWithMouseIfNeeded(f) {
 			continue
 		}
-		if cw.GetMouseClickedButton() == "LEFT" {
+		if click == "LEFT" {
 			if equivKey == "NONE" {
 				reRenderNeeded = true
 				issueDefaultOrderToUnit(selectedPawn, CURRENT_MAP, cx, cy)
@@ -195,6 +197,10 @@ func plr_giveOrderWithMouse(selection *[]*pawn, f *faction) {
 			} else {
 				keyPressed = equivKey
 			}
+		}
+		if click == "RIGHT" {
+			reRenderNeeded = true
+			return
 		}
 
 		switch keyPressed {
@@ -238,6 +244,7 @@ func plr_giveOrderForMultiSelectWithMouse(selection *[]*pawn, f *faction) {
 	reRenderNeeded = true
 	for {
 		equivKey := "NONE"
+		click := cw.GetMouseClickedButton()
 		cx, cy := f.cursor.getCoords()
 
 		if reRenderNeeded {
@@ -252,7 +259,7 @@ func plr_giveOrderForMultiSelectWithMouse(selection *[]*pawn, f *faction) {
 		if plr_moveCameraOrCursorWithMouseIfNeeded(f) {
 			continue
 		}
-		if cw.GetMouseClickedButton() == "LEFT" {
+		if click == "LEFT" {
 			if equivKey == "NONE" {
 				for _, p := range *selection {
 					issueDefaultOrderToUnit(p, CURRENT_MAP, cx, cy)
@@ -263,6 +270,11 @@ func plr_giveOrderForMultiSelectWithMouse(selection *[]*pawn, f *faction) {
 				keyPressed = equivKey
 			}
 		}
+		if click == "RIGHT" {
+			reRenderNeeded = true
+			return
+		}
+
 
 		switch keyPressed {
 		case "ENTER", "RETURN":
@@ -289,6 +301,7 @@ func plr_selectBuildingSiteWithMouse(p *pawn, b *pawn, m *gameMap) {
 		f := p.faction
 		cursor := f.cursor
 		cx, cy := cursor.getCoords()
+		click := cw.GetMouseClickedButton()
 		cursor.currentCursorMode = CURSOR_BUILD
 
 		if b.buildingInfo.allowsTightPlacement {
@@ -313,7 +326,7 @@ func plr_selectBuildingSiteWithMouse(p *pawn, b *pawn, m *gameMap) {
 			continue
 		}
 
-		if cw.GetMouseClickedButton() == "LEFT" {
+		if click == "LEFT" {
 			if m.canBuildingBeBuiltAt(b, cx, cy) {
 				b.x = cx - b.buildingInfo.w/2
 				b.y = cy - b.buildingInfo.h/2
@@ -323,6 +336,11 @@ func plr_selectBuildingSiteWithMouse(p *pawn, b *pawn, m *gameMap) {
 			} else {
 				log.appendMessage("This building can't be placed here!")
 			}
+		}
+		if click == "RIGHT" {
+			reRenderNeeded = true
+			log.appendMessage("Construction cancelled: " + b.name)
+			return
 		}
 
 		switch keyPressed {
