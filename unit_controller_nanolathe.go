@@ -1,18 +1,14 @@
 package main
 
+const BUILD_MAX_DISTANCE = 2
+
 func doAllNanolathes(m *gameMap) { // does the building itself
 	for _, u := range m.pawns {
 		// buildings construction
 		if u.order != nil && u.order.orderType == order_build {
 			tBld := u.order.buildingToConstruct
 
-			ux, uy := u.getCoords()
-			ox, oy := tBld.getCenter()
-			building_w := tBld.buildingInfo.w + 1
-			building_h := tBld.buildingInfo.h + 1
-			sqdistance := (ox-ux)*(ox-ux) + (oy-uy)*(oy-uy)
-
-			if tBld.buildingInfo.hasBeenPlaced == false && (sqdistance <= building_w*building_w || sqdistance <= building_h*building_h) { // place the carcass
+			if tBld.buildingInfo.hasBeenPlaced == false && tBld.IsCloseupToCoords(u.x, u.y, BUILD_MAX_DISTANCE)  { // place the carcass
 				u.reportOrderCompletion("Starts nanolathe")
 				tBld.hitpoints = 1
 				tBld.buildingInfo.hasBeenPlaced = true
@@ -30,7 +26,7 @@ func doAllNanolathes(m *gameMap) { // does the building itself
 				continue
 			}
 
-			if u.faction.economy.nanolatheAllowed && (sqdistance <= building_w*building_w || sqdistance <= building_h*building_h) {
+			if u.faction.economy.nanolatheAllowed && tBld.IsCloseupToCoords(u.x, u.y, BUILD_MAX_DISTANCE) {
 				tBld.currentConstructionStatus.currentConstructionAmount += u.nanolatherInfo.builderCoeff
 				tBld.hitpoints += tBld.maxHitpoints / (tBld.currentConstructionStatus.maxConstructionAmount / u.nanolatherInfo.builderCoeff)
 				if tBld.hitpoints > tBld.maxHitpoints {

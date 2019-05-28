@@ -158,12 +158,6 @@ func (u *pawn) doBuildOrder(m *gameMap) { // only moves to location and/or sets 
 	// TODO: rewrite the heck out of it. Tip: implement and use doCircleAndRectangleIntersect() with the build radius
 	order := u.order
 	tBld := order.buildingToConstruct
-	ux, uy := u.getCoords()
-	ox, oy := tBld.getCenter()
-
-	building_w := tBld.buildingInfo.w + 1
-	building_h := tBld.buildingInfo.h + 1
-	sqdistance := (ox-ux)*(ox-ux) + (oy-uy)*(oy-uy)
 
 	if tBld == nil {
 		log.appendMessage(u.name + " NIL BUILD")
@@ -176,7 +170,7 @@ func (u *pawn) doBuildOrder(m *gameMap) { // only moves to location and/or sets 
 		return
 	}
 
-	if sqdistance <= building_w*building_w || sqdistance <= building_h*building_h { // is in building range
+	if tBld.IsCloseupToCoords(u.x, u.y, BUILD_MAX_DISTANCE) { // is in building range
 		u.res.metalSpending = u.nanolatherInfo.builderCoeff * tBld.currentConstructionStatus.costM / tBld.currentConstructionStatus.maxConstructionAmount
 		u.res.energySpending = u.nanolatherInfo.builderCoeff * tBld.currentConstructionStatus.costE / tBld.currentConstructionStatus.maxConstructionAmount
 	} else { // out of range, move to the construction site

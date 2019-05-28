@@ -71,6 +71,17 @@ func (p *pawn) isOccupyingCoords(x, y int) bool {
 	}
 }
 
+
+func (p *pawn) IsCloseupToCoords(x, y, dist int) bool { // distance to any of pawn's cells check.
+	if p.isBuilding() {
+		return !geometry.AreCoordsInRect(x, y, p.x, p.y, p.buildingInfo.w, p.buildingInfo.h) &&
+			geometry.AreCoordsInRect(x, y, p.x-dist, p.y-dist, p.buildingInfo.w+2*dist, p.buildingInfo.h+2*dist)
+	} else {
+		return x != p.x && y != p.y && geometry.AreCoordsInRect(x, y, p.x-dist, p.y-dist, 2*dist+1, 2*dist+1)
+	}
+}
+
+
 func (p *pawn) getCenter() (int, int) {
 	if p.isUnit() {
 		return p.x, p.y
