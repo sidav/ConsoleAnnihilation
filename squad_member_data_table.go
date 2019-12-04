@@ -4,7 +4,7 @@ var squadMembersStaticData map[string]*squadMemberInfo
 
 func initSquadMembersStaticDataMap() {
 	squadMembersStaticData = make(map[string]*squadMemberInfo)
-	squadMembersStaticData["armcommaner"] = &squadMemberInfo {
+	squadMembersStaticData["armcommander"] = &squadMemberInfo {
 		name: "Arm Commander",
 		takesWholeSquad: true,
 		movementInfo: &pawnMovementInformation {ticksForMoveSingleCell: 10, movesOnLand: true},

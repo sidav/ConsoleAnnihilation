@@ -69,14 +69,10 @@ func initMapForMission(g *gameMap, missionNumber int) {
 	g.factions = append(g.factions, createFaction("AI 1", 0,true, false))
 	g.addPawn(createSquadOfSingleMember("armcommander", 7, mapH/2, g.factions[0], true))
 	g.factions[0].cursor.centralizeCamera()
-	//g.factions[0].cursor.x = 7
-	//g.factions[0].cursor.y = mapH/2
 
-	// g.addPawn(createUnit("coreck", 3, 3, g.factions[0], true))
 
 	g.factions = append(g.factions, createFaction("AI 2", 1, false, true))
 	g.addPawn(createSquadOfSingleMember("corecommander", mapW - 10, mapH/2, g.factions[1], true))
-	// g.addPawn(createUnit("coreck", 3, 3, g.factions[0], true))
 
 	// g.factions = append(g.factions, createFaction("OBSERVER", 0, true, false))
 	CHEAT_IGNORE_FOW = false

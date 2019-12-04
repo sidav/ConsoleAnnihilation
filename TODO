@@ -3,7 +3,7 @@ Not so close plans:
 - Random map generation
 
 Closest plans:
-- Further decrease the unit/building differentiation;
+- Further INCREASE the unit/building differentiation with encapsulation
 - better collision detection (it may be still buggish for buildings)
 - replace a single order var for pawns with an order queue
 - Visual attack animations.

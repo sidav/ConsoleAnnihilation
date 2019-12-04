@@ -7,6 +7,7 @@ type squad struct {
 func (s *squad) getSquadName() string {
 	// var smdata *squadMemberInfo
 	smdata := s.members[0].getStaticData()
+	return smdata.name
 	if smdata.takesWholeSquad {
 		return smdata.name
 	}
