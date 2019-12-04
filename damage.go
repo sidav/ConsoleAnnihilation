@@ -11,5 +11,5 @@ func dealDamageToTarget(attacker *pawn, wpn *pawnWeaponInformation, target *pawn
 		damageDealt += wpn.hitscan.heavyMod
 	}
 	target.hitpoints -= damageDealt
-	log.appendMessage(fmt.Sprintf("%s pewpews at %s (%d damage)", attacker.name, target.name, damageDealt))
+	log.appendMessage(fmt.Sprintf("%s pewpews at %s (%d damage)", attacker.getName(), target.getName(), damageDealt))
 }

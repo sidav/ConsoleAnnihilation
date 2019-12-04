@@ -1,7 +1,16 @@
 package main 
 
 type squad struct {
-	members []squadMember
+	members []*squadMember
+}
+
+func (s *squad) getSquadName() string {
+	// var smdata *squadMemberInfo
+	smdata := s.members[0].getStaticData()
+	if smdata.takesWholeSquad {
+		return smdata.name
+	}
+	return "Strike team"
 }
 
 func (s *squad) getSquadMovementInfo() *pawnMovementInformation {

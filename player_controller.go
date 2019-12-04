@@ -182,7 +182,7 @@ func plr_bandboxSelection(f *faction) *[]*pawn {
 
 func plr_selectOrder(selection *[]*pawn, f *faction, m *gameMap) {
 	selectedPawn := (*selection)[0] //m.getUnitAtCoordinates(cx, cy)
-	log.appendMessage(selectedPawn.name + " is awaiting orders.")
+	log.appendMessage(selectedPawn.getName() + " is awaiting orders.")
 	f.cursor.currentCursorMode = CURSOR_MOVE
 	for {
 		cx, cy := f.cursor.getCoords()
@@ -267,7 +267,7 @@ func plr_selectUnitsToConstruct(p *pawn) {
 	if p.order != nil && p.order.constructingQueue != nil {
 		for _, pawnInQueue := range p.order.constructingQueue {
 			for i, name := range names {
-				if pawnInQueue.name == name {
+				if pawnInQueue.getName() == name {
 					presetValues = append(presetValues, i)
 				}
 			}
@@ -312,7 +312,7 @@ func plr_selectBuidingToConstruct(p *pawn) string {
 }
 
 func plr_selectBuildingSite(p *pawn, b *pawn, m *gameMap) {
-	log.appendMessage("Select construction site for " + b.name)
+	log.appendMessage("Select construction site for " + b.getName())
 	for {
 		f := p.faction
 		cursor := f.cursor
@@ -344,7 +344,7 @@ func plr_selectBuildingSite(p *pawn, b *pawn, m *gameMap) {
 				log.appendMessage("This building can't be placed here!")
 			}
 		case "ESCAPE":
-			log.appendMessage("Construction cancelled: " + b.name)
+			log.appendMessage("Construction cancelled: " + b.getName())
 			return
 		default:
 			plr_moveCursor(f, keyPressed)

@@ -160,7 +160,7 @@ func (u *pawn) doBuildOrder(m *gameMap) { // only moves to location and/or sets 
 	tBld := order.buildingToConstruct
 
 	if tBld == nil {
-		log.appendMessage(u.name + " NIL BUILD")
+		log.appendMessage(u.getName() + " NIL BUILD")
 		return
 	}
 
@@ -176,7 +176,7 @@ func (u *pawn) doBuildOrder(m *gameMap) { // only moves to location and/or sets 
 	} else { // out of range, move to the construction site
 		order.x, order.y = tBld.getCenter()
 		u.doMoveOrder()
-		log.appendMessage(u.name + " MOVES TO BUILD")
+		log.appendMessage(u.getName() + " MOVES TO BUILD")
 		return
 	}
 }
@@ -198,6 +198,6 @@ func (p *pawn) doConstructOrder(m *gameMap) {
 
 func (u *pawn) reportOrderCompletion(verb string) {
 	if u.faction.playerControlled {
-		log.appendMessage(u.name + ": " + verb + ".")
+		log.appendMessage(u.getName() + ": " + verb + ".")
 	}
 }

@@ -38,6 +38,7 @@ func main() {
 	defer cw.Close_console()
 
 	log = &LOG{}
+	initSquadMembersStaticDataMap()
 
 	CURRENT_MAP = &gameMap{}
 	CURRENT_MAP.init()
@@ -71,8 +72,8 @@ func main() {
 		}
 		for i := 0; i < 10; i++ {
 			for _, u := range CURRENT_MAP.pawns {
-				if u.hitpoints <= 0 {
-					log.appendMessage(u.name + " is destroyed!")
+				if !u.isAlive() {
+					log.appendMessage(u.getName() + " is destroyed!")
 					CURRENT_MAP.removePawn(u)
 					continue
 				}

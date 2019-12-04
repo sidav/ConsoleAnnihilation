@@ -66,7 +66,7 @@ package main
 // 	if getCurrentTurn()%currAi.CONTROL_PERIOD != 0 {
 // 		return
 // 	}
-// 	ai_write("assuming direct control over " + f.name)
+// 	ai_write("assuming direct control over " + f.getName())
 // 	currAi.construction_orders_this_turn = 0
 // 	for _, p := range CURRENT_MAP.pawns {
 // 		if p.faction == f {

@@ -323,7 +323,7 @@ func createBuilding(codename string, x, y int, f *faction) *pawn {
 
 func getBuildingNameAndDescription(code string) (string, string) {
 	bld := createBuilding(code, 0, 0, nil)
-	name := bld.name
+	name := bld.getName()
 	var description string
 	if bld.currentConstructionStatus != nil {
 		constr := bld.currentConstructionStatus

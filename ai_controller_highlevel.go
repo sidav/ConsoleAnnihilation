@@ -19,11 +19,11 @@ package main
 // 	var pawnToProduce *pawn
 // 	if len(listOfEngineerUnits) > 0 && currAi.shouldProduceEngineers() {
 // 		pawnToProduce = listOfEngineerUnits[rnd.Random(len(listOfEngineerUnits))]
-// 		ai_write("producing engineer " + pawnToProduce.name)
+// 		ai_write("producing engineer " + pawnToProduce.getName())
 // 	} else {
 // 		if len(listOfCombatUnits) > 0 {
 // 			pawnToProduce = listOfCombatUnits[rnd.Random(len(listOfCombatUnits))]
-// 			ai_write("producing " + pawnToProduce.name)
+// 			ai_write("producing " + pawnToProduce.getName())
 // 		}
 // 	}
 

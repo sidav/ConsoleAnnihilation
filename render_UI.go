@@ -68,7 +68,7 @@ func renderInfoOnCursor(f *faction, g *gameMap) {
 		}
 		color = sp.faction.getFactionColor()
 		if CURRENT_FACTION_SEEING_THE_SCREEN.areCoordsInSight(sp.x, sp.y) {
-			title = sp.name
+			title = sp.getName()
 			if sp.faction != f {
 				if sp.isBuilding() {
 					details = append(details, "(Enemy building)")
@@ -132,7 +132,7 @@ func r_renderPossibleOrdersForPawn(p *pawn) {
 			orders = append(orders, "(A)ttack-move")
 		}
 	}
-	cmenu.DrawSidebarInfoMenu("Orders for: "+p.name, p.faction.getFactionColor(),
+	cmenu.DrawSidebarInfoMenu("Orders for: "+p.getName(), p.faction.getFactionColor(),
 		SIDEBAR_X, SIDEBAR_FLOOR_3, SIDEBAR_W, orders)
 }
 
@@ -140,7 +140,7 @@ func r_renderPossibleOrdersForMultiselection(f *faction, selection *[]*pawn) {
 	orders := make([]string, 0)
 	selectedUnitsCounter := make(map[string]int)
 	for _, p := range *selection {
-		selectedUnitsCounter[p.name]++
+		selectedUnitsCounter[p.getName()]++
 	}
 	// sort the map because of dumbass Go developers thinking that they know your needs better than you do
 	keys := make([]string, 0, len(selectedUnitsCounter))

@@ -9,5 +9,6 @@ func createSquadOfSingleMember(code string, x, y int, f *faction, alreadyConstru
 	sqpawn := &pawn{x: x, y: y, 
 		faction: f,
 		squadInfo: &squad{}}
+	sqpawn.squadInfo.members = append(sqpawn.squadInfo.members, &squadMember{code: code})
 	return sqpawn
 }

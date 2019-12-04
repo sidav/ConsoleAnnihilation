@@ -170,7 +170,7 @@ func plr_bandboxSelectionWithMouse(f *faction) *[]*pawn {
 
 func plr_giveOrderWithMouse(selection *[]*pawn, f *faction) {
 	selectedPawn := (*selection)[0] //m.getUnitAtCoordinates(cx, cy)
-	log.appendMessage(selectedPawn.name + " is awaiting orders.")
+	log.appendMessage(selectedPawn.getName() + " is awaiting orders.")
 	f.cursor.currentCursorMode = CURSOR_MOVE
 	reRenderNeeded = true
 	for {
@@ -295,7 +295,7 @@ func plr_giveOrderForMultiSelectWithMouse(selection *[]*pawn, f *faction) {
 }
 
 func plr_selectBuildingSiteWithMouse(p *pawn, b *pawn, m *gameMap) {
-	log.appendMessage("Select construction site for " + b.name)
+	log.appendMessage("Select construction site for " + b.getName())
 	reRenderNeeded = true
 	for {
 		f := p.faction
@@ -339,14 +339,14 @@ func plr_selectBuildingSiteWithMouse(p *pawn, b *pawn, m *gameMap) {
 		}
 		if click == "RIGHT" {
 			reRenderNeeded = true
-			log.appendMessage("Construction cancelled: " + b.name)
+			log.appendMessage("Construction cancelled: " + b.getName())
 			return
 		}
 
 		switch keyPressed {
 		case "ESCAPE":
 			reRenderNeeded = true
-			log.appendMessage("Construction cancelled: " + b.name)
+			log.appendMessage("Construction cancelled: " + b.getName())
 			return
 		default:
 			reRenderNeeded = false

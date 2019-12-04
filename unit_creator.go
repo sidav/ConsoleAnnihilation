@@ -206,7 +206,7 @@ package main
 // 	}
 // 	if newUnit.maxHitpoints == 0 {
 // 		newUnit.maxHitpoints = 1
-// 		log.appendMessage("No hitpoints set for "+newUnit.name)
+// 		log.appendMessage("No hitpoints set for "+newUnit.getName())
 // 	}
 // 	newUnit.hitpoints = newUnit.maxHitpoints
 // 	newUnit.x = x
@@ -224,7 +224,7 @@ package main
 
 // func getUnitNameAndDescription(code string) (string, string) {
 // 	unit := createUnit(code, 0, 0, nil, false)
-// 	name := unit.name
+// 	name := unit.getName()
 // 	var description string
 // 	if unit.currentConstructionStatus != nil {
 // 		constr := unit.currentConstructionStatus

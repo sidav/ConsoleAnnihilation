@@ -6,10 +6,9 @@ import (
 )
 
 type pawn struct {
-	// pawn is a building or a unit squad - anything that can be commanded. 
-	name                      string
-	codename                  string // for inner usage
-
+	// pawn is a building or a unit squad - anything that can be commanded.
+	name     string
+	codename string // for inner usage
 	squadInfo                 *squad
 	buildingInfo              *building
 	faction                   *faction
@@ -34,11 +33,11 @@ func (p *pawn) hasWeapons() bool {
 	return len(p.weapons) > 0
 }
 
-func (p* pawn) getMovementInfo() *pawnMovementInformation {
-	if p.isSquad() { // TODO: remove isUnit 
-		return &pawnMovementInformation {ticksForMoveSingleCell: 10, movesOnLand: true}
+func (p *pawn) getMovementInfo() *pawnMovementInformation {
+	if p.isSquad() { // TODO: remove isUnit
+		return &pawnMovementInformation{ticksForMoveSingleCell: 10, movesOnLand: true}
 	}
-	return nil 
+	return nil
 }
 
 func (p *pawn) getMaxRadiusToFire() int {
@@ -51,8 +50,15 @@ func (p *pawn) getMaxRadiusToFire() int {
 	return max
 }
 
+func (p *pawn) isAlive() bool {
+	if p.isSquad() {
+			return len(p.squadInfo.members) > 0 
+	}
+	return p.hitpoints > 0 
+}
+
 func (p *pawn) isSquad() bool {
-	return p.squadInfo != nil 
+	return p.squadInfo != nil
 }
 
 func (p *pawn) isBuilding() bool {
@@ -61,6 +67,13 @@ func (p *pawn) isBuilding() bool {
 
 func (p *pawn) getCoords() (int, int) {
 	return p.x, p.y
+}
+
+func (p *pawn) getName() string {
+	if p.isSquad() {
+		return p.squadInfo.getSquadName()
+	}
+	return p.getName() 
 }
 
 func (p *pawn) setOrder(o *order) {
@@ -109,13 +122,12 @@ func (p *pawn) getCenter() (int, int) {
 	}
 }
 
-//func (p *pawn) executeOrders(m *gameMap)	{
-//	if p.isBuilding() {
-//		return
-//	} else {
-//		p.executeOrders(m)
-//	}
-//}
+func (p *pawn) getSightAndRadarRadius() (int, int) {
+	if p.isSquad() {
+		return 5, 0 
+	}
+	return p.sightRadius, p.radarRadius
+}
 
 func (p *pawn) getArmorDescriptionString() string {
 	armorInfo := fmt.Sprintf("Armor %d / %d", p.hitpoints, p.maxHitpoints)
@@ -154,7 +166,7 @@ func (p *pawn) getCurrentOrderDescription() string {
 			p.order.buildingToConstruct.currentConstructionStatus.getCompletionPercent())
 	case order_construct:
 		if len(p.order.constructingQueue) > 0 {
-			return fmt.Sprintf("CONSTRUCTING: %s (%d%% ready)", p.order.constructingQueue[0].name,
+			return fmt.Sprintf("CONSTRUCTING: %s (%d%% ready)", p.order.constructingQueue[0].getName(),
 				p.order.constructingQueue[0].currentConstructionStatus.getCompletionPercent())
 		} else {
 			return "FINISHING CONSTRUCTION"

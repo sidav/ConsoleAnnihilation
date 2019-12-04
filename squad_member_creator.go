@@ -2,7 +2,7 @@ package main
 
 var squadMembersStaticData map[string]*squadMemberInfo 
 
-func initSquadMembersStaticMap() {
+func initSquadMembersStaticDataMap() {
 	squadMembersStaticData = make(map[string]*squadMemberInfo)
 	squadMembersStaticData["armcommaner"] = &squadMemberInfo {
 		name: "Arm Commander",

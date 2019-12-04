@@ -45,7 +45,7 @@ func pcm_mouseOrderSelectMenu(p *pawn) string {
 			keyEquivalents = append(keyEquivalents, "a")
 		}
 	}
-	index := cmenu.DrawSidebarMouseOnlyAsyncMenu("Orders for: "+p.name, p.faction.getFactionColor(),
+	index := cmenu.DrawSidebarMouseOnlyAsyncMenu("Orders for: "+p.getName(), p.faction.getFactionColor(),
 		SIDEBAR_X, SIDEBAR_FLOOR_3, SIDEBAR_W, orders)
 	if index == -1 {
 		return "NONE"
@@ -58,7 +58,7 @@ func pcm_MouseOrderForMultiselectMenu(f *faction, selection *[]*pawn) string {
 	keyEquivalents := make([]string, 0)
 	selectedUnitsCounter := make(map[string]int)
 	for _, p := range *selection {
-		selectedUnitsCounter[p.name]++
+		selectedUnitsCounter[p.getName()]++
 	}
 	// sort the map because of dumbass Go developers thinking that they know your needs better than you do
 	keys := make([]string, 0, len(selectedUnitsCounter))

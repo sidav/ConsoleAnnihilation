@@ -48,7 +48,7 @@ func doAllNanolathes(m *gameMap) { // does the building itself
 
 			if u.faction.economy.nanolatheAllowed {
 				if uCnst.currentConstructionStatus == nil {
-					u.reportOrderCompletion("WTF CONSTRUCTION STATUS IS NIL FOR " + uCnst.name)
+					u.reportOrderCompletion("WTF CONSTRUCTION STATUS IS NIL FOR " + uCnst.getName())
 					continue
 				}
 				uCnst.currentConstructionStatus.currentConstructionAmount += u.nanolatherInfo.builderCoeff
