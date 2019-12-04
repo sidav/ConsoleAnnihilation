@@ -1,15 +1,16 @@
 package main
 
 import (
-	geometry "github.com/sidav/golibrl/geometry"
 	"fmt"
+	geometry "github.com/sidav/golibrl/geometry"
 )
 
 type pawn struct {
-	// pawn is a building or a unit.
+	// pawn is a building or a unit squad - anything that can be commanded. 
 	name                      string
 	codename                  string // for inner usage
-	unitInfo                  *unit
+
+	squadInfo                 *squad
 	buildingInfo              *building
 	faction                   *faction
 	x, y                      int
@@ -17,7 +18,6 @@ type pawn struct {
 	res                       *pawnResourceInformation
 	nanolatherInfo            *nanolatherInformation
 	currentConstructionStatus *constructionInformation
-	moveInfo                  *pawnMovementInformation
 	weapons                   []*pawnWeaponInformation
 	nextTickToAct             int
 	isCommander               bool
@@ -34,6 +34,13 @@ func (p *pawn) hasWeapons() bool {
 	return len(p.weapons) > 0
 }
 
+func (p* pawn) getMovementInfo() *pawnMovementInformation {
+	if p.isSquad() { // TODO: remove isUnit 
+		return &pawnMovementInformation {ticksForMoveSingleCell: 10, movesOnLand: true}
+	}
+	return nil 
+}
+
 func (p *pawn) getMaxRadiusToFire() int {
 	max := 0
 	for _, weap := range p.weapons {
@@ -44,8 +51,8 @@ func (p *pawn) getMaxRadiusToFire() int {
 	return max
 }
 
-func (p *pawn) isUnit() bool {
-	return p.unitInfo != nil
+func (p *pawn) isSquad() bool {
+	return p.squadInfo != nil 
 }
 
 func (p *pawn) isBuilding() bool {
@@ -85,7 +92,6 @@ func (p *pawn) isOccupyingCoords(x, y int) bool {
 	}
 }
 
-
 func (p *pawn) IsCloseupToCoords(x, y, dist int) bool { // distance to any of pawn's cells check.
 	if p.isBuilding() {
 		return !geometry.AreCoordsInRect(x, y, p.x, p.y, p.buildingInfo.w, p.buildingInfo.h) &&
@@ -95,9 +101,8 @@ func (p *pawn) IsCloseupToCoords(x, y, dist int) bool { // distance to any of pa
 	}
 }
 
-
 func (p *pawn) getCenter() (int, int) {
-	if p.isUnit() {
+	if p.isSquad() {
 		return p.x, p.y
 	} else {
 		return p.x + p.buildingInfo.w/2, p.y + p.buildingInfo.h/2

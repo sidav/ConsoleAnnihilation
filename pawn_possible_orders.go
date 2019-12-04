@@ -9,5 +9,5 @@ func (p *pawn) canConstructUnits() bool {
 }
 
 func (p *pawn) canMove() bool {
-	return p.moveInfo != nil
+	return p.getMovementInfo() != nil
 }

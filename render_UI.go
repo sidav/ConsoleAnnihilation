@@ -271,8 +271,8 @@ func renderLine(fromx, fromy, tox, toy int, flush bool, vx, vy int) {
 
 func renderPawnInfo(p *pawn) {
 	var name, desc string
-	if p.isUnit() {
-		name, desc = getUnitNameAndDescription(p.codename)
+	if p.isSquad() {
+		name, desc = "NOIMPL", "NOIMPL" // getUnitNameAndDescription(p.codename)
 	} else if p.isBuilding() {
 		name, desc = getBuildingNameAndDescription(p.codename)
 	}

@@ -110,7 +110,7 @@ func renderPawnsInViewport(f *faction, g *gameMap) {
 		if p.isBuilding() {
 			renderBuilding(f, p, g, vx, vy, false)
 		} else {
-			renderUnit(f, p, g, vx, vy, false)
+			renderSquad(f, p, g, vx, vy, false)
 		}
 	}
 }
@@ -118,18 +118,17 @@ func renderPawnsInViewport(f *faction, g *gameMap) {
 func r_renderSelectedPawns(f* faction, selection *[]*pawn) {
 	vx, vy := f.cursor.getCameraCoords()
 	for _, p := range *selection {
-		if p.isUnit() {
-			renderUnit(f, p, CURRENT_MAP, vx, vy, true)
+		if p.isSquad() {
+			renderSquad(f, p, CURRENT_MAP, vx, vy, true)
 		} else if p.isBuilding() {
 			renderBuilding(f, p, CURRENT_MAP, vx, vy, true)
 		}
 	}
 }
 
-func renderUnit(f *faction, p *pawn, g *gameMap, vx, vy int, inverse bool) {
-	u := p.unitInfo
+func renderSquad(f *faction, p *pawn, g *gameMap, vx, vy int, inverse bool) {
 	if areGlobalCoordsOnScreen(p.x, p.y) && f.areCoordsInSight(p.x, p.y){
-		tileApp := u.appearance
+		tileApp := '@'
 		// r, g, b := getFactionRGB(u.faction.factionNumber)
 		// cw.SetFgColorRGB(r, g, b)\
 		colorToRender := p.faction.getFactionColor()
@@ -139,10 +138,28 @@ func renderUnit(f *faction, p *pawn, g *gameMap, vx, vy int, inverse bool) {
 		} else {
 			cw.SetFgColor(colorToRender)
 		}
-		cw.PutChar(tileApp.char, p.x-vx, p.y-vy)
+		cw.PutChar(tileApp, p.x-vx, p.y-vy)
 		cw.SetBgColor(cw.BLACK)
 	}
 }
+
+// func renderUnit(f *faction, p *pawn, g *gameMap, vx, vy int, inverse bool) {
+// 	u := p.unitInfo
+// 	if areGlobalCoordsOnScreen(p.x, p.y) && f.areCoordsInSight(p.x, p.y){
+// 		tileApp := u.appearance
+// 		// r, g, b := getFactionRGB(u.faction.factionNumber)
+// 		// cw.SetFgColorRGB(r, g, b)\
+// 		colorToRender := p.faction.getFactionColor()
+// 		if inverse {
+// 			cw.SetBgColor(colorToRender)
+// 			cw.SetFgColor(cw.BLACK)
+// 		} else {
+// 			cw.SetFgColor(colorToRender)
+// 		}
+// 		cw.PutChar(tileApp.char, p.x-vx, p.y-vy)
+// 		cw.SetBgColor(cw.BLACK)
+// 	}
+// }
 
 func renderBuilding(f *faction, p *pawn, g *gameMap, vx, vy int, inverse bool) {
 	b := p.buildingInfo

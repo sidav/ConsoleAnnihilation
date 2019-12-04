@@ -66,7 +66,7 @@ func (u *pawn) doMoveOrder() { // TODO: rewrite
 		u.x += vx
 		u.y += vy
 
-		u.nextTickToAct = CURRENT_TICK + u.moveInfo.ticksForMoveSingleCell
+		u.nextTickToAct = CURRENT_TICK + u.getMovementInfo().ticksForMoveSingleCell
 
 		if u.x == ox && u.y == oy {
 			u.reportOrderCompletion("Arrived")

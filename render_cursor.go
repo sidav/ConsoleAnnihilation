@@ -38,7 +38,7 @@ func renderSelectCursor(f *faction) {
 		cw.SetFgColor(cw.RED)
 	}
 
-	if snap == nil || snap.isUnit() {
+	if snap == nil || snap.isSquad() {
 		cw.PutChar('[', x-1, y)
 		cw.PutChar(']', x+1, y)
 	} else {
