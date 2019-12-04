@@ -60,7 +60,7 @@ func main() {
 				return
 			}
 			if f.aiControlled {
-				ai_controlFaction(f)
+				// ai_controlFaction(f)
 			}
 			if f.playerControlled {
 				CURRENT_FACTION_SEEING_THE_SCREEN = f
