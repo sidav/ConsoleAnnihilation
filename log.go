@@ -22,6 +22,7 @@ func (m *logMessage) getText() string {
 
 type LOG struct {
 	last_msgs [LOG_HEIGHT]logMessage
+	logWasChanged bool
 }
 
 func (l *LOG) appendMessage(msg string) {
@@ -33,6 +34,7 @@ func (l *LOG) appendMessage(msg string) {
 		}
 		l.last_msgs[LOG_HEIGHT-1] = logMessage{message: msg, count:1}
 	}
+	l.logWasChanged = true
 }
 
 func (l *LOG) appendMessagef(msg string, zomg interface{}) {
@@ -48,4 +50,10 @@ func (l *LOG) warning(msg string) {
 func (l *LOG) warningf(msg string, zomg interface{}) {
 	l.appendMessagef(msg, zomg)
 	renderLog(true)
+}
+
+func (l *LOG) WasChanged() bool {
+	was := l.logWasChanged
+	l.logWasChanged = false
+	return was
 }

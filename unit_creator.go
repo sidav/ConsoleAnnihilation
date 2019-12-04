@@ -88,7 +88,7 @@ func createUnit(codename string, x, y int, f *faction, alreadyConstructed bool) 
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 25, costM: 650, costE: 1200},
 		}
 	case "coreweasel":
-		newUnit = &pawn{name: "Weasel", maxHitpoints: 20, isLight: true, sightRadius: 12, regenPeriod: 30,
+		newUnit = &pawn{name: "Weasel", maxHitpoints: 20, isLight: true, sightRadius: 14, regenPeriod: 30,
 			moveInfo:                  &pawnMovementInformation{ticksForMoveSingleCell: 6, movesOnLand: true},
 			unitInfo:                  &unit{appearance: ccell{char: 'w'}},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 12, costM: 150, costE: 650},
@@ -99,7 +99,7 @@ func createUnit(codename string, x, y int, f *faction, alreadyConstructed bool) 
 			},
 		}
 	case "armjeffy":
-		newUnit = &pawn{name: "Jeffy", maxHitpoints: 20, isLight: true, sightRadius: 12, regenPeriod: 25,
+		newUnit = &pawn{name: "Jeffy", maxHitpoints: 20, isLight: true, sightRadius: 14, regenPeriod: 25,
 			moveInfo:                  &pawnMovementInformation{ticksForMoveSingleCell: 5, movesOnLand: true},
 			unitInfo:                  &unit{appearance: ccell{char: 'j'}},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 12, costM: 150, costE: 650},
@@ -214,7 +214,7 @@ func createUnit(codename string, x, y int, f *faction, alreadyConstructed bool) 
 	newUnit.faction = f
 	newUnit.codename = codename
 	if newUnit.sightRadius == 0 {
-		newUnit.sightRadius = 5
+		newUnit.sightRadius = 8
 	}
 	if alreadyConstructed {
 		newUnit.currentConstructionStatus = nil

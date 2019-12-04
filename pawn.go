@@ -1,7 +1,7 @@
 package main
 
 import (
-	"SomeTBSGame/routines"
+	geometry "github.com/sidav/golibrl/geometry"
 	"fmt"
 )
 
@@ -63,13 +63,38 @@ func (p *pawn) setOrder(o *order) {
 	}
 }
 
+func (p1 *pawn) isInDistanceFromPawn(p2 *pawn, r int) bool {
+	if p1.buildingInfo != nil {
+		if p2.buildingInfo != nil {
+			return geometry.AreRectsInRange(p1.x, p1.y, p1.buildingInfo.w, p1.buildingInfo.h, p2.x, p2.y, p2.buildingInfo.w, p2.buildingInfo.h, r)
+		}
+		return geometry.AreCoordsInRangeFromRect(p2.x, p2.y, p1.x, p1.y, p1.buildingInfo.w, p1.buildingInfo.h, r)
+	} else {
+		if p2.buildingInfo != nil {
+			return geometry.AreCoordsInRangeFromRect(p1.x, p1.y, p2.x, p2.y, p2.buildingInfo.w, p2.buildingInfo.h, r)
+		}
+		return geometry.AreCoordsInRange(p1.x, p1.y, p2.x, p2.y, r)
+	}
+}
+
 func (p *pawn) isOccupyingCoords(x, y int) bool {
 	if p.isBuilding() {
-		return routines.AreCoordsInRect(x, y, p.x, p.y, p.buildingInfo.w, p.buildingInfo.h)
+		return geometry.AreCoordsInRect(x, y, p.x, p.y, p.buildingInfo.w, p.buildingInfo.h)
 	} else {
 		return x == p.x && y == p.y
 	}
 }
+
+
+func (p *pawn) IsCloseupToCoords(x, y, dist int) bool { // distance to any of pawn's cells check.
+	if p.isBuilding() {
+		return !geometry.AreCoordsInRect(x, y, p.x, p.y, p.buildingInfo.w, p.buildingInfo.h) &&
+			geometry.AreCoordsInRect(x, y, p.x-dist, p.y-dist, p.buildingInfo.w+2*dist, p.buildingInfo.h+2*dist)
+	} else {
+		return x != p.x && y != p.y && geometry.AreCoordsInRect(x, y, p.x-dist, p.y-dist, 2*dist+1, 2*dist+1)
+	}
+}
+
 
 func (p *pawn) getCenter() (int, int) {
 	if p.isUnit() {

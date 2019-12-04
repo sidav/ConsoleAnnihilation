@@ -1,14 +1,15 @@
 package main
 
 import (
-	"SomeTBSGame/routines"
-	cw "TCellConsoleWrapper"
+	geometry "github.com/sidav/golibrl/geometry"
+	cmenu "github.com/sidav/golibrl/console_menu"
+	cw "github.com/sidav/golibrl/console"
 	"strconv"
 	"time"
 )
 
 func areCoordsValid(x, y int) bool {
-	return routines.AreCoordsInRect(x, y, 0, 0, mapW, mapH)
+	return geometry.AreCoordsInRect(x, y, 0, 0, mapW, mapH)
 }
 
 var (
@@ -33,18 +34,19 @@ func debug_write(text string) {
 }
 
 func main() {
-	cw.Init_console()
+	cw.Init_console("Console Annihilation", cw.TCellRenderer)
 	defer cw.Close_console()
 
 	log = &LOG{}
 
 	CURRENT_MAP = &gameMap{}
 	CURRENT_MAP.init()
+	r_updateBoundsIfNeccessary(true)
 
 	///////////////////////////////
 	// uncomment later
-	r_showTitleScreen()
-	showBriefing()
+	//r_showTitleScreen()
+	//showBriefing()
 	// comment later
 	// endTurnPeriod = 0
 	///////////////////////////////////
@@ -120,7 +122,7 @@ func showBriefing() {
 		"As we speak, our data transfer relays are finishing uploading some basic scematics for the prototype's nanolating " +
 		"equipment. That means that you are clear to embark right now. \\n " +
 		"You will be dispatched immediately. "
-	routines.DrawWrappedTextInRect(text, 0, 0, CONSOLE_W, CONSOLE_H)
+	cmenu.DrawWrappedTextInRect(text, 0, 0, CONSOLE_W, CONSOLE_H)
 	cw.Flush_console()
 	key := ""
 	for key != "ESCAPE" && key != "ENTER" {

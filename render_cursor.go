@@ -1,12 +1,16 @@
 package main
 
 import (
-	cw "TCellConsoleWrapper"
+	cw "github.com/sidav/golibrl/console"
 	"fmt"
 )
 
 func r_renderCursor(f *faction) {
 	c := f.cursor
+	cx, cy := c.getCoords()
+	if !areGlobalCoordsOnScreen(cx, cy) {
+		return
+	}
 	switch c.currentCursorMode {
 	case CURSOR_SELECT:
 		renderSelectCursor(f)
@@ -23,8 +27,7 @@ func r_renderCursor(f *faction) {
 
 func renderSelectCursor(f *faction) {
 	c := f.cursor
-	x := VIEWPORT_W / 2
-	y := VIEWPORT_H / 2
+	x, y := c.getOnScreenCoords()
 	snap := c.snappedPawn
 	// cw.SetFgColorRGB(128, 128, 128)
 	if snap == nil {
@@ -79,27 +82,15 @@ func renderBandboxCursor(f *faction) {
 				renderCharByGlobalCoords('-', i, j)
 				continue
 			}
-			//if areCoordsValid(i, j) {
-			//	cw.SetBgColor(CURRENT_MAP.tileMap[i][j].appearance.color)
-			//	cw.SetFgColor(cw.BLACK)
-			//	renderCharByGlobalCoords(CURRENT_MAP.tileMap[i][j].appearance.char, i, j)
-			//	cw.SetBgColor(cw.BLACK)
-			//}
 		}
 	}
-
-	// outcommented for non-SDL console
-	//cw.PutChar(16*13+10, x-1, y-1)
-	//cw.PutChar(16*11+15, x+1, y-1)
-	//cw.PutChar(16*12, x-1, y+1)
-	//cw.PutChar(16*13+9, x+1, y+1)
 	flushView()
 }
 
 func renderMoveCursor(f *faction) {
 	c := f.cursor
-	x := VIEWPORT_W / 2
-	y := VIEWPORT_H / 2
+	x, y := c.getOnScreenCoords()
+
 	// cw.SetFgColorRGB(128, 255, 128)
 	cw.SetFgColor(cw.GREEN)
 	if c.snappedPawn != nil && c.snappedPawn.faction != f {
@@ -122,8 +113,9 @@ func renderMoveCursor(f *faction) {
 }
 
 func renderAttackMoveCursor(f *faction) {
-	x := VIEWPORT_W / 2
-	y := VIEWPORT_H / 2
+	c := f.cursor
+	x, y := c.getOnScreenCoords()
+
 	// cw.SetFgColorRGB(128, 255, 128)
 	cw.SetFgColor(cw.DARK_RED)
 	cw.PutChar('}', x-1, y)
@@ -141,8 +133,7 @@ func renderAttackMoveCursor(f *faction) {
 }
 
 func renderBuildCursor(c *cursor) {
-	x := VIEWPORT_W / 2
-	y := VIEWPORT_H / 2
+	x, y := c.getOnScreenCoords()
 
 	// TODO: optimize it with getPawnsInRect()
 	totalMetalUnderCursor := CURRENT_MAP.getNumberOfMetalDepositsInRect(c.x-c.w/2, c.y-c.h/2, c.w, c.h)

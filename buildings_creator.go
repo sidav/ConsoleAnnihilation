@@ -74,7 +74,7 @@ func createBuilding(codename string, x, y int, f *faction) *pawn {
 			"0$0" +
 			"=0=", colors: colors}
 		b = &pawn{name: "Metal Storage", maxHitpoints: 100, isHeavy: true, regenPeriod: 10,
-			buildingInfo:              &building{w: 3, h: 3, appearance: app},
+			buildingInfo:              &building{w: 3, h: 3, appearance: app, allowsTightPlacement: true},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 60, costM: 100, costE: 800},
 			res:                       &pawnResourceInformation{metalStorage: 250},
 		}
@@ -90,7 +90,7 @@ func createBuilding(codename string, x, y int, f *faction) *pawn {
 			"-0-" +
 			"=|=", colors: colors}
 		b = &pawn{name: "Energy Storage",
-			buildingInfo:              &building{w: 3, h: 3, appearance: app},
+			buildingInfo:              &building{w: 3, h: 3, appearance: app, allowsTightPlacement: true},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 60, costM: 200, costE: 400},
 			res:                       &pawnResourceInformation{energyStorage: 250},
 		}
@@ -235,7 +235,7 @@ func createBuilding(codename string, x, y int, f *faction) *pawn {
 	case "lturret":
 		colors := []int{-1}
 		app := &buildingAppearance{chars: "T", colors: colors}
-		b = &pawn{name: "Light Laser Turret", maxHitpoints: 90, isHeavy: true, regenPeriod: 70, sightRadius: 6,
+		b = &pawn{name: "Light Laser Turret", maxHitpoints: 90, isHeavy: true, regenPeriod: 20, sightRadius: 6,
 			buildingInfo:              &building{w: 1, h: 1, allowsTightPlacement: true, appearance: app},
 			currentConstructionStatus: &constructionInformation{maxConstructionAmount: 100, costM: 250, costE: 900},
 			weapons: []*pawnWeaponInformation{
@@ -313,7 +313,7 @@ func createBuilding(codename string, x, y int, f *faction) *pawn {
 	b.faction = f
 	b.codename = codename
 	if b.sightRadius == 0 {
-		b.sightRadius = b.buildingInfo.w 
+		b.sightRadius = b.buildingInfo.w + 2
 	}
 	if b.nanolatherInfo != nil && b.res == nil {
 		b.res = &pawnResourceInformation{} // adds zero-value resource info struct for spendings usage.

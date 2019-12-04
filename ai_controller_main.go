@@ -1,7 +1,7 @@
 package main
 
 import (
-	"SomeTBSGame/routines"
+	rnd "github.com/sidav/golibrl/random"
 	"strconv"
 )
 
@@ -43,9 +43,9 @@ func ai_createAiData() *aiData {
 		currentEngineersCount: 1,
 		recount_units_period:  100,
 	}
-	buildOrderNum := routines.Random(len(ai_allBuildOrders))
+	buildOrderNum := rnd.Random(len(ai_allBuildOrders))
 	ai.buildOrder = &(ai_allBuildOrders[buildOrderNum])
-	ai_write("SELECTED BUILD ORDER #" + strconv.Itoa(buildOrderNum))
+	ai_write("SELECTED BUILD ORDER \"" + ai_buildOrderNames[buildOrderNum] + "\"")
 	return ai
 }
 
@@ -82,8 +82,8 @@ func ai_controlPawn(currAi *aiData, p *pawn) {
 	// specific Commander orders
 	if p.isCommander {
 		const RADIUS_FOR_COMMANDER_TO_ATTACK = 10
-		x, y := p.getCenter()
-		enemyPawnsInRadius := CURRENT_MAP.getEnemyPawnsInRadiusFrom(x, y, RADIUS_FOR_COMMANDER_TO_ATTACK, p.faction)
+		// x, y := p.getCenter()
+		enemyPawnsInRadius := CURRENT_MAP.getEnemyPawnsInRadiusFromPawn(p, RADIUS_FOR_COMMANDER_TO_ATTACK, p.faction)
 		if len(enemyPawnsInRadius) > 0 {
 			enemy := enemyPawnsInRadius[0]
 			p.order = &order{orderType: order_attack_move, x:enemy.x, y: enemy.y}
@@ -98,13 +98,13 @@ func ai_controlPawn(currAi *aiData, p *pawn) {
 			const AMOVE_RADIUS = 15
 			x, y := -1, -1
 			for !(areCoordsValid(x, y) && CURRENT_MAP.tileMap[x][y].isPassable) {
-				x = routines.RandInRange(enemyCommander.x - AMOVE_RADIUS, enemyCommander.x + AMOVE_RADIUS)
-				y = routines.RandInRange(enemyCommander.y - AMOVE_RADIUS, enemyCommander.y + AMOVE_RADIUS)
+				x = rnd.RandInRange(enemyCommander.x - AMOVE_RADIUS, enemyCommander.x + AMOVE_RADIUS)
+				y = rnd.RandInRange(enemyCommander.y - AMOVE_RADIUS, enemyCommander.y + AMOVE_RADIUS)
 			}
 			p.order = &order{orderType: order_attack_move, x: x, y: y}
 			return
 		}
-		p.order = &order{orderType: order_attack_move, x: routines.Random(mapW), y: routines.Random(mapH)}
+		p.order = &order{orderType: order_attack_move, x: rnd.Random(mapW), y: rnd.Random(mapH)}
 	}
 
 	if currAi.construction_orders_this_turn < currAi.MAX_CONSTRUCTION_ORDERS_AT_A_TIME {

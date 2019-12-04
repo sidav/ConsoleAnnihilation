@@ -1,6 +1,6 @@
 package main
 
-import "SomeTBSGame/routines"
+import rnd "github.com/sidav/golibrl/random"
 
 func (currAi *aiData) ai_decideProduction(factory *pawn) {
 	currFaction := factory.faction
@@ -18,11 +18,11 @@ func (currAi *aiData) ai_decideProduction(factory *pawn) {
 	}
 	var pawnToProduce *pawn
 	if len(listOfEngineerUnits) > 0 && currAi.shouldProduceEngineers() {
-		pawnToProduce = listOfEngineerUnits[routines.Random(len(listOfEngineerUnits))]
+		pawnToProduce = listOfEngineerUnits[rnd.Random(len(listOfEngineerUnits))]
 		ai_write("producing engineer " + pawnToProduce.name)
 	} else {
 		if len(listOfCombatUnits) > 0 {
-			pawnToProduce = listOfCombatUnits[routines.Random(len(listOfCombatUnits))]
+			pawnToProduce = listOfCombatUnits[rnd.Random(len(listOfCombatUnits))]
 			ai_write("producing " + pawnToProduce.name)
 		}
 	}
@@ -58,7 +58,7 @@ func (ai *aiData) ai_decideConstruction(builder *pawn) {
 		}
 	}
 	if final_build_variant == "" {
-		final_build_variant = variants[routines.Random(len(variants))]
+		final_build_variant = variants[rnd.Random(len(variants))]
 	}
 	ai_makeBuildOrderForBuilding(builder, final_build_variant)
 }

@@ -1,8 +1,8 @@
 package main
 
 import (
-	"SomeTBSGame/routines"
-	"TCellConsoleWrapper"
+	geometry "github.com/sidav/golibrl/geometry"
+	cw "github.com/sidav/golibrl/console"
 )
 
 func (p *pawn) isTimeToAct() bool {
@@ -47,7 +47,7 @@ func (u *pawn) doMoveOrder() { // TODO: rewrite
 	ux, uy := u.getCoords()
 	var vx, vy int
 
-	//vector := routines.CreateVectorByStartAndEndInt(ux, uy, ox, oy)
+	//vector := geometry.CreateVectorByStartAndEndInt(ux, uy, ox, oy)
 	//vector.TransformIntoUnitVector()
 	//vx, vy := vector.GetRoundedCoords()
 	path := CURRENT_MAP.getPathFromTo(ux, uy, ox, oy)
@@ -87,7 +87,7 @@ func (p *pawn) doAttackOrder() { // Only moves the unit to a firing position. Th
 	}
 	targetX, targetY := order.targetPawn.getCenter()
 
-	if !routines.AreCoordsInRange(ux, uy, targetX, targetY, p.getMaxRadiusToFire()) {
+	if !geometry.AreCoordsInRange(ux, uy, targetX, targetY, p.getMaxRadiusToFire()) {
 		order.x = targetX
 		order.y = targetY
 		p.doMoveOrder()
@@ -114,10 +114,10 @@ func (attacker *pawn) openFireIfPossible() { // does the firing, does NOT necess
 		}
 		var target *pawn
 		radius := wpn.attackRadius
-		if pawnInOrder != nil && routines.AreCoordsInRange(attackerCenterX, attackerCenterY, pawnInOrder.x, pawnInOrder.y, radius) {
+		if pawnInOrder != nil && geometry.AreCoordsInRange(attackerCenterX, attackerCenterY, pawnInOrder.x, pawnInOrder.y, radius) {
 			target = pawnInOrder
 		} else {
-			potential_targets := CURRENT_MAP.getEnemyPawnsInRadiusFrom(attackerCenterX, attackerCenterY, radius, attacker.faction)
+			potential_targets := CURRENT_MAP.getEnemyPawnsInRadiusFromPawn(attacker, radius, attacker.faction)
 			for _, potentialTarget := range potential_targets {
 				ptx, pty := potentialTarget.getCoords()
 				if attacker.faction.areCoordsInSight(ptx, pty) || attacker.faction.areCoordsInRadarRadius(ptx, pty) {
@@ -133,9 +133,10 @@ func (attacker *pawn) openFireIfPossible() { // does the firing, does NOT necess
 			}
 			// draw the pew pew laser TODO: move this crap somewhere already
 			if areGlobalCoordsOnScreenForFaction(attackerCenterX, attackerCenterY, CURRENT_FACTION_SEEING_THE_SCREEN) || areGlobalCoordsOnScreenForFaction(target.x, target.y, CURRENT_FACTION_SEEING_THE_SCREEN) {
-				tcell_wrapper.SetFgColor(tcell_wrapper.RED)
+				cw.SetFgColor(cw.RED)
 				cx, cy := target.getCenter()
-				renderLine(attackerCenterX, attackerCenterY, cx, cy, false, CURRENT_FACTION_SEEING_THE_SCREEN.cursor.x-VIEWPORT_W/2, CURRENT_FACTION_SEEING_THE_SCREEN.cursor.y-VIEWPORT_H/2)
+				camx, camy := CURRENT_FACTION_SEEING_THE_SCREEN.cursor.getCameraCoords()
+				renderLine(attackerCenterX, attackerCenterY, cx, cy, false, camx, camy)
 				FIRE_WAS_OPENED_ON_SCREEN_THIS_TURN = true
 			}
 			dealDamageToTarget(attacker, wpn, target)
@@ -157,12 +158,6 @@ func (u *pawn) doBuildOrder(m *gameMap) { // only moves to location and/or sets 
 	// TODO: rewrite the heck out of it. Tip: implement and use doCircleAndRectangleIntersect() with the build radius
 	order := u.order
 	tBld := order.buildingToConstruct
-	ux, uy := u.getCoords()
-	ox, oy := tBld.getCenter()
-
-	building_w := tBld.buildingInfo.w + 1
-	building_h := tBld.buildingInfo.h + 1
-	sqdistance := (ox-ux)*(ox-ux) + (oy-uy)*(oy-uy)
 
 	if tBld == nil {
 		log.appendMessage(u.name + " NIL BUILD")
@@ -175,7 +170,7 @@ func (u *pawn) doBuildOrder(m *gameMap) { // only moves to location and/or sets 
 		return
 	}
 
-	if sqdistance <= building_w*building_w || sqdistance <= building_h*building_h { // is in building range
+	if tBld.IsCloseupToCoords(u.x, u.y, BUILD_MAX_DISTANCE) { // is in building range
 		u.res.metalSpending = u.nanolatherInfo.builderCoeff * tBld.currentConstructionStatus.costM / tBld.currentConstructionStatus.maxConstructionAmount
 		u.res.energySpending = u.nanolatherInfo.builderCoeff * tBld.currentConstructionStatus.costE / tBld.currentConstructionStatus.maxConstructionAmount
 	} else { // out of range, move to the construction site
@@ -199,74 +194,6 @@ func (p *pawn) doConstructOrder(m *gameMap) {
 
 	p.res.metalSpending = p.nanolatherInfo.builderCoeff * uCnst.currentConstructionStatus.costM / uCnst.currentConstructionStatus.maxConstructionAmount
 	p.res.energySpending = p.nanolatherInfo.builderCoeff * uCnst.currentConstructionStatus.costE / uCnst.currentConstructionStatus.maxConstructionAmount
-}
-
-func doAllNanolathes(m *gameMap) { // does the building itself
-	for _, u := range m.pawns {
-		// buildings construction
-		if u.order != nil && u.order.orderType == order_build {
-			tBld := u.order.buildingToConstruct
-
-			ux, uy := u.getCoords()
-			ox, oy := tBld.getCenter()
-			building_w := tBld.buildingInfo.w + 1
-			building_h := tBld.buildingInfo.h + 1
-			sqdistance := (ox-ux)*(ox-ux) + (oy-uy)*(oy-uy)
-
-			if tBld.buildingInfo.hasBeenPlaced == false && (sqdistance <= building_w*building_w || sqdistance <= building_h*building_h) { // place the carcass
-				u.reportOrderCompletion("Starts nanolathe")
-				tBld.buildingInfo.hasBeenPlaced = true
-				m.addBuilding(tBld, false)
-			}
-
-			if tBld.currentConstructionStatus == nil {
-				u.reportOrderCompletion("Nanolathe interrupted")
-				u.order = nil
-				continue
-			}
-			if tBld.hitpoints <= 0 {
-				u.reportOrderCompletion("Nanolathe interrupted by hostile action")
-				u.order = nil
-				continue
-			}
-
-			if u.faction.economy.nanolatheAllowed && (sqdistance <= building_w*building_w || sqdistance <= building_h*building_h) {
-				tBld.currentConstructionStatus.currentConstructionAmount += u.nanolatherInfo.builderCoeff
-				if tBld.currentConstructionStatus.isCompleted() {
-					tBld.currentConstructionStatus = nil
-					u.order = nil
-					u.reportOrderCompletion("Nanolathe completed")
-				}
-			}
-		}
-
-		// units construction
-		if u.order != nil && u.order.orderType == order_construct {
-			uCnst := u.order.constructingQueue[0]
-
-			ux, _ := u.getCenter()
-
-			if u.faction.economy.nanolatheAllowed {
-				if uCnst.currentConstructionStatus == nil {
-					u.reportOrderCompletion("WTF CONSTRUCTION STATUS IS NIL FOR " + uCnst.name)
-					continue
-				}
-				uCnst.currentConstructionStatus.currentConstructionAmount += u.nanolatherInfo.builderCoeff
-				if uCnst.currentConstructionStatus.isCompleted() {
-					uCnst.currentConstructionStatus = nil
-					uCnst.x, uCnst.y = ux, u.y+u.buildingInfo.h
-					uCnst.order = &order{}
-					uCnst.order.cloneFrom(u.nanolatherInfo.defaultOrderForUnitBuilt)
-					m.addPawn(uCnst)
-					u.order.constructingQueue = u.order.constructingQueue[1:]
-					if u.repeatConstructionQueue {
-						u.order.constructingQueue = append(u.order.constructingQueue, createUnit(uCnst.codename, 0, 0, u.faction, false))
-					}
-					u.reportOrderCompletion("Nanolathe completed")
-				}
-			}
-		}
-	}
 }
 
 func (u *pawn) reportOrderCompletion(verb string) {

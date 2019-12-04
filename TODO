@@ -1,17 +1,20 @@
+Not so close plans: 
+- Naval units
+- Random map generation
+
 Closest plans:
 - Further decrease the unit/building differentiation;
-- better collision detection
+- better collision detection (it may be still buggish for buildings)
 - replace a single order var for pawns with an order queue
 - Visual attack animations.
 - Non-hitscan (projectile) weapons
 - Explosions
 - Separate log for each faction
-- Separate AI struct for each ai-controlled faction
 - Map and unit data reading from files
 - Some "relay" resource for order giving?
 - Working buildings animations and/or flickering
+- Mouse support for console menus
 
 Fixes needed:
 - Remove debug messages
-- Add a bunker with marines (just joking)
 - Add descriptions to tiles

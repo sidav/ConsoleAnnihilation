@@ -1,8 +1,8 @@
 package main
 
 import (
-	"SomeTBSGame/routines"
-	cw "TCellConsoleWrapper"
+	geometry "github.com/sidav/golibrl/geometry"
+	cw "github.com/sidav/golibrl/console"
 )
 
 var (
@@ -21,10 +21,10 @@ func r_setFgColorByCcell(c *ccell) {
 	// cw.SetFgColorRGB(c.r, c.g, c.b)
 }
 
-func r_updateBoundsIfNeccessary() {
-	if cw.WasResized() {
+func r_updateBoundsIfNeccessary(force bool) {
+	if cw.WasResized() || force {
 		CONSOLE_W, CONSOLE_H = cw.GetConsoleSize()
-		VIEWPORT_W           = cw.CONSOLE_WIDTH / 2
+		VIEWPORT_W           = CONSOLE_W / 2
 		VIEWPORT_H           = CONSOLE_H - LOG_HEIGHT - 1
 		SIDEBAR_X            = VIEWPORT_W + 1
 		SIDEBAR_W            = CONSOLE_W - VIEWPORT_W - 1
@@ -34,20 +34,27 @@ func r_updateBoundsIfNeccessary() {
 	}
 }
 
-func r_renderScreenForFaction(f *faction, g *gameMap) {
-	r_updateBoundsIfNeccessary()
-	cx, cy := f.cursor.x, f.cursor.y
-	cw.Clear_console()
-	vx := cx - VIEWPORT_W/2
-	vy := cy - VIEWPORT_H/2
-	renderMapInViewport(f, g, vx, vy)
+func r_renderScreenForFaction(f *faction, g *gameMap, selection *[]*pawn, flush bool) {
+	r_updateBoundsIfNeccessary(false)
+	cw.Clear_console() // TODO: replace with ClearViewportOnly (and create it of course). Prevent overrendering of whole screen.
+	renderMapInViewport(f, g)
 	renderFactionStats(f)
 	renderInfoOnCursor(f, g)
 	r_renderUIOutline(f)
-	renderPawnsInViewport(f, g, vx, vy)
+	renderPawnsInViewport(f, g)
+	if selection != nil && len(*selection) != 0 {
+		r_renderSelectedPawns(f, selection)
+		if len(*selection) == 1 {
+			r_renderPossibleOrdersForPawn((*selection)[0])
+		} else {
+			r_renderPossibleOrdersForMultiselection(f, selection)
+		}
+	}
 	r_renderCursor(f)
 	renderLog(false)
-	flushView()
+	if flush {
+		flushView()
+	}
 }
 
 func r_renderUIOutline(f *faction) {
@@ -71,7 +78,8 @@ func r_renderUIOutline(f *faction) {
 	cw.SetBgColor(cw.BLACK)
 }
 
-func renderMapInViewport(f *faction, g *gameMap, vx, vy int) {
+func renderMapInViewport(f *faction, g *gameMap) {
+	vx, vy := f.cursor.getCameraCoords()
 	for x := vx; x < vx+VIEWPORT_W; x++ {
 		for y := vy; y < vy+VIEWPORT_H; y++ {
 			if areCoordsValid(x, y) {
@@ -91,7 +99,8 @@ func renderMapInViewport(f *faction, g *gameMap, vx, vy int) {
 	}
 }
 
-func renderPawnsInViewport(f *faction, g *gameMap, vx, vy int) {
+func renderPawnsInViewport(f *faction, g *gameMap) {
+	vx, vy := f.cursor.getCameraCoords()
 	for _, p := range g.pawns {
 		cx, cy := p.getCenter()
 		if f.areCoordsInRadarRadius(cx, cy) {
@@ -107,8 +116,7 @@ func renderPawnsInViewport(f *faction, g *gameMap, vx, vy int) {
 }
 
 func r_renderSelectedPawns(f* faction, selection *[]*pawn) {
-	vx := f.cursor.x - VIEWPORT_W/2
-	vy := f.cursor.y - VIEWPORT_H/2
+	vx, vy := f.cursor.getCameraCoords()
 	for _, p := range *selection {
 		if p.isUnit() {
 			renderUnit(f, p, CURRENT_MAP, vx, vy, true)
@@ -120,7 +128,7 @@ func r_renderSelectedPawns(f* faction, selection *[]*pawn) {
 
 func renderUnit(f *faction, p *pawn, g *gameMap, vx, vy int, inverse bool) {
 	u := p.unitInfo
-	if areGlobalCoordsOnScreen(p.x, p.y, vx, vy) && f.areCoordsInSight(p.x, p.y){
+	if areGlobalCoordsOnScreen(p.x, p.y) && f.areCoordsInSight(p.x, p.y){
 		tileApp := u.appearance
 		// r, g, b := getFactionRGB(u.faction.factionNumber)
 		// cw.SetFgColorRGB(r, g, b)\
@@ -160,7 +168,7 @@ func renderBuilding(f *faction, p *pawn, g *gameMap, vx, vy int, inverse bool) {
 					colorToRender = cw.GREEN
 				}
 			}
-			if areGlobalCoordsOnScreen(bx+x, by+y, vx, vy) && f.wereCoordsSeen(bx+x, by+y) {
+			if areGlobalCoordsOnScreen(bx+x, by+y) && f.wereCoordsSeen(bx+x, by+y) {
 				if inverse {
 					cw.SetBgColor(colorToRender)
 					cw.SetFgColor(cw.BLACK)
@@ -179,19 +187,18 @@ func flushView() {
 }
 
 func renderCharByGlobalCoords(c rune, x, y int) { // TODO: use it everywhere
-	vx := CURRENT_FACTION_SEEING_THE_SCREEN.cursor.x - VIEWPORT_W/2
-	vy := CURRENT_FACTION_SEEING_THE_SCREEN.cursor.y - VIEWPORT_H/2
+	vx, vy := CURRENT_FACTION_SEEING_THE_SCREEN.cursor.getCameraCoords()
 	if areGlobalCoordsOnScreenForFaction(x, y, CURRENT_FACTION_SEEING_THE_SCREEN) {
 		cw.PutChar(c, x-vx, y-vy)
 	}
 }
 
-func areGlobalCoordsOnScreen(gx, gy, vx, vy int) bool {
-	return routines.AreCoordsInRect(gx, gy, vx, vy, VIEWPORT_W, VIEWPORT_H)
+func areGlobalCoordsOnScreen(gx, gy int) bool {
+	vx, vy := CURRENT_FACTION_SEEING_THE_SCREEN.cursor.getCameraCoords()
+	return geometry.AreCoordsInRect(gx, gy, vx, vy, VIEWPORT_W, VIEWPORT_H)
 }
 
 func areGlobalCoordsOnScreenForFaction(gx, gy int, f *faction) bool {
-	vx := f.cursor.x - VIEWPORT_W/2
-	vy := f.cursor.y - VIEWPORT_H/2
-	return routines.AreCoordsInRect(gx, gy, vx, vy, VIEWPORT_W, VIEWPORT_H)
+	vx, vy := f.cursor.getCameraCoords()
+	return geometry.AreCoordsInRect(gx, gy, vx, vy, VIEWPORT_W, VIEWPORT_H)
 }

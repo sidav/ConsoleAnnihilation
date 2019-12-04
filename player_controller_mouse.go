@@ -1,57 +1,38 @@
 package main
 
 import (
-	cmenu "github.com/sidav/golibrl/console_menu"
-	cw "github.com/sidav/golibrl/console"
 	"fmt"
+	cw "github.com/sidav/golibrl/console"
+	cmenu "github.com/sidav/golibrl/console_menu"
 	"time"
 )
 
-var (
-	PLR_LOOP       = true
-	IS_PAUSED      = true
-	reRenderNeeded = true
-	mouseEnabled   = true
-	endTurnPeriod  = 700
-	last_time      time.Time
-)
-
-func plr_control(f *faction, m *gameMap) {
-	PLR_LOOP = true
-	snapCursorToPawn(f)
-	for PLR_LOOP {
-		if mouseEnabled {
-			selection := plr_selectPawnWithMouse(f, m)
-			if selection != nil {
-				if len(*selection) == 1 {
-					plr_giveOrderWithMouse(selection, f)
-				} else if len(*selection) > 1 {
-					plr_giveOrderForMultiSelectWithMouse(selection, f)
-				}
-			}
-		} else {
-			selection := plr_selectPawn(f, m)
-			if selection != nil {
-				if len(*selection) == 1 {
-					plr_selectOrder(selection, f, m)
-				} else if len(*selection) > 1 {
-					plr_selectOrderForMultiSelect(selection, f)
-				}
-			}
-		}
-	}
-}
-
-func plr_selectPawn(f *faction, m *gameMap) *[]*pawn { // returns a pointer to an array of selected pawns.
+func plr_selectPawnWithMouse(f *faction, m *gameMap) *[]*pawn { // returns a pointer to an array of selected pawns.
 	f.cursor.currentCursorMode = CURSOR_SELECT
 	for {
 		if reRenderNeeded {
 			r_renderScreenForFaction(f, m, nil, true)
 		}
 		keyPressed := cw.ReadKeyAsync()
+		click := cw.GetMouseClickedButton()
 		reRenderNeeded = true
-		switch keyPressed {
 
+		if plr_moveCameraOrCursorWithMouseIfNeeded(f) {
+			return nil
+		}
+		u := f.cursor.snappedPawn
+		if cw.GetMouseHeldButton() == "LEFT" {
+			return plr_bandboxSelectionWithMouse(f)
+		}
+		if u != nil && click == "LEFT" {
+			if u.faction.factionNumber != f.factionNumber {
+				log.appendMessage("Enemy units can't be selected, Commander.")
+				return nil
+			}
+			return &[]*pawn{f.cursor.snappedPawn}
+		}
+
+		switch keyPressed {
 		case "NOTHING", "NON-KEY":
 			if !IS_PAUSED && isTimeToAutoEndTurn() {
 				last_time = time.Now()
@@ -97,7 +78,7 @@ func plr_selectPawn(f *faction, m *gameMap) *[]*pawn { // returns a pointer to a
 		case "ENTER", "RETURN":
 			u := f.cursor.snappedPawn //m.getUnitAtCoordinates(cx, cy)
 			if u == nil {
-				return plr_bandboxSelection(f) // select multiple units
+				return plr_bandboxSelectionWithMouse(f) // select multiple units
 			}
 			if u.faction.factionNumber != f.factionNumber {
 				log.appendMessage("Enemy units can't be selected, Commander.")
@@ -142,16 +123,20 @@ func plr_selectPawn(f *faction, m *gameMap) *[]*pawn { // returns a pointer to a
 	}
 }
 
-func plr_bandboxSelection(f *faction) *[]*pawn {
+func plr_bandboxSelectionWithMouse(f *faction) *[]*pawn {
 	f.cursor.currentCursorMode = CURSOR_MULTISELECT
 	f.cursor.xorig, f.cursor.yorig = f.cursor.getCoords()
+	reRenderNeeded = true
 	for {
-		r_renderScreenForFaction(f, CURRENT_MAP, nil, true)
-		keyPressed := cw.ReadKey()
-		switch keyPressed {
-		case "ESCAPE":
+		if reRenderNeeded {
+			r_renderScreenForFaction(f, CURRENT_MAP, nil, true)
+		}
+		keyPressed := cw.ReadKeyAsync()
+		if keyPressed == "ESCAPE" {
 			return nil
-		case "ENTER":
+		}
+		if cw.GetMouseHeldButton() == "NONE" {
+			reRenderNeeded = true
 			fromx, fromy := f.cursor.xorig, f.cursor.yorig
 			tox, toy := f.cursor.getCoords()
 			if fromx > tox {
@@ -174,63 +159,123 @@ func plr_bandboxSelection(f *faction) *[]*pawn {
 			}
 			log.appendMessage(fmt.Sprintf("%d units selected from %d", len(unitsToReturn), len(unitsInSelection)))
 			return &unitsToReturn
-		default:
-			plr_moveCursor(f, keyPressed)
+		}
+		if cw.WasMouseMovedSinceLastEvent() {
+			plr_moveCursorWithMouse(f)
+		} else {
+			reRenderNeeded = false
 		}
 	}
 }
 
-func plr_selectOrder(selection *[]*pawn, f *faction, m *gameMap) {
+func plr_giveOrderWithMouse(selection *[]*pawn, f *faction) {
 	selectedPawn := (*selection)[0] //m.getUnitAtCoordinates(cx, cy)
 	log.appendMessage(selectedPawn.name + " is awaiting orders.")
 	f.cursor.currentCursorMode = CURSOR_MOVE
+	reRenderNeeded = true
 	for {
+		equivKey := "NONE" // mouse clicked menu result
+		click := cw.GetMouseClickedButton()
 		cx, cy := f.cursor.getCoords()
-		r_renderScreenForFaction(f, m, selection, true)
+		if reRenderNeeded {
+			r_renderScreenForFaction(f, CURRENT_MAP, selection, false)
+		}
+		equivKey = pcm_mouseOrderSelectMenu(selectedPawn)
+		if reRenderNeeded {
+			cw.Flush_console()
+		}
 
-		keyPressed := cw.ReadKey()
-		switch keyPressed {
-		case "ENTER", "RETURN":
-			issueDefaultOrderToUnit(selectedPawn, m, cx, cy)
+		keyPressed := cw.ReadKeyAsync()
+		if plr_moveCameraOrCursorWithMouseIfNeeded(f) {
+			continue
+		}
+		if click == "LEFT" {
+			if equivKey == "NONE" {
+				reRenderNeeded = true
+				issueDefaultOrderToUnit(selectedPawn, CURRENT_MAP, cx, cy)
+				return
+			} else {
+				keyPressed = equivKey
+			}
+		}
+		if click == "RIGHT" {
+			reRenderNeeded = true
 			return
+		}
+
+		switch keyPressed {
 		case "a": // attack-move
 			if selectedPawn.hasWeapons() || selectedPawn.canConstructUnits() {
 				f.cursor.currentCursorMode = CURSOR_AMOVE
+				reRenderNeeded = true
 			}
 		case "m": // move
 			f.cursor.currentCursorMode = CURSOR_MOVE
+			reRenderNeeded = true
 		case "b": // build
 			if selectedPawn.canConstructBuildings() {
 				code := plr_selectBuidingToConstruct(selectedPawn)
 				if code != "" {
-					plr_selectBuildingSite(selectedPawn, createBuilding(code, cx, cy, f), m)
+					plr_selectBuildingSiteWithMouse(selectedPawn, createBuilding(code, cx, cy, f), CURRENT_MAP)
 					return
 				}
 			}
 		case "c": // construct units
 			if selectedPawn.canConstructUnits() {
 				plr_selectUnitsToConstruct(selectedPawn)
+				reRenderNeeded = true
 			}
 		case "r": // repeat construction queue
 			if selectedPawn.canConstructUnits() {
 				selectedPawn.repeatConstructionQueue = !selectedPawn.repeatConstructionQueue
+				reRenderNeeded = true
 			}
 		case "ESCAPE":
 			return
 		default:
-			plr_moveCursor(f, keyPressed)
+			reRenderNeeded = false
 		}
 	}
 }
 
-func plr_selectOrderForMultiSelect(selection *[]*pawn, f *faction) {
+func plr_giveOrderForMultiSelectWithMouse(selection *[]*pawn, f *faction) {
 	log.appendMessage(fmt.Sprintf("%d units are awaiting orders.", len(*selection)))
 	f.cursor.currentCursorMode = CURSOR_MOVE
+	reRenderNeeded = true
 	for {
+		equivKey := "NONE"
+		click := cw.GetMouseClickedButton()
 		cx, cy := f.cursor.getCoords()
-		r_renderScreenForFaction(f, CURRENT_MAP, selection, true)
 
-		keyPressed := cw.ReadKey()
+		if reRenderNeeded {
+			r_renderScreenForFaction(f, CURRENT_MAP, selection, false)
+		}
+		equivKey = pcm_MouseOrderForMultiselectMenu(f, selection)
+		if reRenderNeeded {
+			cw.Flush_console()
+		}
+
+		keyPressed := cw.ReadKeyAsync()
+		if plr_moveCameraOrCursorWithMouseIfNeeded(f) {
+			continue
+		}
+		if click == "LEFT" {
+			if equivKey == "NONE" {
+				for _, p := range *selection {
+					issueDefaultOrderToUnit(p, CURRENT_MAP, cx, cy)
+				}
+				reRenderNeeded = true
+				return
+			} else {
+				keyPressed = equivKey
+			}
+		}
+		if click == "RIGHT" {
+			reRenderNeeded = true
+			return
+		}
+
+
 		switch keyPressed {
 		case "ENTER", "RETURN":
 			for _, p := range *selection {
@@ -244,79 +289,19 @@ func plr_selectOrderForMultiSelect(selection *[]*pawn, f *faction) {
 		case "ESCAPE":
 			return
 		default:
-			plr_moveCursor(f, keyPressed)
+			reRenderNeeded = false
 		}
 	}
 }
 
-func plr_selectUnitsToConstruct(p *pawn) {
-	availableUnitCodes := p.nanolatherInfo.allowedUnits
-
-	names := make([]string, 0)
-	descriptions := make([]string, 0)
-
-	// descriptions := make([]string, 0)
-	for _, code := range availableUnitCodes {
-		name, desc := getUnitNameAndDescription(code)
-		names = append(names, name)
-		descriptions = append(descriptions, desc)
-	}
-
-	presetValues := make([]int, 0)
-	// init values array for already existing queue
-	if p.order != nil && p.order.constructingQueue != nil {
-		for _, pawnInQueue := range p.order.constructingQueue {
-			for i, name := range names {
-				if pawnInQueue.name == name {
-					presetValues = append(presetValues, i)
-				}
-			}
-		}
-	}
-
-	indicesQueue := cmenu.ShowSidebarCreateQueueMenu("CONSTRUCT:", p.faction.getFactionColor(),
-		SIDEBAR_X, SIDEBAR_FLOOR_2, SIDEBAR_W, SIDEBAR_H-SIDEBAR_FLOOR_2, names, descriptions, presetValues)
-
-	if indicesQueue != nil {
-		if len(indicesQueue) > 0 {
-			p.setOrder(&order{orderType: order_construct})
-			for _, i := range indicesQueue {
-				p.order.constructingQueue = append(p.order.constructingQueue,
-					createUnit(availableUnitCodes[i], p.x, p.y, p.faction, false))
-			}
-			log.appendMessagef("Construction of %d units initiated.", len(p.order.constructingQueue))
-		} else {
-			p.order = nil
-			log.appendMessage("Construction orders cancelled.")
-		}
-	}
-}
-
-func plr_selectBuidingToConstruct(p *pawn) string {
-	availableBuildingCodes := p.nanolatherInfo.allowedBuildings
-
-	names := make([]string, 0)
-	descriptions := make([]string, 0)
-	for _, code := range availableBuildingCodes {
-		name, desc := getBuildingNameAndDescription(code)
-		names = append(names, name)
-		descriptions = append(descriptions, desc)
-	}
-
-	index := cmenu.ShowSidebarSingleChoiceMenu("BUILD:", p.faction.getFactionColor(),
-		SIDEBAR_X, SIDEBAR_FLOOR_2, SIDEBAR_W, SIDEBAR_H-SIDEBAR_FLOOR_2, names, descriptions)
-	if index != -1 {
-		return availableBuildingCodes[index]
-	}
-	return ""
-}
-
-func plr_selectBuildingSite(p *pawn, b *pawn, m *gameMap) {
+func plr_selectBuildingSiteWithMouse(p *pawn, b *pawn, m *gameMap) {
 	log.appendMessage("Select construction site for " + b.name)
+	reRenderNeeded = true
 	for {
 		f := p.faction
 		cursor := f.cursor
 		cx, cy := cursor.getCoords()
+		click := cw.GetMouseClickedButton()
 		cursor.currentCursorMode = CURSOR_BUILD
 
 		if b.buildingInfo.allowsTightPlacement {
@@ -330,38 +315,69 @@ func plr_selectBuildingSite(p *pawn, b *pawn, m *gameMap) {
 		cursor.buildOnMetalOnly = b.buildingInfo.canBeBuiltOnMetalOnly
 		cursor.buildOnThermalOnly = b.buildingInfo.canBeBuiltOnThermalOnly
 		cursor.radius = b.getMaxRadiusToFire()
-		r_renderScreenForFaction(f, m, nil, true)
 
-		keyPressed := cw.ReadKey()
-		switch keyPressed {
-		case "ENTER", "RETURN":
+		if reRenderNeeded { // TODO: move all that "if reRenderNeeded" to the renderer itself to keep code more clean.
+			r_renderScreenForFaction(f, m, nil, true)
+		}
+
+		keyPressed := cw.ReadKeyAsync()
+
+		if plr_moveCameraOrCursorWithMouseIfNeeded(f) {
+			continue
+		}
+
+		if click == "LEFT" {
 			if m.canBuildingBeBuiltAt(b, cx, cy) {
 				b.x = cx - b.buildingInfo.w/2
 				b.y = cy - b.buildingInfo.h/2
 				p.setOrder(&order{orderType: order_build, x: cx, y: cy, buildingToConstruct: b})
+				reRenderNeeded = true
 				return
 			} else {
 				log.appendMessage("This building can't be placed here!")
 			}
+		}
+		if click == "RIGHT" {
+			reRenderNeeded = true
+			log.appendMessage("Construction cancelled: " + b.name)
+			return
+		}
+
+		switch keyPressed {
 		case "ESCAPE":
+			reRenderNeeded = true
 			log.appendMessage("Construction cancelled: " + b.name)
 			return
 		default:
-			plr_moveCursor(f, keyPressed)
+			reRenderNeeded = false
 		}
 	}
 }
 
-func plr_moveCursor(f *faction, keyPressed string) {
-	vx, vy := plr_keyToDirection(keyPressed)
+func plr_moveCameraOrCursorWithMouseIfNeeded(f *faction) bool { // returns true if something was actually moved.
+	if cw.WasMouseMovedSinceLastEvent() {
+		if cw.GetMouseHeldButton() == "RIGHT" {
+			plr_moveCameraWithMouse(f)
+			return true
+		} else {
+			plr_moveCursorWithMouse(f)
+			return true
+		}
+	}
+	return false
+}
+
+func plr_moveCameraWithMouse(f *faction) {
+	vx, vy := cw.GetMouseMovementVector()
 	if vx == 0 && vy == 0 {
+		reRenderNeeded = false
 		return
 	}
 	cx, cy := f.cursor.getCoords()
 	if areCoordsValid(cx+vx, cy+vy) {
-		f.cursor.moveByVector(vx, vy)
+		f.cursor.cameraX += vx
+		f.cursor.cameraY += vy
 	}
-	f.cursor.centralizeCamera()
 
 	snapB := f.cursor.snappedPawn
 	if snapB != nil { // unsnap cursor
@@ -377,73 +393,17 @@ func plr_moveCursor(f *faction, keyPressed string) {
 	if f.cursor.currentCursorMode != CURSOR_BUILD {
 		snapCursorToPawn(f)
 	}
+	reRenderNeeded = true
 }
 
-func snapCursorToPawn(f *faction) {
-	if !(f.areCoordsInSight(f.cursor.x, f.cursor.y) || f.areCoordsInRadarRadius(f.cursor.x, f.cursor.y)) {
-		return
-	}
-	b := CURRENT_MAP.getPawnAtCoordinates(f.cursor.x, f.cursor.y)
-	if b == nil {
-		f.cursor.snappedPawn = nil
-	} else {
-		f.cursor.x, f.cursor.y = b.getCenter()
-		f.cursor.snappedPawn = b
-	}
-}
+func plr_moveCursorWithMouse(f *faction) {
+	cx, cy := cw.GetMouseCoords()
+	camx, camy := f.cursor.getCameraCoords()
 
-func trySnapCursorToCommander(f *faction) bool {
-	for _, p := range CURRENT_MAP.pawns {
-		if p.faction == f && p.isCommander {
-			f.cursor.x, f.cursor.y = p.getCoords()
-			f.cursor.centralizeCamera()
-			f.cursor.snappedPawn = p
-			return true
-		}
+	reRenderNeeded = !(f.cursor.x == camx+cx && f.cursor.y == camy+cy) // rerender is needed if cursor was _actually_ moved
+
+	if areCoordsValid(camx+cx, camy+cy) {
+		f.cursor.x, f.cursor.y = camx+cx, camy+cy
+		snapCursorToPawn(f)
 	}
-	return false
-}
-
-func trySelectNextIdlePawn(f *faction) {
-	totalPawnsOnMap := len(CURRENT_MAP.pawns)
-	for offset := 0; offset < totalPawnsOnMap; offset++ {
-		index_to_select := (offset + f.cursor.lastSelectedIdlePawnIndex) % totalPawnsOnMap
-
-		p := CURRENT_MAP.pawns[index_to_select]
-		if p.faction == f && (p.order == nil || p.order.orderType == order_hold) {
-			log.appendMessage("Next idle unit selected.")
-			f.cursor.lastSelectedIdlePawnIndex = index_to_select + 1
-			f.cursor.x, f.cursor.y = p.getCenter()
-			f.cursor.snappedPawn = p
-			return
-		}
-	}
-	log.appendMessage("There currently are no idle units in your army, Commander.")
-}
-
-func plr_keyToDirection(keyPressed string) (int, int) {
-	switch keyPressed {
-	case "2", "DOWN":
-		return 0, 1
-	case "8", "UP":
-		return 0, -1
-	case "4", "LEFT":
-		return -1, 0
-	case "6", "RIGHT":
-		return 1, 0
-	case "7":
-		return -1, -1
-	case "9":
-		return 1, -1
-	case "1":
-		return -1, 1
-	case "3":
-		return 1, 1
-	default:
-		return 0, 0
-	}
-}
-
-func isTimeToAutoEndTurn() bool {
-	return time.Since(last_time) >= time.Duration(endTurnPeriod)*time.Millisecond
 }
