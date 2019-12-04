@@ -240,7 +240,7 @@ func renderOrderLine(p *pawn) {
 func renderLine(fromx, fromy, tox, toy int, flush bool, vx, vy int) {
 	line := primitives.GetLine(fromx, fromy, tox, toy)
 	char := '?'
-	if len(line) > 1 {
+	if len(*line) > 1 {
 		dirVector := vectorMath.CreateVectorByStartAndEndInt(fromx, fromy, tox, toy)
 		dirVector.TransformIntoUnitVector()
 		dirx, diry := dirVector.GetRoundedCoords()
@@ -249,16 +249,16 @@ func renderLine(fromx, fromy, tox, toy int, flush bool, vx, vy int) {
 	//if fromx == tox && fromy == toy {
 	//	renderPawn(d.player, true)
 	//}
-	for i := 1; i < len(line); i++ {
+	for i := 1; i < len(*line); i++ {
 		// x, y := line[i].X, line[i].Y
 		//if d.isPawnPresent(x, y) {
 		//	renderPawn(d.getPawnAt(x, y), true)
 		//} else {
 		// cw.SetFgColor(cw.YELLOW)
-		if i == len(line)-1 {
+		if i == len(*line)-1 {
 			char = 'X'
 		}
-		viewx, viewy := line[i].X-vx, line[i].Y-vy
+		viewx, viewy := (*line)[i].X-vx, (*line)[i].Y-vy
 		if geometry.AreCoordsInRect(viewx, viewy, 0, 0, VIEWPORT_W, VIEWPORT_H) {
 			cw.PutChar(char, viewx, viewy)
 		}

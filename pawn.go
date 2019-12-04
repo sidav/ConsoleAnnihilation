@@ -63,6 +63,20 @@ func (p *pawn) setOrder(o *order) {
 	}
 }
 
+func (p1 *pawn) isInDistanceFromPawn(p2 *pawn, r int) bool {
+	if p1.buildingInfo != nil {
+		if p2.buildingInfo != nil {
+			return geometry.AreRectsInRange(p1.x, p1.y, p1.buildingInfo.w, p1.buildingInfo.h, p2.x, p2.y, p2.buildingInfo.w, p2.buildingInfo.h, r)
+		}
+		return geometry.AreCoordsInRangeFromRect(p2.x, p2.y, p1.x, p1.y, p1.buildingInfo.w, p1.buildingInfo.h, r)
+	} else {
+		if p2.buildingInfo != nil {
+			return geometry.AreCoordsInRangeFromRect(p1.x, p1.y, p2.x, p2.y, p2.buildingInfo.w, p2.buildingInfo.h, r)
+		}
+		return geometry.AreCoordsInRange(p1.x, p1.y, p2.x, p2.y, r)
+	}
+}
+
 func (p *pawn) isOccupyingCoords(x, y int) bool {
 	if p.isBuilding() {
 		return geometry.AreCoordsInRect(x, y, p.x, p.y, p.buildingInfo.w, p.buildingInfo.h)

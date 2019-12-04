@@ -1,8 +1,8 @@
 package main
 
 import (
-	geometry "github.com/sidav/golibrl/geometry"
 	"github.com/sidav/golibrl/astar"
+	geometry "github.com/sidav/golibrl/geometry"
 )
 
 var (
@@ -82,17 +82,30 @@ func (g *gameMap) getPawnsInRect(x, y, w, h int) []*pawn {
 	return arr
 }
 
-func (g *gameMap) getEnemyPawnsInRadiusFrom(x, y, radius int, f *faction) []*pawn {
+// func (g *gameMap) getEnemyPawnsInRadiusFrom(x, y, radius int, f *faction) []*pawn {
+// 	var arr []*pawn
+// 	for _, p := range g.pawns {
+// 		px, py := p.getCenter()
+// 		if p.faction != f {
+// 			if p.isBuilding() && geometry.AreCircleAndRectOverlapping(x, y, radius, p.x, p.y, p.buildingInfo.w, p.buildingInfo.h ){
+// 				arr = append(arr, p)
+// 				continue
+// 			}
+// 			if p.isUnit() && geometry.AreCoordsInRange(px, py, x, y, radius) {
+// 				arr = append(arr, p)
+// 			}
+// 		}
+// 	}
+// 	return arr
+// }
+
+func (g *gameMap) getEnemyPawnsInRadiusFromPawn(p *pawn, radius int, f *faction) []*pawn {
 	var arr []*pawn
-	for _, p := range g.pawns {
-		px, py := p.getCenter()
-		if p.faction != f {
-			if p.isBuilding() && geometry.AreCircleAndRectOverlapping(x, y, radius, p.x, p.y, p.buildingInfo.w, p.buildingInfo.h ){
-				arr = append(arr, p)
+	for _, p2 := range g.pawns {
+		if p2.faction != f {
+			if p.isInDistanceFromPawn(p2, radius) {
+				arr = append(arr, p2)
 				continue
-			}
-			if p.isUnit() && geometry.AreCoordsInRange(px, py, x, y, radius) {
-				arr = append(arr, p)
 			}
 		}
 	}
@@ -140,7 +153,7 @@ func (g *gameMap) getNumberOfThermalDepositsUnderBuilding(b *pawn) int {
 	return g.getNumberOfThermalDepositsInRect(b.x, b.y, b.buildingInfo.w, b.buildingInfo.h)
 }
 
-func (g *gameMap) isConstructionSiteBlockedByUnitOrBuilding(x, y, w, h int, tight bool) bool  {
+func (g *gameMap) isConstructionSiteBlockedByUnitOrBuilding(x, y, w, h int, tight bool) bool {
 	for _, p := range g.pawns {
 		if p.isBuilding() {
 			if p.buildingInfo.allowsTightPlacement && tight {
@@ -206,5 +219,5 @@ func (g *gameMap) createCostMapForPathfinding() *[][]int {
 }
 
 func (g *gameMap) getPathFromTo(fx, fy, tx, ty int) *astar.Cell {
-	return astar.FindPath(g.createCostMapForPathfinding(), fx, fy, tx, ty, true, true, false)
+	return astar.FindPath(g.createCostMapForPathfinding(), fx, fy, tx, ty, true, astar.DEFAULT_PATHFINDING_STEPS, false, true)
 }

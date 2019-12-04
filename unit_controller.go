@@ -117,7 +117,7 @@ func (attacker *pawn) openFireIfPossible() { // does the firing, does NOT necess
 		if pawnInOrder != nil && geometry.AreCoordsInRange(attackerCenterX, attackerCenterY, pawnInOrder.x, pawnInOrder.y, radius) {
 			target = pawnInOrder
 		} else {
-			potential_targets := CURRENT_MAP.getEnemyPawnsInRadiusFrom(attackerCenterX, attackerCenterY, radius, attacker.faction)
+			potential_targets := CURRENT_MAP.getEnemyPawnsInRadiusFromPawn(attacker, radius, attacker.faction)
 			for _, potentialTarget := range potential_targets {
 				ptx, pty := potentialTarget.getCoords()
 				if attacker.faction.areCoordsInSight(ptx, pty) || attacker.faction.areCoordsInRadarRadius(ptx, pty) {

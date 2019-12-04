@@ -82,8 +82,8 @@ func ai_controlPawn(currAi *aiData, p *pawn) {
 	// specific Commander orders
 	if p.isCommander {
 		const RADIUS_FOR_COMMANDER_TO_ATTACK = 10
-		x, y := p.getCenter()
-		enemyPawnsInRadius := CURRENT_MAP.getEnemyPawnsInRadiusFrom(x, y, RADIUS_FOR_COMMANDER_TO_ATTACK, p.faction)
+		// x, y := p.getCenter()
+		enemyPawnsInRadius := CURRENT_MAP.getEnemyPawnsInRadiusFromPawn(p, RADIUS_FOR_COMMANDER_TO_ATTACK, p.faction)
 		if len(enemyPawnsInRadius) > 0 {
 			enemy := enemyPawnsInRadius[0]
 			p.order = &order{orderType: order_attack_move, x:enemy.x, y: enemy.y}
