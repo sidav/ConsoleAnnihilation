@@ -42,7 +42,7 @@ func renderSelectCursor(f *faction) {
 		cw.PutChar('[', x-1, y)
 		cw.PutChar(']', x+1, y)
 	} else {
-		w, h := snap.buildingInfo.w, snap.buildingInfo.h
+		w, h := snap.getSize()
 		offset := w % 2
 		for cy := 0; cy < h; cy++ {
 			cw.PutChar('[', x-w/2-1, cy-h/2+y)

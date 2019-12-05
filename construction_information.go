@@ -7,6 +7,19 @@ type constructionInformation struct { // for buildings which are under construct
 	costM, costE int
 }
 
+func (ci *constructionInformation) clone() *constructionInformation {
+	newConstr := constructionInformation{
+		costE: ci.costE,
+		costM: ci.costM,
+		currentConstructionAmount: ci.currentConstructionAmount,
+		maxConstructionAmount: ci.maxConstructionAmount,
+	}
+	if ci == &newConstr {
+		panic("omg not cloned")
+	}
+	return &newConstr
+}
+
 func (ci *constructionInformation) isCompleted() bool {
 	return ci.currentConstructionAmount >= ci.maxConstructionAmount
 }

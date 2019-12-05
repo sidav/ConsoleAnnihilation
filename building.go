@@ -1,9 +1,14 @@
 package main
 
 type building struct {
-	w, h                                           int
-	appearance                                     *buildingAppearance
+	code                                           string
 	hasBeenPlaced                                  bool
-	allowsTightPlacement                           bool
-	canBeBuiltOnMetalOnly, canBeBuiltOnThermalOnly bool
+}
+
+func (b *building) getBuildingStaticInfo() *buildingStaticData {
+	return getBuildingStaticInfo(b.code)
+}
+
+func (b *building) getAppearance() *buildingAppearance {
+	return b.getBuildingStaticInfo().appearance
 }

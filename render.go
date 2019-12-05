@@ -162,14 +162,14 @@ func renderSquad(f *faction, p *pawn, g *gameMap, vx, vy int, inverse bool) {
 // }
 
 func renderBuilding(f *faction, p *pawn, g *gameMap, vx, vy int, inverse bool) {
-	b := p.buildingInfo
-	app := b.appearance
+	b_w, b_h := p.getSize()
+	app := p.buildingInfo.getAppearance()
 	bx, by := p.getCoords()
 	colorToRender := 0
-	for x := 0; x < b.w; x++ {
-		for y := 0; y < b.h; y++ {
+	for x := 0; x < b_w; x++ {
+		for y := 0; y < b_h; y++ {
 			if p.currentConstructionStatus == nil {
-				color := app.colors[x+b.w*y]
+				color := app.colors[x+b_w*y]
 				if f.areCoordsInSight(bx+x,by+y) {
 					if color == -1 {
 						colorToRender = p.faction.getFactionColor()
@@ -192,7 +192,7 @@ func renderBuilding(f *faction, p *pawn, g *gameMap, vx, vy int, inverse bool) {
 				} else {
 					cw.SetFgColor(colorToRender)
 				}
-				cw.PutChar(int32(app.chars[x+b.w*y]), bx+x-vx, by+y-vy)
+				cw.PutChar(int32(app.chars[x+b_w*y]), bx+x-vx, by+y-vy)
 			}
 		}
 	}

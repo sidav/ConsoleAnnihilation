@@ -54,7 +54,8 @@ func doAllNanolathes(m *gameMap) { // does the building itself
 				uCnst.currentConstructionStatus.currentConstructionAmount += u.nanolatherInfo.builderCoeff
 				if uCnst.currentConstructionStatus.isCompleted() {
 					uCnst.currentConstructionStatus = nil
-					uCnst.x, uCnst.y = ux, u.y+u.buildingInfo.h
+					_, building_h := u.getSize() 
+					uCnst.x, uCnst.y = ux, u.y+building_h 
 					uCnst.order = &order{}
 					uCnst.order.cloneFrom(u.nanolatherInfo.defaultOrderForUnitBuilt)
 					m.addPawn(uCnst)

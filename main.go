@@ -39,6 +39,7 @@ func main() {
 
 	log = &LOG{}
 	initSquadMembersStaticDataMap()
+	initBuildingsStaticDataMap()
 
 	CURRENT_MAP = &gameMap{}
 	CURRENT_MAP.init()

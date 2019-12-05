@@ -25,9 +25,9 @@ func (g *gameMap) addBuilding(b *pawn, asAlreadyConstructed bool) {
 		b.currentConstructionStatus = nil
 		b.buildingInfo.hasBeenPlaced = true
 	}
-
+	w, h := b.getSize()
 	if b.nanolatherInfo != nil && len(b.nanolatherInfo.allowedUnits) > 0 { // sets default rally point for build units.
-		b.nanolatherInfo.defaultOrderForUnitBuilt = &order{orderType: order_move, x: b.x + b.buildingInfo.w/2, y: b.y + b.buildingInfo.h + 1}
+		b.nanolatherInfo.defaultOrderForUnitBuilt = &order{orderType: order_move, x: b.x + w/2, y: b.y + h + 1}
 	}
 
 	g.addPawn(b)
@@ -70,7 +70,8 @@ func (g *gameMap) getPawnsInRect(x, y, w, h int) []*pawn {
 	for _, p := range g.pawns {
 		cx, cy := p.getCenter()
 		if p.isBuilding() {
-			if geometry.AreTwoCellRectsOverlapping(x, y, w, h, p.x, p.y, p.buildingInfo.w, p.buildingInfo.h) {
+			bw, bh := p.getSize()
+			if geometry.AreTwoCellRectsOverlapping(x, y, w, h, p.x, p.y, bw, bh) {
 				arr = append(arr, p)
 			}
 		} else {
@@ -146,21 +147,24 @@ func (g *gameMap) getNumberOfThermalDepositsInRect(x, y, w, h int) int {
 }
 
 func (g *gameMap) getNumberOfMetalDepositsUnderBuilding(b *pawn) int {
-	return g.getNumberOfMetalDepositsInRect(b.x, b.y, b.buildingInfo.w, b.buildingInfo.h)
+	w, h := b.getSize()
+	return g.getNumberOfMetalDepositsInRect(b.x, b.y, w, h)
 }
 
 func (g *gameMap) getNumberOfThermalDepositsUnderBuilding(b *pawn) int {
-	return g.getNumberOfThermalDepositsInRect(b.x, b.y, b.buildingInfo.w, b.buildingInfo.h)
+	w, h := b.getSize()
+	return g.getNumberOfThermalDepositsInRect(b.x, b.y, w, h)
 }
 
 func (g *gameMap) isConstructionSiteBlockedByUnitOrBuilding(x, y, w, h int, tight bool) bool {
 	for _, p := range g.pawns {
 		if p.isBuilding() {
-			if p.buildingInfo.allowsTightPlacement && tight {
-				if geometry.AreTwoCellRectsOverlapping(x, y, w, h, p.x, p.y, p.buildingInfo.w, p.buildingInfo.h) {
+			si := p.buildingInfo.getBuildingStaticInfo()
+			if si.allowsTightPlacement && tight {
+				if geometry.AreTwoCellRectsOverlapping(x, y, w, h, p.x, p.y, si.w, si.h) {
 					return true
 				}
-			} else if geometry.AreTwoCellRectsOverlapping(x-1, y-1, w+2, h+2, p.x, p.y, p.buildingInfo.w, p.buildingInfo.h) {
+			} else if geometry.AreTwoCellRectsOverlapping(x-1, y-1, w+2, h+2, p.x, p.y, si.w, si.h) {
 				// -1s and +2s are to prevent tight placement...
 				// ..and ensure that there always will be at least 1 cell between buildings.
 				return true
@@ -176,25 +180,27 @@ func (g *gameMap) isConstructionSiteBlockedByUnitOrBuilding(x, y, w, h int, tigh
 }
 
 func (g *gameMap) canBuildingBeBuiltAt(b *pawn, cx, cy int) bool {
-	bx := cx - b.buildingInfo.w/2
-	by := cy - b.buildingInfo.h/2
-	if bx < 0 || by < 0 || bx+b.buildingInfo.w >= mapW || by+b.buildingInfo.h >= mapH {
+	b_w, b_h := b.getSize()
+	si := b.buildingInfo.getBuildingStaticInfo()
+	bx := cx - b_w/2
+	by := cy - b_h/2
+	if bx < 0 || by < 0 || bx+b_w >= mapW || by+b_h >= mapH {
 		return false
 	}
-	if b.buildingInfo.canBeBuiltOnMetalOnly && g.getNumberOfMetalDepositsInRect(bx, by, b.buildingInfo.w, b.buildingInfo.h) == 0 {
+	if si.canBeBuiltOnMetalOnly && g.getNumberOfMetalDepositsInRect(bx, by, b_w, b_h) == 0 {
 		return false
 	}
-	if b.buildingInfo.canBeBuiltOnThermalOnly && g.getNumberOfThermalDepositsInRect(bx, by, b.buildingInfo.w, b.buildingInfo.h) == 0 {
+	if si.canBeBuiltOnThermalOnly && g.getNumberOfThermalDepositsInRect(bx, by, b_w, b_h) == 0 {
 		return false
 	}
-	for x := bx; x < bx+b.buildingInfo.w; x++ {
-		for y := by; y < by+b.buildingInfo.h; y++ {
+	for x := bx; x < bx+b_w; x++ {
+		for y := by; y < by+b_h; y++ {
 			if !g.tileMap[x][y].isPassable {
 				return false
 			}
 		}
 	}
-	if g.isConstructionSiteBlockedByUnitOrBuilding(bx, by, b.buildingInfo.w, b.buildingInfo.h, b.buildingInfo.allowsTightPlacement) {
+	if g.isConstructionSiteBlockedByUnitOrBuilding(bx, by, b_w, b_h, si.allowsTightPlacement) {
 		return false
 	}
 	return true

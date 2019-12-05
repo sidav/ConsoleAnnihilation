@@ -319,16 +319,18 @@ func plr_selectBuildingSite(p *pawn, b *pawn, m *gameMap) {
 		cx, cy := cursor.getCoords()
 		cursor.currentCursorMode = CURSOR_BUILD
 
-		if b.buildingInfo.allowsTightPlacement {
-			cursor.w = b.buildingInfo.w
-			cursor.h = b.buildingInfo.h
+		BSI := b.buildingInfo.getBuildingStaticInfo()
+
+		if BSI.allowsTightPlacement {
+			cursor.w = BSI.w
+			cursor.h = BSI.h
 		} else {
-			cursor.w = b.buildingInfo.w + 2
-			cursor.h = b.buildingInfo.h + 2
+			cursor.w = BSI.w + 2
+			cursor.h = BSI.h + 2
 		}
 
-		cursor.buildOnMetalOnly = b.buildingInfo.canBeBuiltOnMetalOnly
-		cursor.buildOnThermalOnly = b.buildingInfo.canBeBuiltOnThermalOnly
+		cursor.buildOnMetalOnly = BSI.canBeBuiltOnMetalOnly
+		cursor.buildOnThermalOnly = BSI.canBeBuiltOnThermalOnly
 		cursor.radius = b.getMaxRadiusToFire()
 		r_renderScreenForFaction(f, m, nil, true)
 
@@ -336,8 +338,8 @@ func plr_selectBuildingSite(p *pawn, b *pawn, m *gameMap) {
 		switch keyPressed {
 		case "ENTER", "RETURN":
 			if m.canBuildingBeBuiltAt(b, cx, cy) {
-				b.x = cx - b.buildingInfo.w/2
-				b.y = cy - b.buildingInfo.h/2
+				b.x = cx - BSI.w/2
+				b.y = cy - BSI.h/2
 				p.setOrder(&order{orderType: order_build, x: cx, y: cy, buildingToConstruct: b})
 				return
 			} else {

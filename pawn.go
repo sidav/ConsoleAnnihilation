@@ -2,13 +2,14 @@ package main
 
 import (
 	"fmt"
+
 	geometry "github.com/sidav/golibrl/geometry"
 )
 
 type pawn struct {
 	// pawn is a building or a unit squad - anything that can be commanded.
-	name     string
-	codename string // for inner usage
+	name                      string
+	codename                  string // for inner usage
 	squadInfo                 *squad
 	buildingInfo              *building
 	faction                   *faction
@@ -52,9 +53,9 @@ func (p *pawn) getMaxRadiusToFire() int {
 
 func (p *pawn) isAlive() bool {
 	if p.isSquad() {
-			return len(p.squadInfo.members) > 0 
+		return len(p.squadInfo.members) > 0
 	}
-	return p.hitpoints > 0 
+	return p.hitpoints > 0
 }
 
 func (p *pawn) isSquad() bool {
@@ -69,11 +70,19 @@ func (p *pawn) getCoords() (int, int) {
 	return p.x, p.y
 }
 
+func (p *pawn) getSize() (int, int) {
+	if p.isBuilding() {
+		bs := p.buildingInfo.getBuildingStaticInfo()
+		return bs.w, bs.h 
+	}
+	return 1, 1
+}
+
 func (p *pawn) getName() string {
 	if p.isSquad() {
 		return p.squadInfo.getSquadName()
 	}
-	return p.getName() 
+	return p.getName()
 }
 
 func (p *pawn) setOrder(o *order) {
@@ -84,14 +93,16 @@ func (p *pawn) setOrder(o *order) {
 }
 
 func (p1 *pawn) isInDistanceFromPawn(p2 *pawn, r int) bool {
-	if p1.buildingInfo != nil {
-		if p2.buildingInfo != nil {
-			return geometry.AreRectsInRange(p1.x, p1.y, p1.buildingInfo.w, p1.buildingInfo.h, p2.x, p2.y, p2.buildingInfo.w, p2.buildingInfo.h, r)
+	p1_w, p1_h := p1.getSize()
+	p2_w, p2_h := p2.getSize()
+	if p1.isBuilding() {
+		if p2.isBuilding() {
+			return geometry.AreRectsInRange(p1.x, p1.y, p1_w, p1_h, p2.x, p2.y, p2_w, p2_h, r)
 		}
-		return geometry.AreCoordsInRangeFromRect(p2.x, p2.y, p1.x, p1.y, p1.buildingInfo.w, p1.buildingInfo.h, r)
+		return geometry.AreCoordsInRangeFromRect(p2.x, p2.y, p1.x, p1.y, p1_w, p1_h, r)
 	} else {
 		if p2.buildingInfo != nil {
-			return geometry.AreCoordsInRangeFromRect(p1.x, p1.y, p2.x, p2.y, p2.buildingInfo.w, p2.buildingInfo.h, r)
+			return geometry.AreCoordsInRangeFromRect(p1.x, p1.y, p2.x, p2.y, p2_w, p2_h, r)
 		}
 		return geometry.AreCoordsInRange(p1.x, p1.y, p2.x, p2.y, r)
 	}
@@ -99,7 +110,8 @@ func (p1 *pawn) isInDistanceFromPawn(p2 *pawn, r int) bool {
 
 func (p *pawn) isOccupyingCoords(x, y int) bool {
 	if p.isBuilding() {
-		return geometry.AreCoordsInRect(x, y, p.x, p.y, p.buildingInfo.w, p.buildingInfo.h)
+		b_w, b_h := p.getSize()
+		return geometry.AreCoordsInRect(x, y, p.x, p.y, b_w, b_h)
 	} else {
 		return x == p.x && y == p.y
 	}
@@ -107,8 +119,9 @@ func (p *pawn) isOccupyingCoords(x, y int) bool {
 
 func (p *pawn) IsCloseupToCoords(x, y, dist int) bool { // distance to any of pawn's cells check.
 	if p.isBuilding() {
-		return !geometry.AreCoordsInRect(x, y, p.x, p.y, p.buildingInfo.w, p.buildingInfo.h) &&
-			geometry.AreCoordsInRect(x, y, p.x-dist, p.y-dist, p.buildingInfo.w+2*dist, p.buildingInfo.h+2*dist)
+		b_w, b_h := p.getSize()
+		return !geometry.AreCoordsInRect(x, y, p.x, p.y, b_w, b_h) &&
+			geometry.AreCoordsInRect(x, y, p.x-dist, p.y-dist, b_w+2*dist, b_h+2*dist)
 	} else {
 		return x != p.x && y != p.y && geometry.AreCoordsInRect(x, y, p.x-dist, p.y-dist, 2*dist+1, 2*dist+1)
 	}
@@ -118,13 +131,14 @@ func (p *pawn) getCenter() (int, int) {
 	if p.isSquad() {
 		return p.x, p.y
 	} else {
-		return p.x + p.buildingInfo.w/2, p.y + p.buildingInfo.h/2
+		b_w, b_h := p.getSize()
+		return p.x + b_w/2, p.y + b_h/2
 	}
 }
 
 func (p *pawn) getSightAndRadarRadius() (int, int) {
 	if p.isSquad() {
-		return 5, 0 
+		return 5, 0
 	}
 	return p.sightRadius, p.radarRadius
 }
