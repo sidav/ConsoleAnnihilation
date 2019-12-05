@@ -42,8 +42,11 @@ func (f *faction) recalculateFactionEconomy(g *gameMap) { // move somewhere?
 		spend := u.spending
 		income := u.getIncomeData()
 		if u.faction == f && (u.spending != nil || income != nil) && u.currentConstructionStatus == nil {
-			if income == nil { //create empty income from pawn 
+			if income == nil { //create empty income for pawn 
 				income = &pawnIncomeInformation{} 
+			}
+			if spend == nil { //create empty spendings from pawn 
+				spend = &pawnSpendings{} 
 			}
 			eco.maxMetal += income.metalStorage
 			eco.maxEnergy += income.energyStorage
