@@ -50,3 +50,15 @@ func (s *squad) getSquadSightAndRadarRadius() (int, int) {
 	}
 	return sr, rr 
 }
+
+// form nanolather information 
+func (s *squad) getSquadNanolatherInfo() *nanolatherInformation {
+	// TODO: merge available allowed buildings lists for all nanolatherInfos. 
+	for _, member := range s.members {
+		static := getSquadMemberStaticInfo(member.code)
+		if static.nanolatherInfo != nil {
+			return static.nanolatherInfo
+		}
+	}
+	return nil 
+}

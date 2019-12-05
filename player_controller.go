@@ -1,10 +1,11 @@
 package main
 
 import (
-	cmenu "github.com/sidav/golibrl/console_menu"
-	cw "github.com/sidav/golibrl/console"
 	"fmt"
 	"time"
+
+	cw "github.com/sidav/golibrl/console"
+	cmenu "github.com/sidav/golibrl/console_menu"
 )
 
 var (
@@ -250,7 +251,7 @@ func plr_selectOrderForMultiSelect(selection *[]*pawn, f *faction) {
 }
 
 func plr_selectUnitsToConstruct(p *pawn) {
-	availableUnitCodes := p.nanolatherInfo.allowedUnits
+	availableUnitCodes := p.getNanolatherInfo().allowedUnits
 
 	names := make([]string, 0)
 	descriptions := make([]string, 0)
@@ -282,7 +283,7 @@ func plr_selectUnitsToConstruct(p *pawn) {
 		if len(indicesQueue) > 0 {
 			p.setOrder(&order{orderType: order_construct})
 			for _, i := range indicesQueue {
-				// TODO: here be dragons 
+				// TODO: here be dragons
 				p.order.constructingQueue = append(p.order.constructingQueue, &availableUnitCodes[i])
 				// createSquadOfSingleMember(availableUnitCodes[i], p.x, p.y, p.faction, false)
 			}
@@ -295,7 +296,7 @@ func plr_selectUnitsToConstruct(p *pawn) {
 }
 
 func plr_selectBuidingToConstruct(p *pawn) string {
-	availableBuildingCodes := p.nanolatherInfo.allowedBuildings
+	availableBuildingCodes := p.getNanolatherInfo().allowedBuildings
 
 	names := make([]string, 0)
 	descriptions := make([]string, 0)

@@ -8,7 +8,7 @@ func doAllNanolathes(m *gameMap) { // does the building itself
 		if builder.order != nil && builder.order.orderType == order_build {
 			tBld := builder.order.buildingToConstruct
 
-			if tBld.buildingInfo.hasBeenPlaced == false && tBld.IsCloseupToCoords(builder.x, builder.y, BUILD_MAX_DISTANCE)  { // place the carcass
+			if tBld.buildingInfo.hasBeenPlaced == false && tBld.IsCloseupToCoords(builder.x, builder.y, BUILD_MAX_DISTANCE) { // place the carcass
 				builder.reportOrderCompletion("Starts nanolathe")
 				tBld.hitpoints = 1
 				tBld.buildingInfo.hasBeenPlaced = true
@@ -27,8 +27,8 @@ func doAllNanolathes(m *gameMap) { // does the building itself
 			}
 
 			if builder.faction.economy.nanolatheAllowed && tBld.IsCloseupToCoords(builder.x, builder.y, BUILD_MAX_DISTANCE) {
-				tBld.currentConstructionStatus.currentConstructionAmount += builder.nanolatherInfo.builderCoeff
-				tBld.hitpoints += tBld.maxHitpoints / (tBld.currentConstructionStatus.maxConstructionAmount / builder.nanolatherInfo.builderCoeff)
+				tBld.currentConstructionStatus.currentConstructionAmount += builder.getNanolatherInfo().builderCoeff
+				tBld.hitpoints += tBld.maxHitpoints / (tBld.currentConstructionStatus.maxConstructionAmount / builder.getNanolatherInfo().builderCoeff)
 				if tBld.hitpoints > tBld.maxHitpoints {
 					tBld.hitpoints = tBld.maxHitpoints
 				}
@@ -54,13 +54,13 @@ func doAllNanolathes(m *gameMap) { // does the building itself
 					builder.reportOrderCompletion("WTF CONSTRUCTION STATUS IS NIL FOR " + uCnst.getName())
 					continue
 				}
-				uCnst.currentConstructionStatus.currentConstructionAmount += builder.nanolatherInfo.builderCoeff
+				uCnst.currentConstructionStatus.currentConstructionAmount += builder.getNanolatherInfo().builderCoeff
 				if uCnst.currentConstructionStatus.isCompleted() {
 					uCnst.currentConstructionStatus = nil
-					_, building_h := builder.getSize() 
-					uCnst.x, uCnst.y = ux, builder.y+building_h 
+					_, building_h := builder.getSize()
+					uCnst.x, uCnst.y = ux, builder.y+building_h
 					uCnst.order = &order{}
-					uCnst.order.cloneFrom(builder.nanolatherInfo.defaultOrderForUnitBuilt)
+					uCnst.order.cloneFrom(builder.getNanolatherInfo().defaultOrderForUnitBuilt)
 					m.addPawn(uCnst)
 					builder.order.constructingQueue = builder.order.constructingQueue[1:]
 					if builder.repeatConstructionQueue {

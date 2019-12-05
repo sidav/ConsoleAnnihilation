@@ -2,13 +2,15 @@ package main
 
 import (
 	"fmt"
+	"sort"
+
 	cmenu "github.com/sidav/golibrl/console_menu"
 	"github.com/sidav/golibrl/geometry"
 	primitives "github.com/sidav/golibrl/graphic_primitives"
 	vectorMath "github.com/sidav/golibrl/math"
-	"sort"
+
+	cw "github.com/sidav/golibrl/console"
 )
-import cw "github.com/sidav/golibrl/console"
 
 func renderFactionStats(f *faction) {
 	eco := f.economy
@@ -221,7 +223,7 @@ func renderOrderLine(p *pawn) {
 	}
 	if ordr == nil {
 		if p.canConstructUnits() {
-			ordr = p.nanolatherInfo.defaultOrderForUnitBuilt
+			ordr = p.getNanolatherInfo().defaultOrderForUnitBuilt
 		}
 	}
 	if ordr != nil {

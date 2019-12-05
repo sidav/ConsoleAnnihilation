@@ -4,7 +4,7 @@ package main
 
 // func (currAi *aiData) ai_decideProduction(factory *pawn) {
 // 	currFaction := factory.faction
-// 	variants := &(factory.nanolatherInfo.allowedUnits)
+// 	variants := &(factory.getNanolatherInfo().allowedUnits)
 // 	listOfCombatUnits := make([]*pawn, 0)
 // 	listOfEngineerUnits := make([]*pawn, 0)
 // 	for _, variant := range *variants {
@@ -48,7 +48,7 @@ package main
 // 		return
 // 	}
 
-// 	variants := builder.nanolatherInfo.allowedBuildings
+// 	variants := builder.getNanolatherInfo().allowedBuildings
 // 	step := ai.getCurrentOrderStep()
 // 	final_build_variant := ""
 // 	for _, variant := range variants {
@@ -64,7 +64,7 @@ package main
 // }
 
 // func (ai *aiData) ai_buildEnergyIncome(builder *pawn) bool {
-// 	variants := builder.nanolatherInfo.allowedBuildings
+// 	variants := builder.getNanolatherInfo().allowedBuildings
 // 	final_build_variant := ""
 // 	for _, variant := range variants {
 // 		candidate := createBuilding(variant, 0, 0, builder.faction)
@@ -76,7 +76,7 @@ package main
 // }
 
 // func (ai *aiData) ai_buildMetalIncome(builder *pawn) bool {
-// 	variants := builder.nanolatherInfo.allowedBuildings
+// 	variants := builder.getNanolatherInfo().allowedBuildings
 // 	final_build_variant := ""
 // 	for _, variant := range variants {
 // 		candidate := createBuilding(variant, 0, 0, builder.faction)

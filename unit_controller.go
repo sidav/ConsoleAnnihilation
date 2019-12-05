@@ -1,8 +1,8 @@
 package main
 
 import (
-	geometry "github.com/sidav/golibrl/geometry"
 	cw "github.com/sidav/golibrl/console"
+	geometry "github.com/sidav/golibrl/geometry"
 )
 
 func (p *pawn) isTimeToAct() bool {
@@ -171,8 +171,8 @@ func (u *pawn) doBuildOrder(m *gameMap) { // only moves to location and/or sets 
 	}
 
 	if tBld.IsCloseupToCoords(u.x, u.y, BUILD_MAX_DISTANCE) { // is in building range
-		u.res.metalSpending = u.nanolatherInfo.builderCoeff * tBld.currentConstructionStatus.costM / tBld.currentConstructionStatus.maxConstructionAmount
-		u.res.energySpending = u.nanolatherInfo.builderCoeff * tBld.currentConstructionStatus.costE / tBld.currentConstructionStatus.maxConstructionAmount
+		u.res.metalSpending = u.getNanolatherInfo().builderCoeff * tBld.currentConstructionStatus.costM / tBld.currentConstructionStatus.maxConstructionAmount
+		u.res.energySpending = u.getNanolatherInfo().builderCoeff * tBld.currentConstructionStatus.costE / tBld.currentConstructionStatus.maxConstructionAmount
 	} else { // out of range, move to the construction site
 		order.x, order.y = tBld.getCenter()
 		u.doMoveOrder()
@@ -192,8 +192,8 @@ func (p *pawn) doConstructOrder(m *gameMap) {
 
 	uCnst := order.currentPawnUnderConstruction
 
-	p.res.metalSpending = p.nanolatherInfo.builderCoeff * uCnst.currentConstructionStatus.costM / uCnst.currentConstructionStatus.maxConstructionAmount
-	p.res.energySpending = p.nanolatherInfo.builderCoeff * uCnst.currentConstructionStatus.costE / uCnst.currentConstructionStatus.maxConstructionAmount
+	p.res.metalSpending = p.getNanolatherInfo().builderCoeff * uCnst.currentConstructionStatus.costM / uCnst.currentConstructionStatus.maxConstructionAmount
+	p.res.energySpending = p.getNanolatherInfo().builderCoeff * uCnst.currentConstructionStatus.costE / uCnst.currentConstructionStatus.maxConstructionAmount
 }
 
 func (u *pawn) reportOrderCompletion(verb string) {

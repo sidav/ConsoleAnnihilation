@@ -26,8 +26,8 @@ func (g *gameMap) addBuilding(b *pawn, asAlreadyConstructed bool) {
 		b.buildingInfo.hasBeenPlaced = true
 	}
 	w, h := b.getSize()
-	if b.nanolatherInfo != nil && len(b.nanolatherInfo.allowedUnits) > 0 { // sets default rally point for build units.
-		b.nanolatherInfo.defaultOrderForUnitBuilt = &order{orderType: order_move, x: b.x + w/2, y: b.y + h + 1}
+	if b.getNanolatherInfo() != nil && len(b.getNanolatherInfo().allowedUnits) > 0 { // sets default rally point for build units.
+		b.getNanolatherInfo().defaultOrderForUnitBuilt = &order{orderType: order_move, x: b.x + w/2, y: b.y + h + 1}
 	}
 
 	g.addPawn(b)

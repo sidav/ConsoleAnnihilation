@@ -1,11 +1,11 @@
 package main
 
 func (p *pawn) canConstructBuildings() bool {
-	return p.nanolatherInfo != nil && len(p.nanolatherInfo.allowedBuildings) > 0
+	return p.getNanolatherInfo() != nil && len(p.getNanolatherInfo().allowedBuildings) > 0
 }
 
 func (p *pawn) canConstructUnits() bool {
-	return p.nanolatherInfo != nil && len(p.nanolatherInfo.allowedUnits) > 0
+	return p.getNanolatherInfo() != nil && len(p.getNanolatherInfo().allowedUnits) > 0
 }
 
 func (p *pawn) canMove() bool {

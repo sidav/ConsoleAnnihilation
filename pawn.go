@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-
 	geometry "github.com/sidav/golibrl/geometry"
 )
 
@@ -15,7 +14,6 @@ type pawn struct {
 	x, y                      int
 	order                     *order
 	res                       *pawnResourceInformation
-	nanolatherInfo            *nanolatherInformation
 	currentConstructionStatus *constructionInformation
 	weapons                   []*pawnWeaponInformation
 	nextTickToAct             int
@@ -80,7 +78,7 @@ func (p *pawn) getName() string {
 	if p.isSquad() {
 		return p.squadInfo.getSquadName()
 	}
-	return p.getName()
+	return p.buildingInfo.getName()
 }
 
 func (p *pawn) setOrder(o *order) {
@@ -88,6 +86,13 @@ func (p *pawn) setOrder(o *order) {
 	if p.faction.playerControlled {
 		log.appendMessage(fmt.Sprintf("%s order for %d, %d confirmed!", p.getCurrentOrderImperative(), o.x, o.y))
 	}
+}
+
+func (p *pawn) getNanolatherInfo() *nanolatherInformation {
+	if p.isSquad() {
+		return p.squadInfo.getSquadNanolatherInfo()
+	} 
+	return p.buildingInfo.nanolatherInfo
 }
 
 func (p1 *pawn) isInDistanceFromPawn(p2 *pawn, r int) bool {
