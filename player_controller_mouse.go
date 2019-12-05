@@ -104,8 +104,8 @@ func plr_selectPawnWithMouse(f *faction, m *gameMap) *[]*pawn { // returns a poi
 		case "DELETE": // cheat
 			for _, p := range CURRENT_MAP.pawns {
 				if p.faction == f && p.isCommander {
-					p.res.metalIncome += 10
-					p.res.energyIncome += 50
+					p.spending.metalSpending -= 10000
+					p.spending.energySpending -= 10000
 					return nil
 				}
 			}

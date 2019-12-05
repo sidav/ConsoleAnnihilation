@@ -12,7 +12,7 @@ type squadMemberStaticData struct {
 
 	movementInfo              *pawnMovementInformation
 	weaponInfo                *pawnWeaponInformation
-	res                       *pawnResourceInformation
+	income                    *pawnIncomeInformation
 	nanolatherInfo            *nanolatherInformation
 	currentConstructionStatus *constructionInformation
 }

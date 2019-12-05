@@ -14,7 +14,7 @@ func initBuildingsStaticDataMap() {
 	buildingsStaticDataMap["metalmaker"] = &buildingStaticData{name: "Metal Synthesizer",
 		w: 2, h: 2, appearance: app, allowsTightPlacement: true,
 		defaultConstructionInfo: &constructionInformation{maxConstructionAmount: 35, costM: 10, costE: 500},
-		defaultResourceInfo:     &pawnResourceInformation{metalIncome: 1, energyDrain: 60},
+		defaultIncomeData:     &pawnIncomeInformation{metalIncome: 1, energyDrain: 60},
 	}
 
 	// case "solar":
@@ -302,19 +302,24 @@ func initBuildingsStaticDataMap() {
 		w: 2, h: 2, appearance: app,
 		defaultConstructionInfo: &constructionInformation{maxConstructionAmount: 100, costM: 100, costE: 500},
 	}
+
+	// sanity check all the data 
+	for _, v := range buildingsStaticDataMap {
+		if v.maxHitpoints == 0 {
+			v.maxHitpoints = 25
+			log.appendMessage("No hitpoints set for " + v.name)
+		}
+		if v.sightRadius == 0 {
+			v.sightRadius = v.w + 2
+			log.appendMessage("No visionRange for " + v.name)
+		}
+	}
 }
 
 func getBuildingStaticInfo(codename string) *buildingStaticData {
 	newBuilding := buildingsStaticDataMap[codename]
 	if newBuilding == nil {
 		newBuilding = buildingsStaticDataMap["DEFAULT"]
-	}
-	if newBuilding.maxHitpoints == 0 {
-		newBuilding.maxHitpoints = 25
-		log.appendMessage("No hitpoints set for " + newBuilding.name)
-	}
-	if newBuilding.sightRadius == 0 {
-		newBuilding.sightRadius = newBuilding.w + 2
 	}
 	return newBuilding
 }

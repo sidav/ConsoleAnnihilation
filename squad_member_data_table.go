@@ -12,7 +12,7 @@ func initSquadMembersStaticDataMap() {
 		weaponInfo: &pawnWeaponInformation {attackDelay: 10, attackEnergyCost: 1, attackRadius: 5, attacksLand: true,
 			hitscan: &WeaponHitscan{baseDamage:5},
 		},
-		res:            &pawnResourceInformation{metalIncome: 2, energyIncome: 30, metalStorage: 250, energyStorage: 1000},
+		income:            &pawnIncomeInformation{metalIncome: 2, energyIncome: 30, metalStorage: 250, energyStorage: 1000},
 		nanolatherInfo: &nanolatherInformation{builderCoeff: 10, allowedBuildings: []string{
 			"armkbotlab", "armvehfactory", "solar", "mextractor", "metalmaker", "lturret", "wall"},
 		},
@@ -25,7 +25,7 @@ func initSquadMembersStaticDataMap() {
 		weaponInfo: &pawnWeaponInformation {attackDelay: 10, attackEnergyCost: 1, attackRadius: 5, attacksLand: true,
 			hitscan: &WeaponHitscan{baseDamage:5},
 		},
-		res:            &pawnResourceInformation{metalIncome: 2, energyIncome: 30, metalStorage: 250, energyStorage: 1000},
+		income:            &pawnIncomeInformation{metalIncome: 2, energyIncome: 30, metalStorage: 250, energyStorage: 1000},
 		nanolatherInfo: &nanolatherInformation{builderCoeff: 10, allowedBuildings: []string{
 			"armkbotlab", "armvehfactory", "solar", "mextractor", "metalmaker", "lturret", "wall"},
 		},

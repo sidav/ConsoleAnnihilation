@@ -62,3 +62,21 @@ func (s *squad) getSquadNanolatherInfo() *nanolatherInformation {
 	}
 	return nil 
 }
+
+func (s *squad) getSquadIncome() *pawnIncomeInformation {
+	var resultIncome *pawnIncomeInformation = nil 
+	for _, sm := range s.members {
+		static := getSquadMemberStaticInfo(sm.code)
+		if static.income != nil {
+			if resultIncome == nil {
+				resultIncome = &pawnIncomeInformation{}
+			}
+			resultIncome.metalIncome += static.income.metalIncome
+			resultIncome.energyIncome += static.income.energyIncome
+			resultIncome.metalStorage += static.income.metalStorage
+			resultIncome.energyStorage += static.income.energyStorage
+			resultIncome.energyDrain += static.income.energyDrain
+		}
+	}
+	return resultIncome
+}

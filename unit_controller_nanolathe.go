@@ -28,9 +28,9 @@ func doAllNanolathes(m *gameMap) { // does the building itself
 
 			if builder.faction.economy.nanolatheAllowed && tBld.IsCloseupToCoords(builder.x, builder.y, BUILD_MAX_DISTANCE) {
 				tBld.currentConstructionStatus.currentConstructionAmount += builder.getNanolatherInfo().builderCoeff
-				tBld.hitpoints += tBld.maxHitpoints / (tBld.currentConstructionStatus.maxConstructionAmount / builder.getNanolatherInfo().builderCoeff)
-				if tBld.hitpoints > tBld.maxHitpoints {
-					tBld.hitpoints = tBld.maxHitpoints
+				tBld.hitpoints += tBld.getMaxHitpoints() / (tBld.currentConstructionStatus.maxConstructionAmount / builder.getNanolatherInfo().builderCoeff)
+				if tBld.hitpoints > tBld.getMaxHitpoints() {
+					tBld.hitpoints = tBld.getMaxHitpoints()
 				}
 				if tBld.currentConstructionStatus.isCompleted() {
 					tBld.currentConstructionStatus = nil

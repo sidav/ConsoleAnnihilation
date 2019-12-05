@@ -60,7 +60,8 @@ func renderInfoOnCursor(f *faction, g *gameMap) {
 	title := "Unidentified Object"
 	color := 2
 	details := make([]string, 0)
-	var res *pawnResourceInformation
+	var inc *pawnIncomeInformation
+	var spending *pawnSpendings
 	sp := f.cursor.snappedPawn
 
 	if sp != nil {
@@ -79,8 +80,9 @@ func renderInfoOnCursor(f *faction, g *gameMap) {
 				}
 			} else {
 				details = append(details, sp.getCurrentOrderDescription())
-				if sp.res != nil && sp.currentConstructionStatus == nil {
-					res = sp.res
+				if sp.spending != nil && sp.currentConstructionStatus == nil {
+					spending = sp.spending
+					inc = sp.getIncomeData()
 				}
 			}
 			r_renderAttackRadius(sp)
@@ -97,9 +99,15 @@ func renderInfoOnCursor(f *faction, g *gameMap) {
 					details = append(details, wpn.getDescriptionString())
 				}
 			}
-			if res != nil {
+			if inc != nil || spending != nil {
+				if inc == nil {
+					inc = &pawnIncomeInformation{}
+				}
+				if spending == nil {
+					spending = &pawnSpendings{}
+				}
 				economyInfo := fmt.Sprintf("METAL: (+%d / -%d) ENERGY: (+%d / -%d)",
-					res.metalIncome, res.metalSpending, res.energyIncome, res.energySpending+res.energyDrain)
+					inc.metalIncome, spending.metalSpending, inc.energyIncome, spending.energySpending+inc.energyDrain)
 				details = append(details, economyInfo)
 			}
 		}

@@ -78,9 +78,10 @@ func main() {
 					CURRENT_MAP.removePawn(u)
 					continue
 				}
-				if u.regenPeriod > 0 && CURRENT_TICK%u.regenPeriod == 0 && u.hitpoints < u.maxHitpoints {
-					u.hitpoints++
-				}
+				// REGEN is temp. disabled. TODO: enable. 
+				// if u.regenPeriod > 0 && CURRENT_TICK%u.regenPeriod == 0 && u.hitpoints < u.maxHitpoints {
+				// 	u.hitpoints++
+				// }
 				u.executeOrders(CURRENT_MAP)
 				u.openFireIfPossible()
 			}

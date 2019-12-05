@@ -4,7 +4,7 @@ type buildingStaticData struct {
 	name                                           string
 	w, h                                           int
 	allowsTightPlacement                           bool
-	defaultResourceInfo                            *pawnResourceInformation
+	defaultIncomeData                              *pawnIncomeInformation
 	canBeBuiltOnMetalOnly, canBeBuiltOnThermalOnly bool
 	appearance                                     *buildingAppearance
 	defaultConstructionInfo                        *constructionInformation

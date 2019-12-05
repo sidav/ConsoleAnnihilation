@@ -39,30 +39,35 @@ func (f *faction) recalculateFactionEconomy(g *gameMap) { // move somewhere?
 	var metalDec, energyConditionalDec, energyUnconditionalDec int
 
 	for _, u := range g.pawns {
-		if u.faction == f && u.res != nil && u.currentConstructionStatus == nil {
-			eco.maxMetal += u.res.metalStorage
-			eco.maxEnergy += u.res.energyStorage
+		spend := u.spending
+		income := u.getIncomeData()
+		if u.faction == f && (u.spending != nil || income != nil) && u.currentConstructionStatus == nil {
+			if income == nil { //create empty income from pawn 
+				income = &pawnIncomeInformation{} 
+			}
+			eco.maxMetal += income.metalStorage
+			eco.maxEnergy += income.energyStorage
 
-			if u.res.isGeothermalPowerplant && u.res.energyIncome == 0 { // energy income from the geothermal needs to be recalculated.
-				u.res.energyIncome = CURRENT_MAP.getNumberOfThermalDepositsUnderBuilding(u) * 40 // +40 energy per thermal vent
+			if income.isGeothermalPowerplant && income.energyIncome == 0 { // energy income from the geothermal needs to be recalculated.
+				income.energyIncome = CURRENT_MAP.getNumberOfThermalDepositsUnderBuilding(u) * 40 // +40 energy per thermal vent
 			}
 
-			energyInc += u.res.energyIncome // always unconditional
+			energyInc += income.energyIncome // always unconditional
 
-			if u.res.isMetalExtractor && u.res.metalIncome == 0 { // metal income from the extractor needs to be recalculated.
-				u.res.metalIncome = CURRENT_MAP.getNumberOfMetalDepositsUnderBuilding(u)
+			if income.isMetalExtractor && income.metalIncome == 0 { // metal income from the extractor needs to be recalculated.
+				income.metalIncome = CURRENT_MAP.getNumberOfMetalDepositsUnderBuilding(u)
 			}
 
 			// calculate conditional metal income and matching energy spendings
-			if u.res.energyDrain > 0 {
-				metalConditionalInc += u.res.metalIncome
-				energyConditionalDec += u.res.energyDrain
+			if income.energyDrain > 0 {
+				metalConditionalInc += income.metalIncome
+				energyConditionalDec += income.energyDrain
 			} else {
-				metalUnconditionalInc += u.res.metalIncome
+				metalUnconditionalInc += income.metalIncome
 			}
 			// Calculate unconditional spendings
-			metalDec += u.res.metalSpending // always unconditional
-			energyUnconditionalDec += u.res.energySpending
+			metalDec += spend.metalSpending // always unconditional
+			energyUnconditionalDec += spend.energySpending
 		}
 	}
 	// If energy spending is allowed, then spend/gain ONLY conditional

@@ -7,11 +7,12 @@ func createBuilding(codename string, x, y int, f *faction) *pawn {
 		buildingInfo: &building{code: codename},
 		x: x,
 		y: y,
+		faction: f,
 		currentConstructionStatus: bStatic.defaultConstructionInfo.clone(),
 		hitpoints: bStatic.maxHitpoints,
 	}
-	if b.getNanolatherInfo() != nil && b.res == nil {
-		b.res = &pawnResourceInformation{} // adds zero-value resource info struct for spendings usage.
+	if b.getNanolatherInfo() != nil && b.spending == nil {
+		b.spending = &pawnSpendings{} // adds zero-value resource info struct for spendings usage.
 	}
 	return b
 }

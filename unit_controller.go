@@ -14,8 +14,8 @@ func (u *pawn) executeOrders(m *gameMap) {
 		return
 	}
 
-	if u.res != nil {
-		u.res.resetSpendings()
+	if u.spending != nil {
+		u.spending.resetSpendings()
 	}
 
 	order := u.order
@@ -171,8 +171,8 @@ func (u *pawn) doBuildOrder(m *gameMap) { // only moves to location and/or sets 
 	}
 
 	if tBld.IsCloseupToCoords(u.x, u.y, BUILD_MAX_DISTANCE) { // is in building range
-		u.res.metalSpending = u.getNanolatherInfo().builderCoeff * tBld.currentConstructionStatus.costM / tBld.currentConstructionStatus.maxConstructionAmount
-		u.res.energySpending = u.getNanolatherInfo().builderCoeff * tBld.currentConstructionStatus.costE / tBld.currentConstructionStatus.maxConstructionAmount
+		u.spending.metalSpending = u.getNanolatherInfo().builderCoeff * tBld.currentConstructionStatus.costM / tBld.currentConstructionStatus.maxConstructionAmount
+		u.spending.energySpending = u.getNanolatherInfo().builderCoeff * tBld.currentConstructionStatus.costE / tBld.currentConstructionStatus.maxConstructionAmount
 	} else { // out of range, move to the construction site
 		order.x, order.y = tBld.getCenter()
 		u.doMoveOrder()
@@ -192,8 +192,8 @@ func (p *pawn) doConstructOrder(m *gameMap) {
 
 	uCnst := order.currentPawnUnderConstruction
 
-	p.res.metalSpending = p.getNanolatherInfo().builderCoeff * uCnst.currentConstructionStatus.costM / uCnst.currentConstructionStatus.maxConstructionAmount
-	p.res.energySpending = p.getNanolatherInfo().builderCoeff * uCnst.currentConstructionStatus.costE / uCnst.currentConstructionStatus.maxConstructionAmount
+	p.spending.metalSpending = p.getNanolatherInfo().builderCoeff * uCnst.currentConstructionStatus.costM / uCnst.currentConstructionStatus.maxConstructionAmount
+	p.spending.energySpending = p.getNanolatherInfo().builderCoeff * uCnst.currentConstructionStatus.costE / uCnst.currentConstructionStatus.maxConstructionAmount
 }
 
 func (u *pawn) reportOrderCompletion(verb string) {

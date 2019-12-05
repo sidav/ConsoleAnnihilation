@@ -7,13 +7,13 @@ import (
 
 type pawn struct {
 	// pawn is a building or a unit squad - anything that can be commanded.
-	name                      string
-	squadInfo                 *squad
-	buildingInfo              *building
+	squadInfo    *squad
+	buildingInfo *building
+
 	faction                   *faction
 	x, y                      int
 	order                     *order
-	res                       *pawnResourceInformation
+	spending                  *pawnSpendings
 	currentConstructionStatus *constructionInformation
 	weapons                   []*pawnWeaponInformation
 	nextTickToAct             int
@@ -21,9 +21,9 @@ type pawn struct {
 
 	repeatConstructionQueue bool // for factories
 	// armor info:
-	hitpoints, maxHitpoints int
-	isLight, isHeavy        bool // these are not mutually excluding lol. Trust me, I'm a programmer
-	regenPeriod             int  // if != 0 then the pawn will regen 1 hp each Nth tick.
+	hitpoints        int
+	isLight, isHeavy bool // these are not mutually excluding lol. Trust me, I'm a programmer
+	regenPeriod      int  // if != 0 then the pawn will regen 1 hp each Nth tick.
 }
 
 func (p *pawn) hasWeapons() bool {
@@ -69,7 +69,7 @@ func (p *pawn) getCoords() (int, int) {
 func (p *pawn) getSize() (int, int) {
 	if p.isBuilding() {
 		bs := p.buildingInfo.getBuildingStaticInfo()
-		return bs.w, bs.h 
+		return bs.w, bs.h
 	}
 	return 1, 1
 }
@@ -91,7 +91,7 @@ func (p *pawn) setOrder(o *order) {
 func (p *pawn) getNanolatherInfo() *nanolatherInformation {
 	if p.isSquad() {
 		return p.squadInfo.getSquadNanolatherInfo()
-	} 
+	}
 	return p.buildingInfo.nanolatherInfo
 }
 
@@ -147,8 +147,22 @@ func (p *pawn) getSightAndRadarRadius() (int, int) {
 	return si.sightRadius, si.radarRadius
 }
 
+func (p *pawn) getIncomeData() *pawnIncomeInformation {
+	if p.isSquad() {
+		return p.squadInfo.getSquadIncome()
+	}
+	return p.buildingInfo.getBuildingStaticInfo().defaultIncomeData
+}
+
+func (p *pawn) getMaxHitpoints() int {
+	if p.isSquad() {
+		return 10 // TODO: replace with staffing for squads 
+	}
+	return p.buildingInfo.getBuildingStaticInfo().maxHitpoints
+}
+
 func (p *pawn) getArmorDescriptionString() string {
-	armorInfo := fmt.Sprintf("Armor %d / %d", p.hitpoints, p.maxHitpoints)
+	armorInfo := fmt.Sprintf("Armor %d / %d", p.hitpoints, p.getMaxHitpoints())
 	if p.isLight {
 		armorInfo += ", light"
 	}
