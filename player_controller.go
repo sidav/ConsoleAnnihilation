@@ -265,9 +265,10 @@ func plr_selectUnitsToConstruct(p *pawn) {
 	presetValues := make([]int, 0)
 	// init values array for already existing queue
 	if p.order != nil && p.order.constructingQueue != nil {
-		for _, pawnInQueue := range p.order.constructingQueue {
+		for _, pawncodeInQueue := range p.order.constructingQueue {
 			for i, name := range names {
-				if pawnInQueue.getName() == name {
+				_, currName := getSquadmemberNameAndDescription(*pawncodeInQueue)
+				if currName == name {
 					presetValues = append(presetValues, i)
 				}
 			}
@@ -281,8 +282,9 @@ func plr_selectUnitsToConstruct(p *pawn) {
 		if len(indicesQueue) > 0 {
 			p.setOrder(&order{orderType: order_construct})
 			for _, i := range indicesQueue {
-				p.order.constructingQueue = append(p.order.constructingQueue,
-					createSquadOfSingleMember(availableUnitCodes[i], p.x, p.y, p.faction, false))
+				// TODO: here be dragons 
+				p.order.constructingQueue = append(p.order.constructingQueue, &availableUnitCodes[i])
+				// createSquadOfSingleMember(availableUnitCodes[i], p.x, p.y, p.faction, false)
 			}
 			log.appendMessagef("Construction of %d units initiated.", len(p.order.constructingQueue))
 		} else {

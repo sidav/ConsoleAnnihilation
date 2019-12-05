@@ -190,7 +190,7 @@ func (p *pawn) doConstructOrder(m *gameMap) {
 		return
 	}
 
-	uCnst := order.constructingQueue[0]
+	uCnst := order.currentPawnUnderConstruction
 
 	p.res.metalSpending = p.nanolatherInfo.builderCoeff * uCnst.currentConstructionStatus.costM / uCnst.currentConstructionStatus.maxConstructionAmount
 	p.res.energySpending = p.nanolatherInfo.builderCoeff * uCnst.currentConstructionStatus.costE / uCnst.currentConstructionStatus.maxConstructionAmount

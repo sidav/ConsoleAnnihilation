@@ -274,7 +274,7 @@ func renderPawnInfo(p *pawn) {
 	if p.isSquad() {
 		name, desc = "NOIMPL", "NOIMPL" // getUnitNameAndDescription(p.codename)
 	} else if p.isBuilding() {
-		name, desc = getBuildingNameAndDescription(p.codename)
+		name, desc = getBuildingNameAndDescription(p.buildingInfo.code)
 	}
 	cmenu.ShowSimpleInfoWindow(name, desc, 60, 15, p.faction.getFactionColor())
 }

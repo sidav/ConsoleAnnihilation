@@ -3,67 +3,70 @@ package main
 const BUILD_MAX_DISTANCE = 2
 
 func doAllNanolathes(m *gameMap) { // does the building itself
-	for _, u := range m.pawns {
+	for _, builder := range m.pawns {
 		// buildings construction
-		if u.order != nil && u.order.orderType == order_build {
-			tBld := u.order.buildingToConstruct
+		if builder.order != nil && builder.order.orderType == order_build {
+			tBld := builder.order.buildingToConstruct
 
-			if tBld.buildingInfo.hasBeenPlaced == false && tBld.IsCloseupToCoords(u.x, u.y, BUILD_MAX_DISTANCE)  { // place the carcass
-				u.reportOrderCompletion("Starts nanolathe")
+			if tBld.buildingInfo.hasBeenPlaced == false && tBld.IsCloseupToCoords(builder.x, builder.y, BUILD_MAX_DISTANCE)  { // place the carcass
+				builder.reportOrderCompletion("Starts nanolathe")
 				tBld.hitpoints = 1
 				tBld.buildingInfo.hasBeenPlaced = true
 				m.addBuilding(tBld, false)
 			}
 
 			if tBld.currentConstructionStatus == nil {
-				u.reportOrderCompletion("Nanolathe interrupted")
-				u.order = nil
+				builder.reportOrderCompletion("Nanolathe interrupted")
+				builder.order = nil
 				continue
 			}
 			if tBld.hitpoints <= 0 {
-				u.reportOrderCompletion("Nanolathe interrupted by hostile action")
-				u.order = nil
+				builder.reportOrderCompletion("Nanolathe interrupted by hostile action")
+				builder.order = nil
 				continue
 			}
 
-			if u.faction.economy.nanolatheAllowed && tBld.IsCloseupToCoords(u.x, u.y, BUILD_MAX_DISTANCE) {
-				tBld.currentConstructionStatus.currentConstructionAmount += u.nanolatherInfo.builderCoeff
-				tBld.hitpoints += tBld.maxHitpoints / (tBld.currentConstructionStatus.maxConstructionAmount / u.nanolatherInfo.builderCoeff)
+			if builder.faction.economy.nanolatheAllowed && tBld.IsCloseupToCoords(builder.x, builder.y, BUILD_MAX_DISTANCE) {
+				tBld.currentConstructionStatus.currentConstructionAmount += builder.nanolatherInfo.builderCoeff
+				tBld.hitpoints += tBld.maxHitpoints / (tBld.currentConstructionStatus.maxConstructionAmount / builder.nanolatherInfo.builderCoeff)
 				if tBld.hitpoints > tBld.maxHitpoints {
 					tBld.hitpoints = tBld.maxHitpoints
 				}
 				if tBld.currentConstructionStatus.isCompleted() {
 					tBld.currentConstructionStatus = nil
-					u.order = nil
-					u.reportOrderCompletion("Nanolathe completed")
+					builder.order = nil
+					builder.reportOrderCompletion("Nanolathe completed")
 				}
 			}
 		}
 
 		// units construction
-		if u.order != nil && u.order.orderType == order_construct {
-			uCnst := u.order.constructingQueue[0]
+		if builder.order != nil && builder.order.orderType == order_construct {
+			currentConstructionCode := builder.order.constructingQueue[0]
+			if builder.order.currentPawnUnderConstruction == nil {
+				builder.order.currentPawnUnderConstruction = createSquadOfSingleMember(*currentConstructionCode, 0, 0, builder.faction, false)
+			}
+			uCnst := builder.order.currentPawnUnderConstruction
+			ux, _ := builder.getCenter()
 
-			ux, _ := u.getCenter()
-
-			if u.faction.economy.nanolatheAllowed {
+			if builder.faction.economy.nanolatheAllowed {
 				if uCnst.currentConstructionStatus == nil {
-					u.reportOrderCompletion("WTF CONSTRUCTION STATUS IS NIL FOR " + uCnst.getName())
+					builder.reportOrderCompletion("WTF CONSTRUCTION STATUS IS NIL FOR " + uCnst.getName())
 					continue
 				}
-				uCnst.currentConstructionStatus.currentConstructionAmount += u.nanolatherInfo.builderCoeff
+				uCnst.currentConstructionStatus.currentConstructionAmount += builder.nanolatherInfo.builderCoeff
 				if uCnst.currentConstructionStatus.isCompleted() {
 					uCnst.currentConstructionStatus = nil
-					_, building_h := u.getSize() 
-					uCnst.x, uCnst.y = ux, u.y+building_h 
+					_, building_h := builder.getSize() 
+					uCnst.x, uCnst.y = ux, builder.y+building_h 
 					uCnst.order = &order{}
-					uCnst.order.cloneFrom(u.nanolatherInfo.defaultOrderForUnitBuilt)
+					uCnst.order.cloneFrom(builder.nanolatherInfo.defaultOrderForUnitBuilt)
 					m.addPawn(uCnst)
-					u.order.constructingQueue = u.order.constructingQueue[1:]
-					if u.repeatConstructionQueue {
-						u.order.constructingQueue = append(u.order.constructingQueue, createSquadOfSingleMember(uCnst.codename, 0, 0, u.faction, false))
+					builder.order.constructingQueue = builder.order.constructingQueue[1:]
+					if builder.repeatConstructionQueue {
+						builder.order.constructingQueue = append(builder.order.constructingQueue, currentConstructionCode)
 					}
-					u.reportOrderCompletion("Nanolathe completed")
+					builder.reportOrderCompletion("Nanolathe completed")
 				}
 			}
 		}

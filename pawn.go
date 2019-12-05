@@ -9,7 +9,6 @@ import (
 type pawn struct {
 	// pawn is a building or a unit squad - anything that can be commanded.
 	name                      string
-	codename                  string // for inner usage
 	squadInfo                 *squad
 	buildingInfo              *building
 	faction                   *faction
@@ -180,8 +179,8 @@ func (p *pawn) getCurrentOrderDescription() string {
 			p.order.buildingToConstruct.currentConstructionStatus.getCompletionPercent())
 	case order_construct:
 		if len(p.order.constructingQueue) > 0 {
-			return fmt.Sprintf("CONSTRUCTING: %s (%d%% ready)", p.order.constructingQueue[0].getName(),
-				p.order.constructingQueue[0].currentConstructionStatus.getCompletionPercent())
+			return fmt.Sprintf("CONSTRUCTING: %s (%d%% ready)", p.order.currentPawnUnderConstruction.getName(),
+				p.order.currentPawnUnderConstruction.currentConstructionStatus.getCompletionPercent())
 		} else {
 			return "FINISHING CONSTRUCTION"
 		}

@@ -18,7 +18,9 @@ type order struct {
 
 	buildingHasBeenPlaced bool // for build orders
 	buildingToConstruct   *pawn
-	constructingQueue     []*pawn // for units
+
+	constructingQueue            []*string // codenames, for units
+	currentPawnUnderConstruction *pawn
 }
 
 func (clone *order) cloneFrom(o *order) {
