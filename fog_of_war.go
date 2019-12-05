@@ -18,18 +18,19 @@ func (f *faction) recalculateSeenTiles() {
 				continue
 			}
 			px, py := p.getCenter()
-			radiusToIterate := p.sightRadius
-			if p.radarRadius > p.sightRadius {
-				radiusToIterate = p.radarRadius
+			sightR, radarR := p.getSightAndRadarRadius()
+			radiusToIterate := sightR
+			if radarR > sightR {
+				radiusToIterate = radarR
 			}
 			for x := px - radiusToIterate; x <= px+radiusToIterate; x++ {
 				for y := py - radiusToIterate; y <= py+radiusToIterate; y++ {
 					if areCoordsValid(x, y) {
-						if geometry.AreCoordsInRange(px, py, x, y, p.sightRadius) {
+						if geometry.AreCoordsInRange(px, py, x, y, sightR) {
 							f.seenTiles[x][y] = true
 							f.tilesInSight[x][y] = true
 						}
-						if p.radarRadius > 0 && geometry.AreCoordsInRange(px, py, x, y, p.radarRadius) {
+						if radarR > 0 && geometry.AreCoordsInRange(px, py, x, y, radarR) {
 							f.radarCoverage[x][y] = true
 						}
 					}

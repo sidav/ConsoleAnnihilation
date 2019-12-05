@@ -35,3 +35,18 @@ func (s *squad) getSquadMovementInfo() *pawnMovementInformation {
 	}
 	return nil 
 }
+
+func (s *squad) getSquadSightAndRadarRadius() (int, int) {
+	sr := 0
+	rr := 0 
+	for i := range s.members {
+		static := getSquadMemberStaticInfo(s.members[i].code)
+		if sr < static.sightRadius {
+			sr = static.sightRadius
+		}
+		if rr < static.radarRadius {
+			rr = static.radarRadius
+		}
+	}
+	return sr, rr 
+}

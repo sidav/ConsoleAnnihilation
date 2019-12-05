@@ -10,9 +10,6 @@ func createBuilding(codename string, x, y int, f *faction) *pawn {
 		currentConstructionStatus: bStatic.defaultConstructionInfo.clone(),
 		hitpoints: bStatic.maxHitpoints,
 	}
-	if b.sightRadius == 0 {
-		b.sightRadius = bStatic.w + 2
-	}
 	if b.nanolatherInfo != nil && b.res == nil {
 		b.res = &pawnResourceInformation{} // adds zero-value resource info struct for spendings usage.
 	}

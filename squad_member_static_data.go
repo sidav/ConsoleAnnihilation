@@ -1,12 +1,14 @@
 package main
 
 //contains squad member data.
-type squadMemberInfo struct {
+type squadMemberStaticData struct {
 	// movementDelay int
-	name            string
-	maxHp           int
+	name                     string
+	maxHp                    int
+	sightRadius, radarRadius int
+
 	size            int
-	takesWholeSquad bool 
+	takesWholeSquad bool
 
 	movementInfo              *pawnMovementInformation
 	weaponInfo                *pawnWeaponInformation

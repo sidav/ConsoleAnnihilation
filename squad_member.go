@@ -4,6 +4,6 @@ type squadMember struct {
 	code string
 }
 
-func (sm *squadMember) getStaticData() *squadMemberInfo {
+func (sm *squadMember) getStaticData() *squadMemberStaticData {
 	return getSquadMemberStaticInfo(sm.code)
 }

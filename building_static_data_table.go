@@ -313,5 +313,8 @@ func getBuildingStaticInfo(codename string) *buildingStaticData {
 		newBuilding.maxHitpoints = 25
 		log.appendMessage("No hitpoints set for " + newBuilding.name)
 	}
+	if newBuilding.sightRadius == 0 {
+		newBuilding.sightRadius = newBuilding.w + 2
+	}
 	return newBuilding
 }

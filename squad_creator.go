@@ -6,9 +6,11 @@ package main
 // }
 
 func createSquadOfSingleMember(code string, x, y int, f *faction, alreadyConstructed bool) *pawn {
-	sqpawn := &pawn{x: x, y: y, 
+	sqpawn := &pawn{
+		x: x, y: y, 
 		faction: f,
-		squadInfo: &squad{}}
+		squadInfo: &squad{},
+	}
 	sqpawn.squadInfo.members = append(sqpawn.squadInfo.members, &squadMember{code: code})
 	return sqpawn
 }

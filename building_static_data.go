@@ -9,4 +9,5 @@ type buildingStaticData struct {
 	appearance                                     *buildingAppearance
 	defaultConstructionInfo                        *constructionInformation
 	maxHitpoints                                   int
+	sightRadius, radarRadius                       int
 }

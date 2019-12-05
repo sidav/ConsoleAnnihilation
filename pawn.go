@@ -20,7 +20,6 @@ type pawn struct {
 	weapons                   []*pawnWeaponInformation
 	nextTickToAct             int
 	isCommander               bool
-	sightRadius, radarRadius  int
 
 	repeatConstructionQueue bool // for factories
 	// armor info:
@@ -137,9 +136,10 @@ func (p *pawn) getCenter() (int, int) {
 
 func (p *pawn) getSightAndRadarRadius() (int, int) {
 	if p.isSquad() {
-		return 5, 0
+		return p.squadInfo.getSquadSightAndRadarRadius()
 	}
-	return p.sightRadius, p.radarRadius
+	si := p.buildingInfo.getBuildingStaticInfo()
+	return si.sightRadius, si.radarRadius
 }
 
 func (p *pawn) getArmorDescriptionString() string {

@@ -1,14 +1,14 @@
 package main 
 
-var squadMembersStaticData map[string]*squadMemberInfo 
+var squadMembersStaticDataTable map[string]*squadMemberStaticData 
 
 func initSquadMembersStaticDataMap() {
-	squadMembersStaticData = make(map[string]*squadMemberInfo)
-	squadMembersStaticData["armcommander"] = &squadMemberInfo {
+	squadMembersStaticDataTable = make(map[string]*squadMemberStaticData)
+	squadMembersStaticDataTable["armcommander"] = &squadMemberStaticData {
 		name: "Arm Commander",
 		takesWholeSquad: true,
 		movementInfo: &pawnMovementInformation {ticksForMoveSingleCell: 10, movesOnLand: true},
-		maxHp: 100,
+		maxHp: 100, sightRadius: 7, radarRadius: 15,
 		weaponInfo: &pawnWeaponInformation {attackDelay: 10, attackEnergyCost: 1, attackRadius: 5, attacksLand: true,
 			hitscan: &WeaponHitscan{baseDamage:5},
 		},
@@ -18,7 +18,7 @@ func initSquadMembersStaticDataMap() {
 		},
 		currentConstructionStatus: &constructionInformation{maxConstructionAmount: 10, costM: 250, costE: 500},
 	}
-	squadMembersStaticData["DEFAULT"] = &squadMemberInfo {
+	squadMembersStaticDataTable["DEFAULT"] = &squadMemberStaticData {
 		name: "WTF",
 		movementInfo: &pawnMovementInformation {ticksForMoveSingleCell: 10, movesOnLand: true},
 		maxHp: 100,
@@ -33,11 +33,11 @@ func initSquadMembersStaticDataMap() {
 	}
 }
 
-func getSquadMemberStaticInfo(codename string) *squadMemberInfo {
-	var newUnit *squadMemberInfo
-	newUnit = squadMembersStaticData[codename]
+func getSquadMemberStaticInfo(codename string) *squadMemberStaticData {
+	var newUnit *squadMemberStaticData
+	newUnit = squadMembersStaticDataTable[codename]
 	if newUnit == nil {
-		newUnit = squadMembersStaticData["DEFAULT"]
+		newUnit = squadMembersStaticDataTable["DEFAULT"]
 	}
 	if newUnit.maxHp == 0 {
 		newUnit.maxHp = 1
